@@ -1,0 +1,11 @@
+apply plugin: 'groovy'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.2.0'
+	compile 'org.apache.ant:ant:1.7.0'	
+	compile 'log4j:log4j:1.2.16'
+}
