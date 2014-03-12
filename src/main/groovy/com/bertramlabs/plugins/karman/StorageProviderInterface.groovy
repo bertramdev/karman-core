@@ -20,8 +20,9 @@ interface StorageProviderInterface {
 	String getName()
 
 	Directory getDirectory(String name)
+
 	def getDirectories()
+
 	public Directory getAt(String key)
 
-	// Directory createDirectory(String name)
 }

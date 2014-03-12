@@ -45,4 +45,17 @@ abstract class StorageProvider implements StorageProviderInterface {
 		}
 		return providerClass.newInstance(options)
 	}
+
+
+	public static registerProvider() {
+		if(name == 'Unimplemented') {
+			return
+		}
+		def providerClass = KarmanConfigHolder.providerTypes.find{ it.key == name}
+		if(!providerClass) {
+			KarmanConfigHolder.providerTypes[name] = this
+		}
+
+	}
+
 }
