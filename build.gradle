@@ -1,4 +1,22 @@
 apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'bintray'
+
+group = 'com.bertramlabs.plugins'
+version = '0.1.1'
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3"
+    }
+}
+
 
 repositories {
 	mavenCentral()
@@ -9,3 +27,40 @@ dependencies {
 	compile 'org.apache.ant:ant:1.7.0'	
 	compile 'log4j:log4j:1.2.16'
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'karman-core'
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+//Define bintrayUser and bintrayKey in ~/.gradle/gradle.properties
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+    publications = ['maven']
+    pkg {
+        repo = 'karman'
+        userOrg = 'karman'
+        name = 'karman-core'
+        licenses = ['Apache-2.0']
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+bintrayUpload.dependsOn build, sourcesJar, javadocJar
