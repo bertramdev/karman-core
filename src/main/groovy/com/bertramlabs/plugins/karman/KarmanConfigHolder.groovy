@@ -7,7 +7,7 @@ class KarmanConfigHolder {
 		defaultFileACL: CloudFileACL.Private
 	]
 
-	static providerTypes = [local: LocalStorageProvider]
+	static providerTypes = [:]
 	
 	static void setConfig(configMap) {
 		config += configMap

@@ -17,7 +17,7 @@
 package com.bertramlabs.plugins.karman
 
 interface StorageProviderInterface {
-	String getName()
+	String getProviderName()
 
 	Directory getDirectory(String name)
 

@@ -19,7 +19,7 @@ package com.bertramlabs.plugins.karman.local
 import com.bertramlabs.plugins.karman.*
 
 class LocalStorageProvider extends StorageProvider {
-	static String name = "local"
+	static String providerName = "local"
 
 	String basePath
 
@@ -38,4 +38,5 @@ class LocalStorageProvider extends StorageProvider {
 		}
 		return directories
 	}
+
 }

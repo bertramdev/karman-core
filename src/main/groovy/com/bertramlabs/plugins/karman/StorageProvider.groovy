@@ -19,7 +19,6 @@ package com.bertramlabs.plugins.karman
 import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
 
 abstract class StorageProvider implements StorageProviderInterface {
-	static String name = "Unimplemented"
 
 	CloudFileACL defaultFileACL
 
@@ -47,15 +46,13 @@ abstract class StorageProvider implements StorageProviderInterface {
 	}
 
 
-	public static registerProvider() {
-		if(name == 'Unimplemented') {
-			return
-		}
-		def providerClass = KarmanConfigHolder.providerTypes.find{ it.key == name}
-		if(!providerClass) {
-			KarmanConfigHolder.providerTypes[name] = this
-		}
+	static registerProvider(provider) {
+		def providerClass = KarmanConfigHolder.providerTypes.find{ it.key == provider.providerName}?.value
 
-	}
+		if(!providerClass) {
+			KarmanConfigHolder.providerTypes[provider.providerName] = provider
+		}
+	} 
+
 
 }
