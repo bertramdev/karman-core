@@ -26,6 +26,7 @@ dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.2.0'
 	compile 'org.apache.ant:ant:1.7.0'	
 	compile 'log4j:log4j:1.2.16'
+
 }
 
 publishing {
@@ -62,5 +63,11 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
+
+task(console, dependsOn: 'classes', type: JavaExec) {
+  main = 'groovy.ui.Console'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
 
 bintrayUpload.dependsOn build, sourcesJar, javadocJar
