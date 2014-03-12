@@ -9,8 +9,6 @@ class KarmanConfigHolder {
 
 	static providerTypes = [local: LocalStorageProvider]
 	
-	static grailsApplication
-
 	static void setConfig(configMap) {
 		config += configMap
 
