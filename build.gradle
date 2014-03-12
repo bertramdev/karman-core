@@ -19,7 +19,9 @@ buildscript {
 
 
 repositories {
+    jcenter()
 	mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
@@ -27,6 +29,7 @@ dependencies {
 	compile 'org.apache.ant:ant:1.7.0'	
 	compile 'log4j:log4j:1.2.16'
 
+    compile "org.spockframework:spock-core:1.0-groovy-2.0-SNAPSHOT"
 }
 
 publishing {
@@ -39,6 +42,11 @@ publishing {
             artifact javadocJar
         }
     }
+}
+
+sourceSets {
+    main.groovy.srcDir 'src'
+    test.groovy.srcDir 'test'
 }
 
 //Define bintrayUser and bintrayKey in ~/.gradle/gradle.properties
@@ -67,6 +75,13 @@ task sourcesJar(type: Jar) {
 task(console, dependsOn: 'classes', type: JavaExec) {
   main = 'groovy.ui.Console'
   classpath = sourceSets.main.runtimeClasspath
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+        showStandardStreams = true
+    }
 }
 
 
