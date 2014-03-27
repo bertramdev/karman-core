@@ -43,7 +43,7 @@ abstract class Directory implements DirectoryInterface {
 
     public void putAt(String key, byte[] bytes)  {
 		def cloudFile = getFile(key)	
-        mimeType = Mimetypes.instance.getMimetype(key)
+        def mimeType = Mimetypes.instance.getMimetype(key)
         
 		if(mimeType) {
 			cloudFile.contentType = mimeType
@@ -55,7 +55,7 @@ abstract class Directory implements DirectoryInterface {
 	public void putAt(String key, String text)  {
 		def cloudFile = getFile(key)
 		
-        mimeType = Mimetypes.instance.getMimetype(key)
+        def mimeType = Mimetypes.instance.getMimetype(key)
         
         if(mimeType) {
 			cloudFile.contentType = mimeType
@@ -63,6 +63,16 @@ abstract class Directory implements DirectoryInterface {
 		cloudFile.text = text
 		cloudFile.save()
 	}
+
+	def propertyMissing(String propName) {
+		getAt(propName)
+	}
+	
+	def propertyMissing(String propName, value) {
+		putAt(propName,value)
+	}
+
+
 
     def mkdir() {
 		save()

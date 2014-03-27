@@ -54,5 +54,10 @@ abstract class StorageProvider implements StorageProviderInterface {
 		}
 	} 
 
+	def propertyMissing(String propName) {
+		getAt(propName)
+	}
+
+
 
 }
