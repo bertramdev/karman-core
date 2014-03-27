@@ -16,7 +16,9 @@
 
 package com.bertramlabs.plugins.karman
 
-/** Provides a standardized interface for dealing with files stored in the cloud.
+/** 
+* Provides a standardized interface for dealing with files stored in the cloud.
+* @author David Estes
 */
 abstract class CloudFile implements CloudFileInterface {
 	StorageProvider provider

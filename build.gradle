@@ -65,6 +65,11 @@ bintray {
     }
 }
 
+groovydoc {
+    source = 'src/main/groovy'
+    footer = "Karman-Core is Licensed under the APACHE 2 License"
+}
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from 'build/docs/javadoc'
