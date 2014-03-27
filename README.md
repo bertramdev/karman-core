@@ -18,6 +18,10 @@ Currently the majority of the documentation is in the Grails Plugin
 
 http://bertramdev.github.io/karman
 
+The Beginnings of a GroovyDoc area also available here:
+
+http://bertramdev.github.io/karman-core
+
 
 Contributions
 -------------

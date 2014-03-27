@@ -16,7 +16,10 @@
 
 package com.bertramlabs.plugins.karman
 
-
+/**
+* An Interface for interacting with Cloud Containers (i.e. Buckets). If looking to add new cloud providers, 
+* one must implement this interface via the {@com.bertramlabs.plugins.karman.Directory} abstract class.
+*/
 interface DirectoryInterface {
 
 	String getName()

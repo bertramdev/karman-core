@@ -18,10 +18,28 @@ package com.bertramlabs.plugins.karman
 
 /** 
 * Provides a standardized interface for dealing with files stored in the cloud.
+* Several methods exist on the CloudFile object to provide similar interactions as one 
+* might expect when using a standard java File class.
+* <p>
+* Below is an example of how a CloudFile might be used. Typically you would not use this class directly but rather use an implementation of this class. (i.e. {@link com.bertramlabs.plugins.karman.local.LocalFile})
+* </p>
+* <pre>
+* CloudFile file = new CloudFile(provider: provider, parent: directory , name: name)
+* 
+* file.text = "Setting test Content"
+* file.contentType = "text/plain"
+* if(!file.exists()) {
+*     file.save()
+* }
+* </pre>
 * @author David Estes
 */
 abstract class CloudFile implements CloudFileInterface {
 	StorageProvider provider
+
+	/**
+	* Property for setting the file name or retrieving.
+	*/
 	String name
 
 	Boolean isFile() {
