@@ -28,6 +28,14 @@ class LocalCloudFile extends CloudFile {
 		new File(parent.fsFile.path,name)
 	}
 
+	/**
+	* Get URL
+	* @param expirationDate
+	* @return url
+	*/
+	URL getURL(Date expirationDate = null) {
+		new URL("${provider.baseUrl}/${parent.name}/${name}")
+	}
 
 	InputStream getInputStream() {
 		fsFile.newDataInputStream()

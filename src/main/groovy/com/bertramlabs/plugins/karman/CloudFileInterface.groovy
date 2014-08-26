@@ -16,7 +16,7 @@
 
 package com.bertramlabs.plugins.karman
 
-/** 
+/**
 * Provides a standardized interface for dealing with files stored in the cloud.
 * @author David Estes
 */
@@ -24,6 +24,9 @@ package com.bertramlabs.plugins.karman
 interface CloudFileInterface {
 
 	String getName()
+
+	URL getURL(Date expirationDate)
+	URL getURL()
 
 	InputStream getInputStream()
 
@@ -50,13 +53,13 @@ interface CloudFileInterface {
 	Boolean isDirectory()
 
 	def save()
-	
+
 	def save(acl)
 
 	def delete()
 
 	void setMetaAttribute(key, value)
-	
+
 	def getMetaAttribute(key)
 
 	def getMetaAttributes()

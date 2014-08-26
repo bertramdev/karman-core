@@ -22,12 +22,12 @@ class LocalStorageProvider extends StorageProvider {
 	static String providerName = "local"
 
 	String basePath
-
+	String baseUrl
 	Directory getDirectory(String name) {
 		new LocalDirectory(name: name, provider: this)
 	}
 
-	
+
 
 	def getDirectories() {
 		def directories = []
