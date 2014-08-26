@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.bertramlabs.plugins.karman.local
 
 import com.bertramlabs.plugins.karman.*
@@ -47,10 +47,12 @@ class LocalCloudFile extends CloudFile {
 	}
 
 	void setText(String text) {
+        ensurePathExists()
 		fsFile.text = text
 	}
 
 	void setBytes(bytes) {
+        ensurePathExists()
 		fsFile.bytes = bytes
 	}
 
@@ -96,5 +98,12 @@ class LocalCloudFile extends CloudFile {
 	def delete() {
 		fsFile.delete()
 	}
+
+    private ensurePathExists() {
+        def parentFile = fsFile.getParentFile()
+        if(!parentFile.exists()) {
+            parentFile.mkdirs()
+        }
+    }
 
 }
