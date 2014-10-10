@@ -17,10 +17,10 @@
 package com.bertramlabs.plugins.karman
 
 /**
-* Provides a standardized interface for dealing with files stored in the cloud.
+* An Interface for interacting with Cloud Files. If looking to add new cloud providers,
+* one must implement this interface via the {@com.bertramlabs.plugins.karman.CloudFile} abstract class.
 * @author David Estes
 */
-
 interface CloudFileInterface {
 
 	String getName()

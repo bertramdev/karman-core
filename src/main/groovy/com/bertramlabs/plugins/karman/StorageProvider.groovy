@@ -23,13 +23,13 @@ import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
 * This is the base provider abstract class for defining various providers. This class also provides a factory {@code create()} static method for acquiring
 * an instance of a particular provider.
 * <p>
-* Below is an example of how a {@link com.bertramlabs.plugins.karman.local.LocalStorageProvider} might be initialized. 
+* Below is an example of how a {@link com.bertramlabs.plugins.karman.local.LocalStorageProvider} might be initialized.
 * </p>
 * <pre>
 * {@code
 * import com.bertramlabs.plugins.karman.StorageProvider
 * def provider = StorageProvider(provider: 'local', basePath: "/path/to/storage/location")
-* 
+*
 * //Shorthand
 * provider['folder']['example.txt'] = "This is a string I am storing in example.txt"
 * //or
@@ -44,8 +44,8 @@ abstract class StorageProvider implements StorageProviderInterface {
 
 
 	/**
-	* Convenience method for fetching a Directory/Container By Name. 
-	* @see {@link com.bertramlabs.plugins.karman.StoragePrivder#getDirectory()}
+	* Convenience method for fetching a Directory/Container By Name.
+	* @see {@link com.bertramlabs.plugins.karman.StorageProvider#getDirectory()}
 	*/
 	public Directory getAt(String key) {
 		getDirectory(key)
@@ -61,7 +61,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 
 	/**
 	* Gets the Default CloudFile Access Control settings.
-	* The Default CloduFileACL can come from either an instance of the StorageProvider or will be pulled from the 
+	* The Default CloduFileACL can come from either an instance of the StorageProvider or will be pulled from the
 	* {@link com.bertramlabs.plugins.karman.KarmanConfigHolder}
 	*/
 	public CloudFileACL getDefaultFileACL() {
@@ -73,14 +73,14 @@ abstract class StorageProvider implements StorageProviderInterface {
 
 
 	/**
-	* A Factory method for creating a new storage provider of a type. Typically the type is passed as a provider 
+	* A Factory method for creating a new storage provider of a type. Typically the type is passed as a provider
 	* key which correlates to the classes providerName.
 	* @param options - Takes an array of options and passes to the constructor of the provider. Passing [provider: 'local'] would fetch a local Provider.
 	*/
 	public static StorageProvider create(options = [:]) {
 		def provider = options.remove('provider')
 		if(!provider) {
-			throw new ProviderNotFoundException()	
+			throw new ProviderNotFoundException()
 		}
 		def providerClass = KarmanConfigHolder.providerTypes.find{ it.key == provider}?.value
 		if(!providerClass) {
@@ -99,7 +99,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 		if(!providerClass) {
 			KarmanConfigHolder.providerTypes[provider.providerName] = provider
 		}
-	} 
+	}
 
 
 	/**
