@@ -163,7 +163,7 @@ function windowTitle()
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileInterface.html" title="Interface in com.bertramlabs.plugins.karman"><b>CloudFileInterface</b></a> - Interface in <a href="./com/bertramlabs/plugins/karman/package-summary.html">com.bertramlabs.plugins.karman</a>
 </dt><dd>An Interface for interacting with Cloud Files. </dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#contentType(java.lang.String)" title="Method in CloudFile"><b>contentType</b>(String)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Sets the contentType of the file. </dd>
 <dt><a href="com/bertramlabs/plugins/karman/StorageProvider.html#create(def)" title="Method in StorageProvider"><b>create</b>(def)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/StorageProvider.html">StorageProvider</a>
 </dt><dd>A Factory method for creating a new storage provider of a type. </dd>
 </dl>
@@ -290,7 +290,7 @@ function windowTitle()
 <dt><a href="com/bertramlabs/plugins/karman/local/LocalCloudFile.html#getText(java.lang.String)" title="Method in LocalCloudFile"><b>getText</b>(String)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/local/LocalCloudFile.html">LocalCloudFile</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#getURL(java.util.Date)" title="Method in CloudFile"><b>getURL</b>(Date)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Default implementation for getURL will return nothing. </dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileInterface.html#getURL()" title="Method in CloudFileInterface"><b>getURL</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFileInterface.html">CloudFileInterface</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/local/LocalCloudFile.html#getURL(java.util.Date)" title="Method in LocalCloudFile"><b>getURL</b>(Date)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/local/LocalCloudFile.html">LocalCloudFile</a>
@@ -316,7 +316,7 @@ function windowTitle()
 <dl>
 
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#isDirectory()" title="Method in CloudFile"><b>isDirectory</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Checks if the file is of type file or of type directory, since this is a CloudFile it should always return false</dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileInterface.html#isDirectory()" title="Method in CloudFileInterface"><b>isDirectory</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFileInterface.html">CloudFileInterface</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/Directory.html#isDirectory()" title="Method in Directory"><b>isDirectory</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/Directory.html">Directory</a>
@@ -324,7 +324,7 @@ function windowTitle()
 <dt><a href="com/bertramlabs/plugins/karman/DirectoryInterface.html#isDirectory()" title="Method in DirectoryInterface"><b>isDirectory</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/DirectoryInterface.html">DirectoryInterface</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#isFile()" title="Method in CloudFile"><b>isFile</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Checks if the file is of type file (should always return true)</dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileInterface.html#isFile()" title="Method in CloudFileInterface"><b>isFile</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFileInterface.html">CloudFileInterface</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/Directory.html#isFile()" title="Method in Directory"><b>isFile</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/Directory.html">Directory</a>
@@ -467,7 +467,7 @@ function windowTitle()
 <dl>
 
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#save()" title="Method in CloudFile"><b>save</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Saves the file using the defaultFileACL as configured in the provider</dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileInterface.html#save(def)" title="Method in CloudFileInterface"><b>save</b>(def)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFileInterface.html">CloudFileInterface</a>
 </dt><dd></dd>
 <dt><a href="com/bertramlabs/plugins/karman/DirectoryInterface.html#save()" title="Method in DirectoryInterface"><b>save</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/DirectoryInterface.html">DirectoryInterface</a>
@@ -509,9 +509,9 @@ function windowTitle()
 <dl>
 
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#text(java.lang.String)" title="Method in CloudFile"><b>text</b>(String)</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Sets the contents of the file using a String. </dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFile.html#toString()" title="Method in CloudFile"><b>toString</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFile.html">CloudFile</a>
-</dt><dd></dd>
+</dt><dd>Returns the name of the file</dd>
 <dt><a href="com/bertramlabs/plugins/karman/CloudFileACL.html#toString()" title="Method in CloudFileACL"><b>toString</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/CloudFileACL.html">CloudFileACL</a>
 </dt><dd>Returns the header value for this canned acl.</dd>
 <dt><a href="com/bertramlabs/plugins/karman/Directory.html#toString()" title="Method in Directory"><b>toString</b>()</b></a> - Method in <a href="com/bertramlabs/plugins/karman/Directory.html">Directory</a>
