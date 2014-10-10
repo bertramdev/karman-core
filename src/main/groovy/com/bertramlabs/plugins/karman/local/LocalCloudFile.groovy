@@ -105,6 +105,19 @@ class LocalCloudFile extends CloudFile {
 
 	def delete() {
 		fsFile.delete()
+		cleanUpTree()
+	}
+
+	private cleanUpTree() {
+		def parentDir = fsFile.parentFile()
+		while(parentDir.canonicalPath != parent.fsFile.canonicalPath) {
+			if(parentDir.list().size() == 0) {
+				parentDir.delete()
+				parentDir = parentDir.parentFile()
+			} else {
+				break
+			}
+		}
 	}
 
     private ensurePathExists() {
