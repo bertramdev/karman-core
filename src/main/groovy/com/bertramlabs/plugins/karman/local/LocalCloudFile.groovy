@@ -69,8 +69,7 @@ class LocalCloudFile extends CloudFile {
 	}
 
 	String getContentType() {
-		def servletContext = org.codehaus.groovy.grails.web.context.ServletContextHolder.getServletContext()
-		return servletContext ? servletContext.getMimeType(name) : java.net.URLConnection.guessContentTypeFromName(name)
+		return Mimetypes.instance.getMimetype(name)
 	}
 
 	void setContentType(String contentType) {
