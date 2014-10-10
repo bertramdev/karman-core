@@ -19,6 +19,7 @@ package com.bertramlabs.plugins.karman.local
 import com.bertramlabs.plugins.karman.*
 import groovy.util.logging.Log4j
 import java.io.ByteArrayInputStream;
+import com.bertramlabs.plugins.karman.util.Mimetypes
 
 @Log4j
 class LocalCloudFile extends CloudFile {
