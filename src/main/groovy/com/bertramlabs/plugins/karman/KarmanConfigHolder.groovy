@@ -17,7 +17,6 @@
 package com.bertramlabs.plugins.karman
 
 import com.bertramlabs.plugins.karman.local.LocalStorageProvider
-
 /**
 * Static class for holding a global Configuration Map
 * @author David Estes
@@ -34,7 +33,7 @@ class KarmanConfigHolder {
 	/**
 	* Map of available provider types registered with the StorageProvider factory
 	*/
-	static providerTypes = [:]
+	static providerTypes = [local: LocalStorageProvider]
 
 	/**
 	* Merges a Map of config properties into the global Config Map

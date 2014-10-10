@@ -42,33 +42,58 @@ abstract class CloudFile implements CloudFileInterface {
 	*/
 	String name
 
+	/**
+	* Checks if the file is of type file (should always return true)
+	*/
 	Boolean isFile() {
 		return true
 	}
 
+	/**
+	* Default implementation for getURL will return nothing. This has to be implemented by each provider type
+	* @param expirationDate the expire time of the URL being requested (if supported). Defaults to null
+	*/
 	URL getURL(Date expirationDate = null) {
 		return null
 	}
 
+	/**
+	* Sets the contents of the file using a String. This is a chainable method that returns an instance of itself
+	* @param content String containing content that you wish to save to the file
+	*/
 	CloudFile text(String content) {
 		setText(content)
 		return this
 	}
 
-	CloudFile contentType(String content) {
-		setContentType(content)
+
+	/**
+	* Sets the contentType of the file. This is a chainable method that returns an instance of itself.
+	* @param type String used to identify the type of content (i.e. image/png)
+	*/
+	CloudFile contentType(String type) {
+		setContentType(type)
 		return this
 	}
 
+
+	/**
+	* Checks if the file is of type file or of type directory, since this is a CloudFile it should always return false
+	*/
 	Boolean isDirectory() {
 		return false
 	}
 
+	/**
+	* Returns the name of the file
+	*/
 	String toString() {
 		return name
 	}
 
-
+	/**
+	* Saves the file using the defaultFileACL as configured in the provider
+	*/
 	def save() {
 		save(provider.defaultFileACL)
 	}

@@ -18,7 +18,7 @@ package com.bertramlabs.plugins.karman
 
 /**
 * An Interface for interacting with Cloud Files. If looking to add new cloud providers,
-* one must implement this interface via the {@com.bertramlabs.plugins.karman.CloudFile} abstract class.
+* one must implement this interface via the {@link com.bertramlabs.plugins.karman.CloudFile} abstract class.
 * @author David Estes
 */
 interface CloudFileInterface {

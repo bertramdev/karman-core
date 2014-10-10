@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,12 +28,15 @@ import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
 * <pre>
 * {@code
 * import com.bertramlabs.plugins.karman.StorageProvider
-* def provider = StorageProvider(provider: 'local', basePath: "/path/to/storage/location")
+* def provider = StorageProvider(
+*  provider: 'local',
+*  basePath: "/path/to/storage/location"
+* )
 *
 * //Shorthand
-* provider['folder']['example.txt'] = "This is a string I am storing in example.txt"
+* provider['folder']['example.txt'] = "This is a string I am storing."
 * //or
-* provider.'folder'.'example.txt' = "This is a string I am storign in example.txt"
+* provider.'folder'.'example.txt' = "This is a string I am storing."
 * }
 * </pre>
 * @author David Estes
