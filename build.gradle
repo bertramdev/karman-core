@@ -59,7 +59,7 @@ bintray {
     publications = ['maven']
     pkg {
         repo = 'karman'
-        userOrg = 'karman'
+        userOrg = 'bertramlabs'
         name = 'karman-core'
         licenses = ['Apache-2.0']
     }
