@@ -23,6 +23,11 @@ class LocalStorageProvider extends StorageProvider {
 
 	String basePath
 	String baseUrl
+
+	public LocalStorageProvider(Map options) {
+		basePath = options.basePath ?: basePath
+		baseUrl  = options.baseUrl  ?: baseUrl
+	}
 	Directory getDirectory(String name) {
 		new LocalDirectory(name: name, provider: this)
 	}

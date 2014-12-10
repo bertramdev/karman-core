@@ -33,8 +33,8 @@ class KarmanConfigHolder {
 	/**
 	* Map of available provider types registered with the StorageProvider factory
 	*/
-	static providerTypes = [local: LocalStorageProvider]
-
+	//static providerTypes = [local: LocalStorageProvider]
+	static providerTypes = KarmanProviders.loadProviders()
 	/**
 	* Merges a Map of config properties into the global Config Map
 	* @param configMap properties that should be applied to the global configuration.

@@ -17,11 +17,11 @@
 package com.bertramlabs.plugins.karman.local
 
 import com.bertramlabs.plugins.karman.*
-import groovy.util.logging.Log4j
+import groovy.util.logging.Commons
 import java.io.ByteArrayInputStream;
 import com.bertramlabs.plugins.karman.util.Mimetypes
 
-@Log4j
+@Commons
 class LocalCloudFile extends CloudFile {
 	LocalDirectory parent
 

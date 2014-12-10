@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 
 group = 'com.bertramlabs.plugins'
-version = '0.5.6'
+version = '0.6.0'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 buildscript {
@@ -28,7 +28,8 @@ repositories {
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.2.0'
 	compile 'org.apache.ant:ant:1.7.0'
-	compile 'log4j:log4j:1.2.16'
+//	compile 'log4j:log4j:1.2.16'
+    compile("commons-logging:commons-logging:1.1.1")
     compile "org.spockframework:spock-core:0.7-groovy-2.0"
 }
 
