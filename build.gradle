@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 
 group = 'com.bertramlabs.plugins'
-version = '0.6.0'
+version = '0.6.1'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 buildscript {
@@ -22,22 +22,52 @@ buildscript {
 repositories {
     jcenter()
 	mavenCentral()
- //   maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+configurations {
+    provided
+}
+ 
+
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.2.0'
+	provided 'org.codehaus.groovy:groovy-all:2.2.0'
 	compile 'org.apache.ant:ant:1.7.0'
 //	compile 'log4j:log4j:1.2.16'
     compile("commons-logging:commons-logging:1.1.1")
-    compile "org.spockframework:spock-core:0.7-groovy-2.0"
+    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
             artifactId 'karman-core'
-
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'asset-pipeline-core'
+                    description 'Karman is a standardized Cloud File Management Interface for Groovy. It provides a unified means and simple DSL for accessing files on the cloud via extensible StorageProviders'
+                    url 'https://github.com/bertramdev/karman-core'
+                    scm {
+                        url 'https://github.com/bertramdev/karman-core'
+                        connection 'scm:https://bertramdev@github.com/bertramdev/karman-core.git'
+                        developerConnection 'scm:git://github.com/bertramdev/karman-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'davydotcom'
+                            name 'David Estes'
+                            email 'davydotcom@gmail.com'
+                        }
+                    }
+                }
+            }
             from components.java
             artifact sourcesJar
             artifact javadocJar
@@ -46,10 +76,8 @@ publishing {
 }
 
 sourceSets {
-    main.groovy.srcDir 'src'
-    test.groovy.srcDir 'test'
-    main.resources {
-        srcDir 'src/resources'
+    main {
+        compileClasspath += configurations.provided
     }
 }
 
