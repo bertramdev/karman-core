@@ -27,6 +27,7 @@ class LocalStorageProvider extends StorageProvider {
 	public LocalStorageProvider(Map options) {
 		basePath = options.basePath ?: basePath
 		baseUrl  = options.baseUrl  ?: baseUrl
+		defaultFileACL = options.defaultFileACL ?: defaultFileACL
 	}
 	Directory getDirectory(String name) {
 		new LocalDirectory(name: name, provider: this)
