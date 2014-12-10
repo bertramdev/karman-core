@@ -23,7 +23,7 @@ class KarmanProviders {
 	        	Properties providerProperties = new Properties()
             	providerProperties.load(res.openStream())
 
-            	providerProperties.keySet.each { providerName ->
+            	providerProperties.keySet().each { providerName ->
             		try {
 	            		String className = providerProperties.getProperty(providerName)
 	            		def cls = classLoader.loadClass(className)
