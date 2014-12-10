@@ -30,7 +30,7 @@ configurations {
  
 
 dependencies {
-	provided 'org.codehaus.groovy:groovy-all:2.2.0'
+	provided 'org.codehaus.groovy:groovy-all:2.0.7'
 	compile 'org.apache.ant:ant:1.7.0'
 //	compile 'log4j:log4j:1.2.16'
     compile("commons-logging:commons-logging:1.1.1")

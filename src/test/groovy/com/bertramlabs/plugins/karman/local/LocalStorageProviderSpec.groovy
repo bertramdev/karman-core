@@ -10,9 +10,6 @@ import spock.lang.Specification
 class LocalStorageProviderSpec extends Specification {
 
     def "it can be created"() {
-        given:
-        StorageProvider.registerProvider(LocalStorageProvider)
-
         when:
         StorageProvider storageProvider = StorageProvider.create(provider: 'local', basePath: '.')
 
