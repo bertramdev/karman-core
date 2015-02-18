@@ -13,7 +13,7 @@ class KarmanProviders {
      *
      * @return A list of provider classes
      */
-    static Map<String,Class<StorageProviderInterface>> loadProviders(ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
+    static synchronized Map<String,Class<StorageProviderInterface>> loadProviders(ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
 
         if(providers == null) {
             def resources = classLoader.getResources(FACTORIES_RESOURCE_LOCATION)

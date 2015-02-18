@@ -81,7 +81,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 	* being the provider name and the value being the fully qualified class name
 	* @param options - Takes an array of options and passes to the constructor of the provider. Passing [provider: 'local'] would fetch a local Provider.
 	*/
-	public static StorageProvider create(options = [:]) {
+	public static synchronized StorageProvider create(options = [:]) {
 		def provider = options.remove('provider')
 		if(!provider) {
 			throw new ProviderNotFoundException()
