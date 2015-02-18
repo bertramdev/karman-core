@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 
 group = 'com.bertramlabs.plugins'
-version = '0.6.2.SNAPSHOT'
+version = '0.6.2'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 buildscript {
