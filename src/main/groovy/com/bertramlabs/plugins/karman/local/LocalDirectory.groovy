@@ -39,19 +39,32 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 			scanner.setIncludes(options.includes as String[])	
 		}
 		if(options.prefix) {
+			def delimiter = options.delimiter
 			def prefix = options.prefix
 			if(prefix.endsWith("/")) {
-				scanner.setIncludes([prefix + '**/*'] as String[])		
+				if(delimiter == '/') {
+					scanner.setIncludes([prefix + '*'] as String[])		
+				} else {
+					scanner.setIncludes([prefix + '**/*'] as String[])		
+				}
+				
 			} else {
-				scanner.setIncludes([prefix+'*',prefix + '*/**/*'] as String[])		
+				if(delimiter == '/') {
+					scanner.setIncludes([prefix+'*',prefix + '*/**/*'] as String[])		
+				} else {
+					scanner.setIncludes([prefix+'*'] as String[])		
+				}
 			}
+		} else if (options.delimiter) {
+			scanner.setIncludes(['*'] as String[])		
 		}
 
 		scanner.setBasedir(fsFile.canonicalPath)
 		scanner.setCaseSensitive(false)
 		scanner.scan()
 
-		scanner.getIncludedFiles().flatten().collect {
+		def results = scanner.getIncludedDirectories().flatten() + scanner.getIncludedFiles().flatten()
+		results.collect {
 			new LocalCloudFile(provider: provider, parent: this, name: it)
 		}
 	}
