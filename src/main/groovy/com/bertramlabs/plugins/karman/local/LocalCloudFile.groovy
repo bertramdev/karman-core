@@ -108,6 +108,17 @@ class LocalCloudFile extends CloudFile {
 		cleanUpTree()
 	}
 
+	@Override
+	Boolean isFile() {
+		fsFile.isFile();
+	}
+
+	@Override
+	Boolean isDirectory() {
+		fsFile.isDirectory();
+	}
+
+
 	private cleanUpTree() {
 		def parentDir = fsFile.parentFile
 		while(parentDir.canonicalPath != parent.fsFile.canonicalPath) {
