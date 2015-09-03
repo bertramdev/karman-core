@@ -29,6 +29,7 @@ interface CloudFileInterface {
 	URL getURL()
 
 	InputStream getInputStream()
+	OutputStream getOutputStream()
 
 	String getText(String encoding)
 

@@ -39,7 +39,11 @@ class LocalCloudFile extends CloudFile {
 	}
 
 	InputStream getInputStream() {
-		fsFile.newDataInputStream()
+		fsFile.newInputStream()
+	}
+
+	OutputStream getOutputStream() {
+		fsFile.newOutputStream()
 	}
 
 	String getText(String encoding=null) {

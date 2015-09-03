@@ -1,22 +1,26 @@
-apply plugin: 'groovy'
-apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'bintray'
-
-group = 'com.bertramlabs.plugins'
-version = '0.7.1'
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-
 buildscript {
     repositories {
         mavenLocal()
         jcenter()
     }
     dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3"
     }
 }
+
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+}
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'com.bertramlabs.plugins'
+version = '0.8.0'
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
 
 
 repositories {
@@ -83,8 +87,10 @@ sourceSets {
 
 //Define bintrayUser and bintrayKey in ~/.gradle/gradle.properties
 bintray {
-    user = bintrayUser
-    key = bintrayKey
+    if(project.hasProperty('bintrayUser')) {
+        user = bintrayUser
+        key = bintrayKey
+    }
     publications = ['maven']
     pkg {
         repo = 'karman'
