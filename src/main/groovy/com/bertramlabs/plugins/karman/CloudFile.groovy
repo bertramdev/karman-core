@@ -66,6 +66,10 @@ abstract class CloudFile implements CloudFileInterface {
 		return this
 	}
 
+	void setContentLength(Long length) {
+		//Do nothing
+	}
+
 
 	/**
 	* Sets the contentType of the file. This is a chainable method that returns an instance of itself.

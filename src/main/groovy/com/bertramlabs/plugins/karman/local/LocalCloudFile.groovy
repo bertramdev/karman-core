@@ -42,6 +42,13 @@ class LocalCloudFile extends CloudFile {
 		fsFile.newInputStream()
 	}
 
+	void setInputStream(InputStream inputS) {
+		def os = this.outputStream 
+		os << inputS
+		os.flush()
+		os.close()
+	}
+
 	OutputStream getOutputStream() {
 		fsFile.newOutputStream()
 	}

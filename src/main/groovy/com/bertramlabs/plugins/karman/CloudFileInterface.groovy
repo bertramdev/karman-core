@@ -29,6 +29,7 @@ interface CloudFileInterface {
 	URL getURL()
 
 	InputStream getInputStream()
+	void setInputStream(InputStream is)
 	OutputStream getOutputStream()
 
 	String getText(String encoding)
@@ -42,6 +43,8 @@ interface CloudFileInterface {
 	void setBytes(bytes)
 
 	Long getContentLength()
+
+	void setContentLength(Long length)
 
 	String getContentType()
 
