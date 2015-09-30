@@ -51,6 +51,7 @@ class LocalCloudFile extends CloudFile {
 
 	OutputStream getOutputStream() {
 		if(!fsFile.exists()) {
+			ensurePathExists()
 			fsFile.createNewFile()
 		}
 		fsFile.newOutputStream()

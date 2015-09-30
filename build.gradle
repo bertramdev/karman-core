@@ -18,7 +18,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.bertramlabs.plugins'
-version = '0.8.2'
+version = '0.8.3'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 
