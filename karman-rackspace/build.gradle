@@ -105,6 +105,7 @@ bintray {
         userOrg = 'bertramlabs'
         name = 'karman-rackspace'
         licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/bertramdev/karman-core.git'
     }
 }
 
