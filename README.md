@@ -10,6 +10,13 @@ Features:
 * Easily reusable in other plugins with the immediate benefit of supporting many different storage engines.
 * LocalStorage mode allows the same provider classes to store files locally and provides retrieval endpoint.
 
+Modules:
+
+* karman-core (Core Karman API and Local storage Provider)
+* karman-aws (Amazon S3)
+* karman-openstack (Openstack Swift Object Store)
+* karman-rackspace (Rackspace CDN Object Store)
+
 
 Documentation
 -------------

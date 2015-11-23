@@ -1,4 +1,4 @@
-package com.bertramlabs.plugins.karman.rackspace
+package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.CloudFile
 import groovy.json.JsonSlurper
@@ -21,12 +21,12 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * Rackspace Cloud File implementation for the Rackspace Cloud Files API v1
+ * Openstack Cloud File implementation for the Openstack Cloud Files API v1
  * @author David Estes
  */
-class RackspaceCloudFile extends CloudFile {
-	Map rackspaceMeta = [:]
-	RackspaceDirectory parent
+class OpenstackCloudFile extends CloudFile {
+	Map openstackMeta = [:]
+	OpenstackDirectory parent
 	private Boolean metaDataLoaded = false
 	private Boolean existsFlag = null
 	private InputStream writeStream
@@ -35,7 +35,7 @@ class RackspaceCloudFile extends CloudFile {
 	 * Meta attributes setter/getter
 	 */
 	void setMetaAttribute(key, value) {
-		rackspaceMeta[key] = value
+		openstackMeta[key] = value
 	}
 
 	OutputStream getOutputStream() {
@@ -52,21 +52,21 @@ class RackspaceCloudFile extends CloudFile {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
-		return rackspaceMeta[key]
+		return openstackMeta[key]
 	}
 
 	Map getMetaAttributes() {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
-		return rackspaceMeta
+		return openstackMeta
 	}
 
 	void removeMetaAttribute(key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
-		rackspaceMeta.remove(key)
+		openstackMeta.remove(key)
 	}
 
 	/**
@@ -76,7 +76,7 @@ class RackspaceCloudFile extends CloudFile {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
-		rackspaceMeta['Content-Length']?.toLong()
+		openstackMeta['Content-Length']?.toLong()
 	}
 
 	/**
@@ -94,7 +94,7 @@ class RackspaceCloudFile extends CloudFile {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
-		rackspaceMeta['Content-Type']
+		openstackMeta['Content-Type']
 	}
 
 	/**
@@ -138,21 +138,21 @@ class RackspaceCloudFile extends CloudFile {
 	 */
 	InputStream getInputStream() {
 		if(valid) {
-			RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
+			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${rackspaceProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
 
 
 			HttpGet request = new HttpGet(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
-			request.addHeader(new BasicHeader('X-Auth-Token', rackspaceProvider.getToken()))
+			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
 			HttpClient client = new DefaultHttpClient()
 			HttpParams params = client.getParams()
 			HttpConnectionParams.setConnectionTimeout(params, 30000)
 			HttpConnectionParams.setSoTimeout(params, 20000)
 			HttpResponse response = client.execute(request)
 
-			rackspaceMeta = response.getAllHeaders()?.collectEntries() { Header header ->
+			openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
 				[(header.name): header.value]
 			}
 
@@ -192,15 +192,15 @@ class RackspaceCloudFile extends CloudFile {
 		if (valid) {
 			assert writeStream
 
-			RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
+			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${rackspaceProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
 
 
 			HttpPut request = new HttpPut(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
-			request.addHeader(new BasicHeader('X-Auth-Token', rackspaceProvider.getToken()))
-			rackspaceMeta.each{entry ->
+			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
+			openstackMeta.each{entry ->
 				if(entry.key != 'Content-Length') {
 					request.addHeader(entry.key,entry.value.toString())
 				}
@@ -220,7 +220,7 @@ class RackspaceCloudFile extends CloudFile {
 			}
 
 			metaDataLoaded = false
-			rackspaceMeta = [:]
+			openstackMeta = [:]
 
 			existsFlag = true
 			return true
@@ -245,32 +245,32 @@ class RackspaceCloudFile extends CloudFile {
 	 */
 	URL getURL(Date expirationDate = null) {
 		if (valid) {
-			RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
+			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			if (expirationDate) {
-				String objectPath = rackspaceProvider.endpointUrl.split("/v1/")[1] + "/${parent.name}/${name}"
+				String objectPath = openstackProvider.endpointUrl.split("/v1/")[1] + "/${parent.name}/${name}"
 				objectPath = "/v1/" + objectPath
 				String hmacBody = "GET\n${(expirationDate.time/1000).toLong()}\n${objectPath}".toString()
-				SecretKeySpec key = new SecretKeySpec((rackspaceProvider.tempUrlKey).getBytes("UTF-8"), "HmacSHA1");
+				SecretKeySpec key = new SecretKeySpec((openstackProvider.tempUrlKey).getBytes("UTF-8"), "HmacSHA1");
 				Mac mac = Mac.getInstance("HmacSHA1");
 				mac.init(key);
 				String sig = mac.doFinal(hmacBody.getBytes('UTF-8')).encodeHex().toString()
-				new URL("${rackspaceProvider.endpointUrl}/${parent.name}/${name}?temp_url_sig=${sig}&temp_url_expires=${(expirationDate.time/1000).toLong()}")
+				new URL("${openstackProvider.endpointUrl}/${parent.name}/${name}?temp_url_sig=${sig}&temp_url_expires=${(expirationDate.time/1000).toLong()}")
 			} else {
-				new URL("${rackspaceProvider.endpointUrl}/${parent.name}/${name}")
+				new URL("${openstackProvider.endpointUrl}/${parent.name}/${name}")
 			}
 		}
 	}
 
 	private void loadObjectMetaData() {
 		if(valid) {
-			RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
+			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${rackspaceProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
 
 
 			HttpHead request = new HttpHead(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
-			request.addHeader(new BasicHeader('X-Auth-Token', rackspaceProvider.getToken()))
+			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
 			HttpClient client = new DefaultHttpClient()
 			HttpParams params = client.getParams()
 			HttpConnectionParams.setConnectionTimeout(params, 30000)
@@ -281,7 +281,7 @@ class RackspaceCloudFile extends CloudFile {
 				return
 			}
 			existsFlag = true
-			rackspaceMeta = response.getAllHeaders()?.collectEntries() { Header header ->
+			openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
 				[(header.name): header.value]
 			}
 			EntityUtils.consume(response.entity)

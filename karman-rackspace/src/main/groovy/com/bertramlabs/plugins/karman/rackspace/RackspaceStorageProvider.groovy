@@ -1,6 +1,7 @@
 package com.bertramlabs.plugins.karman.rackspace
 
 import com.bertramlabs.plugins.karman.Directory
+import com.bertramlabs.plugins.karman.openstack.OpenstackStorageProvider
 import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
@@ -43,136 +44,7 @@ import org.apache.http.util.EntityUtils
  * @author David Estes
  */
 @Commons
-public class RackspaceStorageProvider extends StorageProvider {
+public class RackspaceStorageProvider extends OpenstackStorageProvider {
 	static String providerName = "rackspace"
-
-	String username
-	String apiKey = ''
-	String region = 'IAD'
-	String tempUrlKey = '68tT3un009'
-	Map accessInfo
-
-	protected Boolean authenticate() {
-		try {
-			def authMap = [
-				auth: [
-					"RAX-KSKEY:apiKeyCredentials": [
-						username: this.username,
-						apiKey: this.apiKey
-					]
-				]
-			]
-
-			HttpPost authPost = new HttpPost("https://identity.api.rackspacecloud.com/v2.0/tokens")
-			authPost.addHeader("Content-Type","application/json");
-			authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
-			HttpResponse response = client.execute(authPost)
-			HttpEntity responseEntity = response.getEntity();
-			if(response.getStatusLine().statusCode != 200) {
-				log.error("Authentication Request Failed ${response.statusCode} when trying to connect to Rackspace Cloud")
-				EntityUtils.consume(response.entity)
-				return false
-			}
-
-			String responseText = responseEntity.content.text
-			accessInfo = new JsonSlurper().parseText(responseText)
-			if(tempUrlKey) {
-				applyTempUrlKey()
-			}
-			EntityUtils.consume(response.entity)
-			return true
-		} catch(ex) {
-			log.error("Error occurred during the authentication phase - ${ex.message}",ex)
-			return false
-		}
-	}
-
-
-	protected void applyTempUrlKey() {
-		HttpPost request = new HttpPost(getEndpointUrl())
-
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', getToken()))
-		request.addHeader("X-Account-Meta-Temp-Url-Key", tempUrlKey)
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-		EntityUtils.consume(response.entity)
-		if(response.statusLine.statusCode >= 300 || response.statusLine.statusCode < 200) {
-			log.error("Error applying url key ${response.statusLine.statusCode}")
-			return
-		}
-	}
-
-	public String getEndpointUrl() {
-		if(!accessInfo) {
-			if(!authenticate()) {
-				return null
-			}
-		}
-
-		def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
-		return endpoints?.find{it.region == region}?.publicURL?.toString().trim()
-	}
-
-	public String getTenantId() {
-		if(!accessInfo) {
-			if(!authenticate()) {
-				return null
-			}
-		}
-
-		def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
-		return endpoints?.find{it.region == region}?.tenantId
-	}
-
-
-	public String getToken() {
-		if(!accessInfo) {
-			if(!authenticate()) {
-				return null
-			}
-		}
-		return accessInfo?.access?.token?.id?.toString()
-	}
-
-	Directory getDirectory(String name) {
-		new RackspaceDirectory(name: name, provider: this)
-	}
-
-
-	List<Directory> getDirectories() {
-		if(!accessInfo) {
-			authenticate()
-		}
-
-		HttpGet request = new HttpGet(getEndpointUrl())
-
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', getToken()))
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-
-		if(response.statusLine.statusCode != 200) {
-			log.error("Error fetching Directory List ${response.statusLine.statusCode}")
-			EntityUtils.consume(response.entity)
-			return null
-		}
-		HttpEntity responseEntity = response.getEntity()
-		def jsonBody = new JsonSlurper().parse(new InputStreamReader(responseEntity.content))
-		EntityUtils.consume(response.entity)
-		def provider = this
-		return jsonBody.collect { jsonObj ->
-			new RackspaceDirectory(name: jsonObj.name, provider: provider)
-		}
-	}
+	String identityUrl = 'https://identity.api.rackspacecloud.com/v2.0'
 }

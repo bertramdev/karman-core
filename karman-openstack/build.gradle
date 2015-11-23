@@ -44,7 +44,6 @@ dependencies {
 	provided 'org.codehaus.groovy:groovy-all:2.0.7'
 
     compile project(':karman-core')
-    compile project(':karman-openstack')
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
     compile 'org.apache.httpcomponents:httpcore:4.2'
     compile 'org.apache.httpcomponents:httpclient:4.2'
@@ -53,15 +52,15 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId 'karman-rackspace'
+            artifactId 'karman-openstack'
             pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'karman-rackspace'
+                    name 'karman-openstack'
                     description 'Karman Storage Provider interface for rackspace cloud files api'
                     url 'https://github.com/bertramdev/karman-core'
                     scm {
-                        url 'https://github.com/bertramdev/karman-rackspace'
+                        url 'https://github.com/bertramdev/karman-openstack'
                         connection 'scm:https://bertramdev@github.com/bertramdev/karman-core.git'
                         developerConnection 'scm:git://github.com/bertramdev/karman-core.git'
                     }
@@ -104,7 +103,7 @@ bintray {
     pkg {
         repo = 'karman'
         userOrg = 'bertramlabs'
-        name = 'karman-rackspace'
+        name = 'karman-openstack'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/bertramdev/karman-core.git'
     }

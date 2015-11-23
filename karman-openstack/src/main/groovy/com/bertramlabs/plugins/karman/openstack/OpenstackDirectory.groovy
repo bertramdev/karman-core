@@ -1,5 +1,4 @@
-package com.bertramlabs.plugins.karman.rackspace
-
+package com.bertramlabs.plugins.karman.openstack
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
@@ -18,7 +17,7 @@ import org.apache.http.util.EntityUtils
 /**
  * Created by davidestes on 10/12/15.
  */
-class RackspaceDirectory extends Directory {
+class OpenstackDirectory extends Directory {
 
 
 	/**
@@ -34,9 +33,9 @@ class RackspaceDirectory extends Directory {
 	 * @return List
 	 */
 	List listFiles(options = [:]) {
-		RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 		URI listUri
-		URIBuilder uriBuilder = new URIBuilder("${rackspaceProvider.getEndpointUrl()}/${name}".toString())
+		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 
 		options?.each { entry ->
 			uriBuilder.addParameter(entry.key,entry.value)
@@ -47,7 +46,7 @@ class RackspaceDirectory extends Directory {
 		HttpGet request = new HttpGet(listUri)
 
 		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', rackspaceProvider.getToken()))
+		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
 		HttpClient client = new DefaultHttpClient()
 		HttpParams params = client.getParams()
 		HttpConnectionParams.setConnectionTimeout(params, 30000)
@@ -57,7 +56,7 @@ class RackspaceDirectory extends Directory {
 		HttpEntity responseEntity = response.getEntity()
 		def jsonBody = new JsonSlurper().parse(new InputStreamReader(responseEntity.content))
 		return jsonBody?.collect { meta ->
-			cloudFileFromRackspaceMeta(meta)
+			cloudFileFromOpenstackMeta(meta)
 		}
 		EntityUtils.consume(responseEntity)
 	}
@@ -66,11 +65,11 @@ class RackspaceDirectory extends Directory {
 	 * Create bucket for a given region (default to region in config if not defined)
 	 * @return Bucket
 	 */
-	def save() {RackspaceStorageProvider rackspaceProvider = (RackspaceStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${rackspaceProvider.getEndpointUrl()}/${name}".toString())
+	def save() {OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 		HttpPut request = new HttpPut(uriBuilder.build())
 		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', rackspaceProvider.getToken()))
+		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
 
 		HttpClient client = new DefaultHttpClient()
 		HttpParams params = client.getParams()
@@ -87,7 +86,7 @@ class RackspaceDirectory extends Directory {
 	}
 
 	CloudFile getFile(String name) {
-		new RackspaceCloudFile(
+		new OpenstackCloudFile(
 			provider: provider,
 			parent: this,
 			name: name
@@ -96,8 +95,8 @@ class RackspaceDirectory extends Directory {
 
 	// PRIVATE
 
-	private RackspaceCloudFile cloudFileFromRackspaceMeta(Map meta) {
-		new RackspaceCloudFile(
+	private OpenstackCloudFile cloudFileFromOpenstackMeta(Map meta) {
+		new OpenstackCloudFile(
 			provider: provider,
 			parent: this,
 			name: meta.name
