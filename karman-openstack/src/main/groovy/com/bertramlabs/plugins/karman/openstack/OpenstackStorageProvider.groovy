@@ -16,6 +16,7 @@ import org.apache.http.message.BasicHeader
 import org.apache.http.params.HttpConnectionParams
 import org.apache.http.params.HttpParams
 import org.apache.http.util.EntityUtils
+import org.apache.http.client.utils.URIBuilder
 
 /**
  * Storage provider implementation for the Openstack Cloud Files API
