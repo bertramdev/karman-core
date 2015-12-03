@@ -26,6 +26,7 @@ class S3CloudFile extends CloudFile {
     S3Directory parent
 	S3Object object
     S3ObjectSummary summary // Only set when object is retrieved by listFiles
+    InputStream writeableStream
 
     private Boolean loaded = false
 	private Boolean metaDataLoaded = false
@@ -69,12 +70,12 @@ class S3CloudFile extends CloudFile {
     OutputStream getOutputStream() {
         def outputStream = new PipedOutputStream()
 
-        s3Object.objectContent = new S3ObjectInputStream(new PipedInputStream(outputStream), null)
+        writeableStream = new S3ObjectInputStream(new PipedInputStream(outputStream), null)
         return outputStream
     }
 
     void setInputStream(InputStream inputS) {
-        s3Object.objectContent = new S3ObjectInputStream(inputS, null)
+        writeableStream = new S3ObjectInputStream(inputS, null)
     }
 
     String getMetaAttribute(key) {
@@ -124,11 +125,11 @@ class S3CloudFile extends CloudFile {
      */
     byte[] getBytes() {
         def result = inputStream?.bytes
-        inputStream.close()
+        inputStream?.close()
         return result
     }
     void setBytes(bytes) {
-        s3Object.objectContent = new S3ObjectInputStream(new ByteArrayInputStream(bytes), null)
+        writeableStream = new S3ObjectInputStream(new ByteArrayInputStream(bytes), null)
         setContentLength(bytes.length)
     }
 
@@ -212,10 +213,10 @@ class S3CloudFile extends CloudFile {
      */
 	def save(acl) {
         if (valid) {
-            assert inputStream
+            assert writeableStream
             setMetaAttribute(Headers.S3_CANNED_ACL, acl)
 
-            s3Client.putObject(parent.name, name, inputStream, object.objectMetadata)
+            s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
             object = null
             summary = null
             existsFlag = true
