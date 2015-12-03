@@ -137,9 +137,7 @@ class S3CloudFile extends CloudFile {
      * @return inputStream
      */
     InputStream getInputStream() {
-        if (!object) {
-            loadObject()
-        }
+        loadObject()
 		s3Object.objectContent
 	}
 
