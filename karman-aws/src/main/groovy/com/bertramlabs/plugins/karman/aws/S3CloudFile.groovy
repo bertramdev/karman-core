@@ -74,7 +74,7 @@ class S3CloudFile extends CloudFile {
     }
 
     void setInputStream(InputStream inputS) {
-        s3Object.objectContent = new S3ObjectInputStream(new PipedInputStream(inputS), null)
+        s3Object.objectContent = new S3ObjectInputStream(inputS, null)
     }
 
     String getMetaAttribute(key) {
