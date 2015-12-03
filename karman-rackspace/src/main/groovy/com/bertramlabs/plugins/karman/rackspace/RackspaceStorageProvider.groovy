@@ -46,5 +46,11 @@ import org.apache.http.util.EntityUtils
 @Commons
 public class RackspaceStorageProvider extends OpenstackStorageProvider {
 	static String providerName = "rackspace"
-	String identityUrl = 'https://identity.api.rackspacecloud.com/v2.0'
+
+	public RackspaceStorageProvider(Map options) {
+		super(options);
+		if(!identityUrl) {
+			identityUrl = 'https://identity.api.rackspacecloud.com/v2.0'
+		}
+	}
 }
