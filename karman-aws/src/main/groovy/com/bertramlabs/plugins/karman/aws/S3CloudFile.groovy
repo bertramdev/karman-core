@@ -139,7 +139,7 @@ class S3CloudFile extends CloudFile {
      */
     InputStream getInputStream() {
         loadObject()
-		s3Object.objectContent
+		return new BufferedInputStream(s3Object.objectContent,1500)
 	}
 
     /**
