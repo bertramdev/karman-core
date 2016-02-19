@@ -2,6 +2,7 @@ package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.CloudFile
 import groovy.json.JsonSlurper
+import groovy.util.logging.Commons
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -24,10 +25,12 @@ import javax.crypto.spec.SecretKeySpec
  * Openstack Cloud File implementation for the Openstack Cloud Files API v1
  * @author David Estes
  */
+@Commons
 class OpenstackCloudFile extends CloudFile {
 	Map openstackMeta = [:]
 	OpenstackDirectory parent
 	private Boolean metaDataLoaded = false
+	private Boolean chunked = false
 	private Boolean existsFlag = null
 	private InputStream writeStream
 
@@ -193,6 +196,12 @@ class OpenstackCloudFile extends CloudFile {
 			assert writeStream
 
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+
+			// do chunk save
+			if (openstackProvider.chunkSize > 0 && chunked) {
+				return saveWithChunks(acl)
+			}
+
 			URI listUri
 			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
 
@@ -226,6 +235,109 @@ class OpenstackCloudFile extends CloudFile {
 			return true
 		}
 		return false
+	}
+
+	def saveWithChunks(acl) {
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+
+		def segmentSize = openstackProvider.chunkSize
+		def segmentBytesWritten = 0
+		def segment = 1
+		def buf = new byte[2048]
+		def totalBytesRead = 0
+		def token = openstackProvider.token
+
+		// first write the data parts
+		// get connection for first part
+		try {
+			def connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
+			connection.connect()
+			def os = connection.outputStream
+
+			def bytesRead = 0
+			while ((bytesRead = writeStream.read(buf)) != -1) {
+				os.write(buf, 0, bytesRead)
+				segmentBytesWritten += bytesRead
+				totalBytesRead += bytesRead
+				os.flush()
+
+				if (segmentSize - (segmentBytesWritten + buf.size()) < 0 || bytesRead < buf.size()) {
+					def oldConnection = connection
+					try {
+						os.flush()
+						if (oldConnection.responseCode == 201) {
+							segment++
+							segmentBytesWritten = 0
+							if (bytesRead == buf.size()) {
+								connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
+								os = connection.outputStream
+								log.info("creating ${name} part${segment}")
+							}
+						}
+						else {
+							log.error("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+							throw new RuntimeException("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+						}
+					}
+					finally {
+						oldConnection.disconnect()
+					}
+				}
+			}
+			log.debug("Total bytes read: ${totalBytesRead}")
+		}
+		catch (Throwable t) {
+			return false
+		}
+		finally {
+			writeStream.close()
+		}
+
+		// then write the metadata part
+		def headers = ['X-Object-Manifest':"${parent.name}/${name}/"]
+		def connection
+		try {
+			// log.debug("Writing manifest for ${name}")
+			connection = getObjectStoreConnection(token, openstackProvider, null, headers)
+			connection.connect()
+			def osw = new OutputStreamWriter(connection.outputStream)
+			osw.write('')
+			osw.flush()
+			if (connection.responseCode != 201) {
+				return false
+				//log.error("Failed to write manifest data: ${connection.responseCode} - ${connection.responseMessage}")
+			}
+		}
+		catch (Throwable t) {
+			// log.error("Failed to write manifest data", t)
+			return false
+		}
+		finally {
+			connection.disconnect()
+		}
+		return true
+	}
+
+	private getObjectStoreConnection(String token, OpenstackStorageProvider provider, Integer segment, Map headers = [:]) {
+		try {
+			def part = segment ? "/part${segment}" : ''
+			def url = new URL("${provider.getEndpointUrl()}/${parent.name}/${name}${part}".toString())
+			def connection = url.openConnection()
+			log.info("File URL: ${url}")
+			connection.setRequestMethod('PUT')
+			connection.setRequestProperty('X-Auth-Token', token)
+			connection.setDoOutput(true)
+
+			// add any additional headers
+			headers.each {
+				connection.setRequestProperty(it.key, it.value)
+			}
+			return connection
+		}
+		catch (Throwable t) {
+			log.error('Error building url connection to openstack object store', t)
+			throw t
+		}
 	}
 
 	/**

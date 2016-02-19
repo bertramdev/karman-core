@@ -53,40 +53,73 @@ public class OpenstackStorageProvider extends StorageProvider {
 	String region = 'IAD'
 	String tempUrlKey = '68tT3un009'
 	String identityUrl = ''
+	Long chunkSize = 0l
 	Map accessInfo
 
 	protected Boolean authenticate() {
 		try {
-			def authMap = [
-				auth: [
-					"RAX-KSKEY:apiKeyCredentials": [
-						username: this.username,
-						apiKey: this.apiKey
-					]
-				]
-			]
+			def authMap
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def path = uriBuilder.getPath() ?: 'v2.0';
-			uriBuilder.setPath([path.endsWith("/") ? path.substring(0,path.size() - 2) : path,"tokens"].join("/"))
+			HttpResponse response
+			if (path.indexOf('v2.0') > 0) {
+				authMap = [
+					auth: [
+						"RAX-KSKEY:apiKeyCredentials": [
+							username: this.username,
+							apiKey: this.apiKey
+						]
+					]
+				]
+				uriBuilder.setPath([path.endsWith("/") ? path.substring(0,path.size() - 2) : path,"tokens"].join("/"))
+				log.info("Auth url: ${uriBuilder.build()}")
+				HttpPost authPost = new HttpPost(uriBuilder.build())
+				authPost.addHeader("Content-Type","application/json");
+				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
+				HttpClient client = new DefaultHttpClient()
+				HttpParams params = client.getParams()
+				HttpConnectionParams.setConnectionTimeout(params, 30000)
+				HttpConnectionParams.setSoTimeout(params, 20000)
+				response = client.execute(authPost)
+				HttpEntity responseEntity = response.getEntity();
+				if(response.getStatusLine().statusCode != 200) {
+					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Swift Cloud")
+					EntityUtils.consume(response.entity)
+					return false
+				}
 
+				String responseText = responseEntity.content.text
+				accessInfo = new JsonSlurper().parseText(responseText)
+			}
+			else {
+				log.info("Auth url: ${uriBuilder.build()}")
+				HttpGet authGet = new HttpGet(uriBuilder.build())
+				authGet.addHeader("Content-Type","application/json");
+				authGet.addHeader("X-Auth-User",this.username)
+				authGet.addHeader("X-Auth-Key",this.apiKey)
+				HttpClient client = new DefaultHttpClient()
+				HttpParams params = client.getParams()
+				HttpConnectionParams.setConnectionTimeout(params, 30000)
+				HttpConnectionParams.setSoTimeout(params, 20000)
+				response = client.execute(authGet)
+				HttpEntity responseEntity = response.getEntity();
+				if(response.getStatusLine().statusCode != 200) {
+					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Swift Cloud")
+					EntityUtils.consume(response.entity)
+					return false
+				}
 
-			HttpPost authPost = new HttpPost(uriBuilder.build())
-			authPost.addHeader("Content-Type","application/json");
-			authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
-			HttpResponse response = client.execute(authPost)
-			HttpEntity responseEntity = response.getEntity();
-			if(response.getStatusLine().statusCode != 200) {
-				log.error("Authentication Request Failed ${response.statusCode} when trying to connect to Openstack Swift Cloud")
-				EntityUtils.consume(response.entity)
-				return false
+				String responseText = responseEntity.content.text
+				log.info("Auth response: ${responseText}")
+				accessInfo = new JsonSlurper().parseText(responseText)
+				accessInfo += [
+				    auth:[
+				        token:response.getHeaders('X-Storage-Token')[0].value,
+					    storageUrl:response.getHeaders('X-Storage-Url')[0].value
+				    ]
+				]
 			}
 
-			String responseText = responseEntity.content.text
-			accessInfo = new JsonSlurper().parseText(responseText)
 			if(tempUrlKey) {
 				applyTempUrlKey()
 			}
@@ -112,7 +145,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 		HttpResponse response = client.execute(request)
 		EntityUtils.consume(response.entity)
 		if(response.statusLine.statusCode >= 300 || response.statusLine.statusCode < 200) {
-			log.error("Error applying url key ${response.statusLine.statusCode}")
+			log.error("Error applying url key ${response.statusLine.statusCode}:${response.statusLine.reasonPhrase}")
 			return
 		}
 	}
@@ -124,8 +157,13 @@ public class OpenstackStorageProvider extends StorageProvider {
 			}
 		}
 
-		def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
-		return endpoints?.find{it.region == region}?.publicURL?.toString().trim()
+		if (accessInfo.storage) {
+			return accessInfo.storage[accessInfo.storage.default]
+		}
+		else {
+			def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
+			return endpoints?.find{it.region == region}?.publicURL?.toString().trim()
+		}
 	}
 
 	public String getTenantId() {
@@ -146,7 +184,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 				return null
 			}
 		}
-		return accessInfo?.access?.token?.id?.toString()
+		return accessInfo?.access?.token?.id?.toString() ?: accessInfo?.auth?.token
 	}
 
 	Directory getDirectory(String name) {
