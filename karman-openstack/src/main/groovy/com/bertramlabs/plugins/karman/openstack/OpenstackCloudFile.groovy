@@ -271,7 +271,7 @@ class OpenstackCloudFile extends CloudFile {
 							if (bytesRead == buf.size()) {
 								connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
 								os = connection.outputStream
-								log.info("creating ${name} part${segment}")
+								log.info("creating ${name} part${segment.toString().padLeft(8, '0')}")
 							}
 						}
 						else {
@@ -320,7 +320,7 @@ class OpenstackCloudFile extends CloudFile {
 
 	private getObjectStoreConnection(String token, OpenstackStorageProvider provider, Integer segment, Map headers = [:]) {
 		try {
-			def part = segment ? "/part${segment}" : ''
+			def part = segment ? "/part${segment.toString().padLeft(8, '0')}" : ''
 			def url = new URL("${provider.getEndpointUrl()}/${parent.name}/${name}${part}".toString())
 			def connection = url.openConnection()
 			log.info("File URL: ${url}")
