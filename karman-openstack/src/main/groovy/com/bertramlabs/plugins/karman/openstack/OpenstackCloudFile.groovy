@@ -18,6 +18,7 @@ import org.apache.http.params.HttpConnectionParams
 import org.apache.http.params.HttpParams
 import org.apache.http.util.EntityUtils
 
+import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -143,7 +144,7 @@ class OpenstackCloudFile extends CloudFile {
 		if(valid) {
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
 
 
 			HttpGet request = new HttpGet(uriBuilder.build())
@@ -203,7 +204,7 @@ class OpenstackCloudFile extends CloudFile {
 			}
 
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
 
 
 			HttpPut request = new HttpPut(uriBuilder.build())
@@ -287,6 +288,7 @@ class OpenstackCloudFile extends CloudFile {
 			log.debug("Total bytes read: ${totalBytesRead}")
 		}
 		catch (Throwable t) {
+			log.error(t)
 			return false
 		}
 		finally {
@@ -294,7 +296,7 @@ class OpenstackCloudFile extends CloudFile {
 		}
 
 		// then write the metadata part
-		def headers = ['X-Object-Manifest':"${parent.name}/${name}/"]
+		def headers = ['X-Object-Manifest':"${parent.name}/${encodedName}/"]
 		def connection
 		try {
 			// log.debug("Writing manifest for ${name}")
@@ -321,7 +323,7 @@ class OpenstackCloudFile extends CloudFile {
 	private getObjectStoreConnection(String token, OpenstackStorageProvider provider, Integer segment, Map headers = [:]) {
 		try {
 			def part = segment ? "/part${segment.toString().padLeft(8, '0')}" : ''
-			def url = new URL("${provider.getEndpointUrl()}/${parent.name}/${name}${part}".toString())
+			def url = new URL("${provider.getEndpointUrl()}/${parent.name}/${encodedName}${part}".toString())
 			def connection = url.openConnection()
 			log.info("File URL: ${url}")
 			connection.setRequestMethod('PUT')
@@ -359,16 +361,16 @@ class OpenstackCloudFile extends CloudFile {
 		if (valid) {
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			if (expirationDate) {
-				String objectPath = openstackProvider.endpointUrl.split("/v1/")[1] + "/${parent.name}/${name}"
+				String objectPath = openstackProvider.endpointUrl.split("/v1/")[1] + "/${parent.name}/${encodedName}"
 				objectPath = "/v1/" + objectPath
 				String hmacBody = "GET\n${(expirationDate.time/1000).toLong()}\n${objectPath}".toString()
 				SecretKeySpec key = new SecretKeySpec((openstackProvider.tempUrlKey).getBytes("UTF-8"), "HmacSHA1");
 				Mac mac = Mac.getInstance("HmacSHA1");
 				mac.init(key);
 				String sig = mac.doFinal(hmacBody.getBytes('UTF-8')).encodeHex().toString()
-				new URL("${openstackProvider.endpointUrl}/${parent.name}/${name}?temp_url_sig=${sig}&temp_url_expires=${(expirationDate.time/1000).toLong()}")
+				new URL("${openstackProvider.endpointUrl}/${parent.name}/${encodedName}?temp_url_sig=${sig}&temp_url_expires=${(expirationDate.time/1000).toLong()}")
 			} else {
-				new URL("${openstackProvider.endpointUrl}/${parent.name}/${name}")
+				new URL("${openstackProvider.endpointUrl}/${parent.name}/${encodedName}")
 			}
 		}
 	}
@@ -377,7 +379,7 @@ class OpenstackCloudFile extends CloudFile {
 		if(valid) {
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
-			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${name}".toString())
+			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
 
 
 			HttpHead request = new HttpHead(uriBuilder.build())
@@ -406,5 +408,9 @@ class OpenstackCloudFile extends CloudFile {
 		assert parent.name
 		assert name
 		true
+	}
+
+	private String getEncodedName() {
+		return java.net.URLEncoder.encode(name, "UTF-8").replaceAll('\\+', '%20')
 	}
 }
