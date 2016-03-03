@@ -1,7 +1,7 @@
 package com.bertramlabs.plugins.karman.openstack
 
-import com.bertramlabs.plugins.karman.Directory
-import com.bertramlabs.plugins.karman.StorageProvider
+import com.bertramlabs.plugins.karman.network.NetworkProvider
+import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
@@ -19,15 +19,15 @@ import org.apache.http.util.EntityUtils
 import org.apache.http.client.utils.URIBuilder
 
 /**
- * Storage provider implementation for the Openstack Cloud Files API
- * This is the starting point from which all calls to openstack swift originate for storing files within the Cloud File Containers
+ * Network provider implementation for the Openstack Networking API
+ * This is the starting point from which all calls to openstack networking originate.
  * <p>
  * Below is an example of how this might be initialized.
  * </p>
  * <pre>
  * {@code
- * import com.bertramlabs.plugins.karman.StorageProvider
- * def provider = StorageProvider(
+ * import com.bertramlabs.plugins.karman.network.NetworkProvider
+ * def provider = NetworkProvider.create(
  *  provider: 'openstack',
  *  username: 'myusername',
  *  apiKey: 'api-key-here',
@@ -35,26 +35,24 @@ import org.apache.http.client.utils.URIBuilder
  *  region: 'IAD'
  * )
  *
- * //Shorthand
- * provider['container']['example.txt'] = "This is a string I am storing."
- * //or
- * provider.'container'.'example.txt' = "This is a string I am storing."
  * }
  * </pre>
  *
  * @author David Estes
  */
 @Commons
-public class OpenstackStorageProvider extends StorageProvider {
+public class OpenstackNetworkProvider extends NetworkProvider {
 	static String providerName = "openstack"
 
 	String username
 	String apiKey = ''
 	String region = 'IAD'
-	String tempUrlKey = '68tT3un009'
 	String identityUrl = ''
-	Long chunkSize = 0l
+	String password
+	String tenantName
+	String domainId = 'default'
 	Map accessInfo
+	String apiVersion='2.0'
 
 	protected Boolean authenticate() {
 		try {
@@ -62,16 +60,39 @@ public class OpenstackStorageProvider extends StorageProvider {
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def path = uriBuilder.getPath() ?: 'v2.0';
 			HttpResponse response
-			
-			if (path.indexOf('v2.0') > 0 ) {
-				authMap = [
-					auth: [
-						"RAX-KSKEY:apiKeyCredentials": [
-							username: this.username,
-							apiKey: this.apiKey
+			if (path.indexOf('v2.0') > 0) {
+				apiVersion = '2.0'
+				if(apiKey) {
+					authMap = [
+						auth: [
+							"RAX-KSKEY:apiKeyCredentials": [
+								username: this.username,
+								apiKey: this.apiKey
+							]
 						]
 					]
-				]
+				} else if(password) {
+					//v3 api
+//					authMap = [
+//						auth:[
+//							identity: [
+//								methods:['password'],
+//								password:[
+//									user:[
+//										name:this.username,
+//										password:this.password,
+//										domain:[id:this.domainId ?: 'default']
+//									]
+//								]
+//							]
+//						]
+//					]
+					authMap = [auth:[passwordCredentials:[username:this.username, password:this.password]]]
+					if(tenantName) {
+						authMap.auth.tenantName = tenantName
+					}
+				}
+
 				uriBuilder.setPath([path.endsWith("/") ? path.substring(0,path.size() - 1) : path,"tokens"].join("/"))
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
@@ -84,7 +105,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 				response = client.execute(authPost)
 				HttpEntity responseEntity = response.getEntity();
 				if(response.getStatusLine().statusCode != 200) {
-					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Swift Cloud")
+					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
 					EntityUtils.consume(response.entity)
 					return false
 				}
@@ -105,7 +126,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 				response = client.execute(authGet)
 				HttpEntity responseEntity = response.getEntity();
 				if(response.getStatusLine().statusCode != 200) {
-					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Swift Cloud")
+					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
 					EntityUtils.consume(response.entity)
 					return false
 				}
@@ -114,16 +135,13 @@ public class OpenstackStorageProvider extends StorageProvider {
 				log.info("Auth response: ${responseText}")
 				accessInfo = new JsonSlurper().parseText(responseText)
 				accessInfo += [
-				    auth:[
-				        token:response.getHeaders('X-Storage-Token')[0].value,
-					    storageUrl:response.getHeaders('X-Storage-Url')[0].value
-				    ]
+					auth:[
+						token:response.getHeaders('X-Storage-Token')[0].value,
+						storageUrl:response.getHeaders('X-Storage-Url')[0].value
+					]
 				]
 			}
 
-			if(tempUrlKey) {
-				applyTempUrlKey()
-			}
 			EntityUtils.consume(response.entity)
 			return true
 		} catch(ex) {
@@ -133,23 +151,6 @@ public class OpenstackStorageProvider extends StorageProvider {
 	}
 
 
-	protected void applyTempUrlKey() {
-		HttpPost request = new HttpPost(getEndpointUrl())
-
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', getToken()))
-		request.addHeader("X-Account-Meta-Temp-Url-Key", tempUrlKey)
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-		EntityUtils.consume(response.entity)
-		if(response.statusLine.statusCode >= 300 || response.statusLine.statusCode < 200) {
-			log.error("Error applying url key ${response.statusLine.statusCode}:${response.statusLine.reasonPhrase}")
-			return
-		}
-	}
 
 	public String getEndpointUrl() {
 		if(!accessInfo) {
@@ -158,26 +159,18 @@ public class OpenstackStorageProvider extends StorageProvider {
 			}
 		}
 
-		if (accessInfo.storage) {
-			return accessInfo.storage[accessInfo.storage.default]
+		if (accessInfo.networking) {
+			return accessInfo.networking[accessInfo.networking.default]
 		}
 		else {
-			def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
-			return endpoints?.find{it.region == region}?.publicURL?.toString().trim()
-		}
-	}
-
-	public String getTenantId() {
-		if(!accessInfo) {
-			if(!authenticate()) {
-				return null
+			def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'network'}?.endpoints
+			def endpointUrl = endpoints?.find{it.region == region}?.publicURL?.toString()?.trim()
+			if(!endpointUrl) {
+				endpointUrl = endpoints ? endpoints[0].publicURL?.toString()?.trim() : null
 			}
+			return endpointUrl
 		}
-
-		def endpoints = accessInfo?.access?.serviceCatalog?.find{ it.type == 'object-store'}?.endpoints
-		return endpoints?.find{it.region == region}?.tenantId
 	}
-
 
 	public String getToken() {
 		if(!accessInfo) {
@@ -185,40 +178,60 @@ public class OpenstackStorageProvider extends StorageProvider {
 				return null
 			}
 		}
+
 		return accessInfo?.access?.token?.id?.toString() ?: accessInfo?.auth?.token
 	}
 
-	Directory getDirectory(String name) {
-		new OpenstackDirectory(name: name, provider: this)
+
+	@Override
+	public String getProviderName() {
+		return null
 	}
 
+	@Override
+	public Collection<SecurityGroupInterface> getSecurityGroups(Map options) {
+		return null
+	}
 
-	List<Directory> getDirectories() {
-		if(!accessInfo) {
-			authenticate()
-		}
-
-		HttpGet request = new HttpGet(getEndpointUrl())
+	@Override
+	public Collection<SecurityGroupInterface> getSecurityGroups() {
+		URIBuilder uriBuilder = new URIBuilder(endpointUrl)
+		uriBuilder.setPath("/${apiVersion}/security-groups")
+		HttpGet request = new HttpGet(uriBuilder.build())
 
 		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', getToken()))
+		request.addHeader(new BasicHeader('X-Auth-Token', this.getToken()))
+
 		HttpClient client = new DefaultHttpClient()
 		HttpParams params = client.getParams()
 		HttpConnectionParams.setConnectionTimeout(params, 30000)
 		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-
-		if(response.statusLine.statusCode != 200) {
-			log.error("Error fetching Directory List ${response.statusLine.statusCode}")
+		response = client.execute(request)
+		HttpEntity responseEntity = response.getEntity();
+		if(response.getStatusLine().statusCode != 200) {
+			log.error("Security Group Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
 			EntityUtils.consume(response.entity)
 			return null
 		}
-		HttpEntity responseEntity = response.getEntity()
-		def jsonBody = new JsonSlurper().parse(new InputStreamReader(responseEntity.content))
-		EntityUtils.consume(response.entity)
+
+		String responseText = responseEntity.content.text
+
+		def responseJson = new JsonSlurper().parseText(responseText)
 		def provider = this
-		return jsonBody.collect { jsonObj ->
-			new OpenstackDirectory(name: jsonObj.name, provider: provider)
+		return responseJson.security_groups?.collect { securityGroupMeta ->
+			return new OpenstackSecurityGroup(provider, securityGroupMeta)
 		}
 	}
+
+	@Override
+	public SecurityGroupInterface getSecurityGroup(String uid) {
+		return null
+	}
+
+	@Override
+	public SecurityGroupInterface createSecurityGroup(String name) {
+		return null
+	}
+
+
 }
