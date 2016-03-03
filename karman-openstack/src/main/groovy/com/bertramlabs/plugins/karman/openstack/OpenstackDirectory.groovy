@@ -26,8 +26,10 @@ class OpenstackDirectory extends Directory {
 	 * @return Boolean
 	 */
 	Boolean exists() {
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
-		HttpPut request = new HttpHead(uriBuilder.build())
+		HttpHead request = new HttpHead(uriBuilder.build())
 		request.addHeader("Accept", "application/json")
 		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
 

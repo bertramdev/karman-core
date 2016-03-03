@@ -62,7 +62,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def path = uriBuilder.getPath() ?: 'v2.0';
 			HttpResponse response
-			if (path.indexOf('v2.0') > 0) {
+			if (path.indexOf('v2.0') > 0 ) {
 				authMap = [
 					auth: [
 						"RAX-KSKEY:apiKeyCredentials": [
@@ -71,7 +71,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 						]
 					]
 				]
-				uriBuilder.setPath([path.endsWith("/") ? path.substring(0,path.size() - 2) : path,"tokens"].join("/"))
+				uriBuilder.setPath([path.endsWith("/") ? path.substring(0,path.size() - 1) : path,"tokens"].join("/"))
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type","application/json");
