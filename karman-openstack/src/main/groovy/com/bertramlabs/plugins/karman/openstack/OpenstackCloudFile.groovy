@@ -294,8 +294,11 @@ class OpenstackCloudFile extends CloudFile {
 					}
 				}
 			}
+			if (connection.responseCode != 201) {
+				throw new RuntimeException("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+			}
 			connection.disconnect()
-			log.debug("Total bytes read: ${totalBytesRead}")
+			log.info("Total bytes read: ${totalBytesRead}")
 		}
 		catch (Throwable t) {
 			log.error(t)
