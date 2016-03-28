@@ -39,5 +39,5 @@ class OpenstackStorageProviderSpec extends Specification {
 		then:
 		cloudFile.getURL()
 	}
-	*/
+	/*
 }

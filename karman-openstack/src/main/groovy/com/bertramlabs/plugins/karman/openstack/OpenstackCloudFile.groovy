@@ -246,6 +246,7 @@ class OpenstackCloudFile extends CloudFile {
 		def segment = 1
 		def buf = new byte[2048]
 		def totalBytesRead = 0
+		int readOff = 0, writeOff = 0
 		def token = openstackProvider.token
 
 		// first write the data parts
@@ -256,20 +257,28 @@ class OpenstackCloudFile extends CloudFile {
 			def os = connection.outputStream
 
 			def bytesRead = 0
-			while ((bytesRead = writeStream.read(buf)) != -1) {
-				os.write(buf, 0, bytesRead)
+			while ((bytesRead = writeStream.read(buf, readOff, buf.size() - readOff)) != -1) {
+				if (bytesRead + readOff != buf.size()) {
+					log.debug("Partial read into buffer: ${bytesRead} bytes")
+					readOff += bytesRead
+				}
+				else {
+					readOff = 0
+				}
+				os.write(buf, writeOff, bytesRead)
+				writeOff = readOff
 				segmentBytesWritten += bytesRead
 				totalBytesRead += bytesRead
 				os.flush()
 
-				if (segmentSize - (segmentBytesWritten + buf.size()) < 0 || bytesRead < buf.size()) {
+				if (segmentSize - (segmentBytesWritten + buf.size()) < 0) {
 					def oldConnection = connection
 					try {
 						os.flush()
 						if (oldConnection.responseCode == 201) {
 							segment++
 							segmentBytesWritten = 0
-							if (bytesRead == buf.size()) {
+							if (readOff == 0) {
 								connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
 								os = connection.outputStream
 								log.info("creating ${name} part${segment.toString().padLeft(8, '0')}")
@@ -285,6 +294,7 @@ class OpenstackCloudFile extends CloudFile {
 					}
 				}
 			}
+			connection.disconnect()
 			log.debug("Total bytes read: ${totalBytesRead}")
 		}
 		catch (Throwable t) {
@@ -323,6 +333,7 @@ class OpenstackCloudFile extends CloudFile {
 	private getObjectStoreConnection(String token, OpenstackStorageProvider provider, Integer segment, Map headers = [:]) {
 		try {
 			def part = segment ? "/part${segment.toString().padLeft(8, '0')}" : ''
+			log.info("URL: ${provider.getEndpointUrl()}/${parent.name}/${encodedName}${part}")
 			def url = new URL("${provider.getEndpointUrl()}/${parent.name}/${encodedName}${part}".toString())
 			def connection = url.openConnection()
 			log.info("File URL: ${url}")
