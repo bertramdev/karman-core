@@ -244,6 +244,7 @@ class OpenstackCloudFile extends CloudFile {
 		def segmentSize = openstackProvider.chunkSize
 		def segmentBytesWritten = 0
 		def segment = 1
+		def segmentCompleted = false
 		def buf = new byte[2048]
 		def totalBytesRead = 0
 		int readOff = 0, writeOff = 0
@@ -253,11 +254,35 @@ class OpenstackCloudFile extends CloudFile {
 		// get connection for first part
 		try {
 			def connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
+			def oldConnection
 			connection.connect()
 			def os = connection.outputStream
 
 			def bytesRead = 0
 			while ((bytesRead = writeStream.read(buf, readOff, buf.size() - readOff)) != -1) {
+				if (segmentCompleted) {
+					try {
+						oldConnection = connection
+						if (oldConnection.responseCode == 201) {
+							connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
+							os = connection.outputStream
+							log.info("creating ${name} part${segment.toString().padLeft(8, '0')}")
+						}
+						else {
+							log.error("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+							throw new RuntimeException("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+						}
+					}
+					catch (Throwable t) {
+						log.error("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
+						throw t
+					}
+					finally {
+						log.debug("Discarding old connection")
+						oldConnection.disconnect()
+						segmentCompleted = false
+					}
+				}
 				if (bytesRead + readOff != buf.size()) {
 					log.debug("Partial read into buffer: ${bytesRead} bytes")
 					readOff += bytesRead
@@ -271,27 +296,12 @@ class OpenstackCloudFile extends CloudFile {
 				totalBytesRead += bytesRead
 				os.flush()
 
-				if (segmentSize - (segmentBytesWritten + buf.size()) < 0) {
-					def oldConnection = connection
-					try {
-						os.flush()
-						if (oldConnection.responseCode == 201) {
-							segment++
-							segmentBytesWritten = 0
-							if (readOff == 0) {
-								connection = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
-								os = connection.outputStream
-								log.info("creating ${name} part${segment.toString().padLeft(8, '0')}")
-							}
-						}
-						else {
-							log.error("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
-							throw new RuntimeException("Failed to write data: ${oldConnection.responseCode} - ${oldConnection.responseMessage}")
-						}
-					}
-					finally {
-						oldConnection.disconnect()
-					}
+				if (segmentSize == segmentBytesWritten) {
+					log.debug("Segment completed for ${name} part${segment.toString().padLeft(8, '0')}")
+					os.flush()
+					segment++
+					segmentBytesWritten = 0
+					segmentCompleted = true
 				}
 			}
 			if (connection.responseCode != 201) {
