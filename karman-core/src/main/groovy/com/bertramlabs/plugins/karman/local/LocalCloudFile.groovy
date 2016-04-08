@@ -45,7 +45,7 @@ class LocalCloudFile extends CloudFile {
 
 	@CompileStatic
 	void setInputStream(InputStream inputS) {
-		byte[] buffer = new byte[8192];
+		byte[] buffer = new byte[8192*2];
 		int len;
 		OutputStream out = this.outputStream
 		while ((len = inputS.read(buffer)) != -1) {
