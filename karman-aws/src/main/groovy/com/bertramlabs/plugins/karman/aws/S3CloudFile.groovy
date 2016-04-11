@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.*
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 
 class S3CloudFile extends CloudFile {
 
@@ -27,6 +28,7 @@ class S3CloudFile extends CloudFile {
 	S3Object object
     S3ObjectSummary summary // Only set when object is retrieved by listFiles
     InputStream writeableStream
+	InputStream rawSourceStream
 
     private Boolean loaded = false
 	private Boolean metaDataLoaded = false
@@ -69,13 +71,14 @@ class S3CloudFile extends CloudFile {
 
     OutputStream getOutputStream() {
         def outputStream = new PipedOutputStream()
-
-        writeableStream = new S3ObjectInputStream(new PipedInputStream(outputStream), null)
+		rawSourceStream = new PipedInputStream(outputStream)
+        writeableStream = new S3ObjectInputStream(rawSourceStream, null)
         return outputStream
     }
 
     void setInputStream(InputStream inputS) {
-        writeableStream = new S3ObjectInputStream(inputS, null)
+		rawSourceStream = inputS
+        writeableStream = new S3ObjectInputStream(rawSourceStream, null)
     }
 
     String getMetaAttribute(key) {
@@ -129,7 +132,8 @@ class S3CloudFile extends CloudFile {
         return result
     }
     void setBytes(bytes) {
-        writeableStream = new S3ObjectInputStream(new ByteArrayInputStream(bytes), null)
+		rawSourceStream = new ByteArrayInputStream(bytes)
+        writeableStream = new S3ObjectInputStream(rawSourceStream, null)
         setContentLength(bytes.length)
     }
 
@@ -215,12 +219,89 @@ class S3CloudFile extends CloudFile {
         if (valid) {
             assert writeableStream
             setMetaAttribute(Headers.S3_CANNED_ACL, acl)
-
-            s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
+			if(contentLength && contentLength <= 4*1024l*1024l*1024l && parent.provider.forceMultipart == false) {
+				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
+			} else {
+				saveChunked()
+			}
             object = null
             summary = null
             existsFlag = true
         }
+	}
+
+	def saveChunked() {
+		Long contentLength = object.objectMetadata.contentLength
+		List<PartETag> partETags = new ArrayList<PartETag>();
+		InitiateMultipartUploadRequest initRequest = new
+			InitiateMultipartUploadRequest(parent.name, name);
+		initRequest.setObjectMetadata(object.objectMetadata)
+		InitiateMultipartUploadResult initResponse =
+			s3Client.initiateMultipartUpload(initRequest);
+		long partSize = parent.provider.chunkSize; // Set part size to 5 MB.
+
+		if(contentLength && contentLength/1000l > partSize) {
+			partSize = contentLength/1000l + 1l
+		}
+		ChunkedInputStream chunkedStream = new ChunkedInputStream(rawSourceStream,partSize)
+
+		long filePosition = 0
+		int partNumber=1
+		while(chunkedStream.available() >= 0 && (!contentLength || filePosition < contentLength)) {
+			// Last part can be less than 5 MB. Adjust part size.
+			if(contentLength) {
+				partSize = Math.min(partSize, (contentLength - filePosition));
+
+				// Create request to upload a part.
+				UploadPartRequest uploadRequest = new UploadPartRequest()
+					.withBucketName(parent.name).withKey(name)
+					.withUploadId(initResponse.getUploadId()).withPartNumber(partNumber)
+					.withInputStream(chunkedStream)
+
+					.withPartSize(partSize);
+
+				// Upload part and add response to our list.
+				partETags.add(s3Client.uploadPart(uploadRequest).getPartETag());
+			} else {
+				byte[] buff = new byte[partSize]
+				def lessThan = false
+				int count = chunkedStream.read(buff)
+				if(count <= 0) {
+					break
+				} else if(count < partSize) {
+					lessThan = true
+				}
+
+				partSize = count
+				// Create request to upload a part.
+				UploadPartRequest uploadRequest = new UploadPartRequest()
+					.withBucketName(parent.name).withKey(name)
+					.withUploadId(initResponse.getUploadId()).withPartNumber(partNumber)
+					.withInputStream(new ByteArrayInputStream(buff,0,partSize))
+
+					.withPartSize(partSize);
+
+				// Upload part and add response to our list.
+				partETags.add(s3Client.uploadPart(uploadRequest).getPartETag());
+				if(lessThan) {
+					break
+				}
+			}
+
+
+			filePosition += partSize;
+			partNumber++
+			chunkedStream.nextChunk()
+		}
+		// Step 3: Complete.
+		CompleteMultipartUploadRequest compRequest = new
+			CompleteMultipartUploadRequest(
+			parent.name,
+			name,
+			initResponse.getUploadId(),
+			partETags);
+
+		s3Client.completeMultipartUpload(compRequest);
 	}
 
     /**

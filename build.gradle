@@ -12,6 +12,7 @@ subprojects {
 }
 
 apply plugin: 'groovy'
+apply plugin: 'idea'
 
 group = 'com.bertramlabs.plugins'
 
