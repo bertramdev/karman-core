@@ -31,7 +31,7 @@ class OpenstackStorageProviderSpec extends Specification {
 		//def file = new File('/Users/jsaardchit/winshare/WEB2-MORPH-2.VHD')
 
 		when:
-		def cloudFile = storageProvider['testing']['chunked/Firefox_44.0.dmg']
+		def cloudFile = storageProvider['testing']['chunked/Firefox_44_10.0.dmg']
 		cloudFile.chunked = true
 		cloudFile.writeStream = new FileInputStream(file)
 		cloudFile.save()
