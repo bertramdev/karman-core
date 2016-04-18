@@ -251,9 +251,7 @@ class OpenstackCloudFile extends CloudFile {
 		// get connection for first part
 		try {
 			ChunkedInputStream cis = new ChunkedInputStream(writeStream, segmentSize)
-			println("Chunked stream created with size ${segmentSize}")
 			while (true) {
-				println("writing segment ${name} part ${segment}")
 				HttpPut req = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
 				req.setEntity(new InputStreamEntity(cis, -1))
 
@@ -284,7 +282,6 @@ class OpenstackCloudFile extends CloudFile {
 		try {
 			log.debug("Writing manifest for ${name}")
 			HttpPut req = getObjectStoreConnection(token, openstackProvider, null, headers)
-			req.setEntity(new StringEntity(''))
 
 			HttpClient client = new DefaultHttpClient()
 			HttpParams params = client.getParams()
