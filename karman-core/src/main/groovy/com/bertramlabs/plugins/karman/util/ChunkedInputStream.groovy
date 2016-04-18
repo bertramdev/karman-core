@@ -63,7 +63,7 @@ class ChunkedInputStream extends InputStream{
 	@Override
 	public int available() {
 		if(eof) {
-			return -1
+			return 0
 		}
 		int a = super.available()
 		if (a > (chunkSize - position)) {
