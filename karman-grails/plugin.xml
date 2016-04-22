@@ -1,0 +1,12 @@
+<plugin name='karman' version='0.8.1' grailsVersion='2.2 &gt; *'>
+  <author>David Estes</author>
+  <authorEmail>destes@bcap.com</authorEmail>
+  <title>Karman Plugin</title>
+  <description>Karman is a standardized / extensible interface plugin for dealing with various cloud services including Local and S3.</description>
+  <documentation>http://bertramdev.github.io/karman</documentation>
+  <type>KarmanGrailsPlugin</type>
+  <resources>
+    <resource>KarmanUrlMappings</resource>
+    <resource>com.bertramlabs.plugins.karman.local.LocalStorageController</resource>
+  </resources>
+</plugin>

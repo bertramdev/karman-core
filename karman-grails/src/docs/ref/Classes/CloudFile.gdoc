@@ -1,0 +1,43 @@
+h1. CloudFile
+
+h2. Purpose
+
+This is an abstract class implementation for manipulating files in the cloud.
+
+h2. Examples
+
+Below is an example of how a CloudFile might be used. Typically you would not use this class directly but rather use an implementation of this class. (i.e. @LocalFile@ or @S3File@)
+
+{code}
+CloudFile file = new CloudFile(provider: provider, parent: directory , name: name)
+
+file.text = "Setting test Content"
+file.contentType = "text/plain"
+if(!file.exists()) {
+    file.save()
+}
+{code}
+
+h2. Description
+
+The CloudFile Interface supports the following Methods and Properties:
+
+    * @name@ - Property for setting the file name or retrieving.
+    * @getInputStream()@ - Retrieve an input stream containing the contents of the file
+    * @getText()@ - Get a String instance of the contents of the file. (Optionally pass an encoding)
+    * @getBytes()@ - Get a byte array of the contents of this file.
+    * @getParent()@ - Get reference to the Directory object this file is stored in.
+    * @setBytes()@ - Set the contents of this file to a byte array (note in most cases save() must be called to commit this to the cloud).
+    * @setText()@  - Set the contents of this file to a String value (note in most cases save() must be called to commit this to the cloud).
+    * @contentType@ - Get or set the contentType of the file.
+    * @contentLength@ - Get or set the contentLength of the file.
+    * @exists()@ - Test if the file actually exists or not on the server
+    * @isDirectory()@ - Returns false in most cases (LocalStorage implementations may return true)
+    * @isFile()@ - Returns true in most cases (LocalStorage implementation is the exception)
+    * @setMetaAttribute()@ - Set a key with a value for the file.
+    * @getMetaAttribute()@ - Get value of meta attribtue.
+    * @getMetaAttribtues()@ - Get a Map of all metadata.
+    * @removeMetaAttribute() - Remove an attribute on the file.
+
+    * @save()@ - Save the file to the server.
+    * @delete()@ - Delete the file from the server.

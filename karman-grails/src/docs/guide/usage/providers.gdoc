@@ -1,0 +1,38 @@
+Karman provides a uniform interface in dealing with cloud stored files. It does this starting with the Provider class. 
+The Provider class is the starting point and is responsible for storing any credentials needed to interface with your cloud provider as well as instantiating Directories.
+By default the core Karman plugin comes with a LocalStorageProvider implementation:
+
+{code}
+import com.bertramlabs.plugins.karman
+
+def provider = StorageProvider.create(provider: 'local', basePath: '/path/to/store')
+{code}
+
+The default StorageProvider class provides a factory implementation for creating class instances of the individual provider classes.
+As can be seen above the LocalStorageProvider provides an interface to a storage path on your filesystem. The plugin is designed to be very extensible and more providers are in the works such as the @karman-aws@ plugin which will provide the @S3StorageProvider@ for interfacing with S3.
+
+h3. Getting Directories
+
+A Provider provides an interface to get or create root directories on the cloud. Most cloud providers dont use full folder trees but rather files with names containing a '/'. In the case of the S3Provider, a Directory can be considered Synonymous with a Bucket.
+
+There are several ways get interact with directories. For example to get a list of directories we simply do the following:
+
+{code}
+provider.getDirectories()
+{code}
+
+This will return an array of @Directory@ compatible classes.
+
+Another option is to simply ask for a reference to a directory or bucket directly. This can be done by simply doing:
+
+{code}
+provider.getDirectory('mybucket')
+{code}
+
+This will return a directory object wether it exists or not. You can test for existance via the @exists()@ method or call @mkdir()@ to create the directory (more on this later).
+
+We also take advantage of some groovy magic to make for some nifty shorthand to get a directory:
+
+{code}
+provider['mybucket'] //equivalent to getDirectory
+{code}
