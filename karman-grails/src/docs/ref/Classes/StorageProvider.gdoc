@@ -1,0 +1,53 @@
+h1. StorageProvider
+
+h2. Purpose
+
+This is the base provider abstract class for defining various providers. This class also provides a factory @create()@ static method for acquiring
+an instance of a particular provider.
+
+h2. Examples
+
+Below is an example of how a @LocalStorageProvider@ might be initialized. 
+
+{code}
+import com.bertramlabs.plugins.karman.StorageProvider
+def provider = StorageProvider(provider: 'local', basePath: "/path/to/storage/location")
+
+//Shorthand
+provider['folder']['example.txt'] = "This is a string I am storing in example.txt"
+
+{code}
+
+h2. Description
+
+The StorageProvider creates an interface that allows for defining different cloud providers.
+To initialize a @LocalStorageProvider@ all that is needed is a basePath on your filesystem:
+
+* @getDirectories@ - Fetches a list of directories / buckets.
+* @getDirectory@ - Fetches a specific directory or creatse a new instance of a directory.
+* @getDefaultFileACL@ - Fetches the Default File Access Control value for saving.
+* @setDefaultFileACL@ - Scope this specific provider instane to a default File Access Control Value.
+
+h2. Registering Provider Types
+
+Registering a new provider type is pretty straightforward. There are 2 critical places with which you would want to define this provider.
+The first is in your plugin initialization @doWithApplicationContext@ method or your application's bootstrap.
+
+{code}
+import com.bertramlabs.plugins.karman.StorageProvider
+
+StorageProvider.registerProvider(MyProviderClass)
+{code}
+
+The other place you would want to add a custom provider is via the GANT event @KarmanConfig@.
+
+{code}
+eventKarmanConfig = { configHolder ->
+	def s3StorageProvider = classLoader.loadClass('com.bertramlabs.plugins.karman.aws.S3StorageProvider')
+	
+	configHolder.providerTypes += [
+		s3: s3StorageProvider,
+		aws: s3StorageProvider
+	]
+}
+{code}

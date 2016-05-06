@@ -1,0 +1,15 @@
+Since Karman ships with the @LocalStorageProvider@. It also provides mappings for fetching files from this store. This can be configured with the following options:
+
+{code}
+grailsApplication.config.grails.plugin.karman {
+	serveLocalStorage = true
+	serveLocalMapping = 'storage' // means /storage is base path
+	storagePath = '/path/to/filestore'
+	defaultFileACL = com.bertramlabs.plugins.karman.CloudFileACL.Private
+}
+{code}
+
+h4. Loading The Karman Config Holder
+
+Karman provides a class called the @KarmanConfigHolder@ . This class contains static references to both the @grailsApplication@ object and the config map. This contains default config values.
+On app startup, the config holder is loaded with values from @Config.groovy@. In order to use with Gant, you will need to include the @_InitKarman@ script and call the @initKarman@ target.

@@ -8,10 +8,11 @@ buildscript {
 }
 
 subprojects {
-	version = '0.9.14'
+	version = '0.9.21'
 }
 
 apply plugin: 'groovy'
+apply plugin: 'idea'
 
 group = 'com.bertramlabs.plugins'
 

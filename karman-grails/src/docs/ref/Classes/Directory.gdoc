@@ -1,0 +1,37 @@
+h1. Directory
+
+h2. Purpose
+
+This is an abstract class implementation for managing directories / buckets in the cloud.
+
+h2. Examples
+
+Below is an example of how a @Directory@ might be used. Typically you would not use this class directly but rather use an implementation of this class. (i.e. @LocalDirectory@ or @S3Directory@)
+
+{code}
+Directory dir = new Directory(provider: provider, name: name)
+
+if(!dir.exists()) {
+    dir.mkdir()    
+}
+//List all files recursively
+dir.listFiles()
+
+//List Files in a sub"folder"
+dir.listFiles(prefix: 'config/')
+{code}
+
+h2. Description
+
+The CloudFile Interface supports the following Methods and Properties:
+
+    * @name@ - Property for setting the directory name or retrieving.
+    * @provider@ - Reference to the provider for this directory (needed to get access to credentials)
+    * @exists()@ - Test if the directory actually exists or not on the server
+    * @isDirectory()@ - Returns true in most cases.
+    * @isFile()@ - Returns false.
+    * @mkdir()@ - Save the directory to the server.
+    * @save()@ - Save the directory to the server.
+    * @delete()@ - Delete the directory from the server.
+    * @getFile()@ - Returns a reference to a file by name. Creates a new CloudFile object if none exist.
+    * @listFiles()@ - Lists all files in the directory (in most cases this is recursive). A prefix option can be specified to filter the list.

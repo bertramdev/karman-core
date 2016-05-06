@@ -1,0 +1,48 @@
+The @Directory@ abstract class provides more convenience methods for getting files or creating files within your cloud provider.
+
+We can start by simply listing all the files in our bucket/directory:
+
+{code}
+provider['mybucket'].listFiles()
+{code}
+
+The above will return an array of CloudFile objects. The listFiles method will also accept a few optional paramenters (this can vary slightly between providers but a few are considered standard). 
+One of which is the prefix option. It is important to note that the listFiles() method is a recursive scan and should list all files (wether nested or not).
+In cases where you may just want files within a subfolder you can do something like:
+
+{code}
+provider['mybucket'].listFiles(prefix: 'config/') //List only files in the config path
+{code}
+
+A Directory also supports several shortcuts for getting individual files:
+
+{code}
+provider['mybucket'].getFile('test.txt')
+{code}
+
+This will return a file object wether it exists or not. Use the @exists()@ method on the CloudFile to determine existance.
+We also take advantage of some groovy magic, not only for getting references to CloudFiles but shorthand for uploading files.
+
+{code}
+provider['mybucket']['test.txt']
+{code}
+
+This returns a CloudFile object. We can do some chaining fun to quickly set the file contents:
+
+{code}
+provider['mybucket']['test.txt'].text("Setting the text value").contentType("text/plain").save()
+{code}
+
+We can even just set the value of this property directly to trigger an immediate upload:
+
+{code}
+provider['mybucket']['test.txt'] = "Setting the text value" //Uploaded
+
+//Or upload a File
+provider['mybucket']['test.txt'] = new File("path/to/file")
+
+//Or transfer a file from one cloud provider to another
+s3provider['mybucket']['test.txt'] = rackspace['mybucket']['test.txt']
+{code}
+
+These are nifty shorthands for getting to the point with your files. In many cases though you will need more fine grained control over your file contents, meta, and upload strategy. To do this we can use the CloudFile directly.

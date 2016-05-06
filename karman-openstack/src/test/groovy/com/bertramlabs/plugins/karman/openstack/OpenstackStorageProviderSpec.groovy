@@ -18,8 +18,7 @@ class OpenstackStorageProviderSpec extends Specification {
 		storageProvider
 	}
 
-	/*
-	def "store a chunked file"() {
+	/* def "store a chunked file"() {
 		setup:
 		OpenstackStorageProvider storageProvider = OpenstackStorageProvider.create(
 			provider:'openstack',
@@ -29,15 +28,15 @@ class OpenstackStorageProviderSpec extends Specification {
 			chunkSize:20l * 1024l * 1024l
 		)
 		def file = new File('/Users/jsaardchit/Downloads/Firefox_44.0.dmg')
+		//def file = new File('/Users/jsaardchit/winshare/WEB2-MORPH-2.VHD')
 
 		when:
-		def cloudFile = storageProvider['container']['Firefox_44.0.dmg']
+		def cloudFile = storageProvider['testing']['chunked/Firefox_44_10.0.dmg']
 		cloudFile.chunked = true
 		cloudFile.writeStream = new FileInputStream(file)
 		cloudFile.save()
 
 		then:
 		cloudFile.getURL()
-	}
-	*/
+	} */
 }

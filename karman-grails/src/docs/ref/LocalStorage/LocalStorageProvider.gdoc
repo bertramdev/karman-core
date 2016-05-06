@@ -1,0 +1,25 @@
+h1. LocalStorageProvider
+
+h2. Purpose
+
+This is the base provider used to deal with files on the local filesystem.
+
+h2. Examples
+
+Below is an example of how a @LocalStorageProvider@ might be initialized.
+
+{code}
+import com.bertramlabs.plugins.karman.local
+def provider = new LocalStorageProvider(basePath: "/path/to/storage/location")
+
+//Shorthand
+provider['folder']['example.txt'] = "This is a string i am storing in example.txt"
+
+{code}
+
+h2. Description
+
+The LocalStorageProvider creates an interface that allows for file manipulation on the local file store. Karman also provides a url endpoint for serving these files in both a private and public context.
+To initialize a @LocalStorageProvider@ all that is needed is a basePath on your filesystem:
+
+* @basePath@ - Base storage path for files.

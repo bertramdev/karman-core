@@ -43,7 +43,9 @@ class S3StorageProvider extends StorageProvider {
     Integer maxConnections = 50
     Boolean keepAlive = false
     Boolean useGzip = false
+    Boolean forceMultipart = false
     AmazonS3Client client = null
+	Long chunkSize = 10l*1024l*1024l
     public S3StorageProvider(Map options) {
         accessKey      = options.accessKey      ?: accessKey
         secretKey      = options.secretKey      ?: secretKey
@@ -55,6 +57,8 @@ class S3StorageProvider extends StorageProvider {
         keepAlive      = options.keepAlive      ?: keepAlive
         defaultFileACL = options.defaultFileACL ?: defaultFileACL
         useGzip        = options.useGzip        ?: useGzip
+        forceMultipart = options.forceMultipart ?: forceMultipart
+		chunkSize = options.chunkSize ?: chunkSize
     }
 
 	Directory getDirectory(String name) {
