@@ -125,9 +125,15 @@ task(console, dependsOn: 'classes', type: JavaExec) {
 }
 
 test {
+    systemProperty "openstack.identityUrl", System.getProperty("openstack.identityUrl")
+    systemProperty "openstack.username", System.getProperty("openstack.username")
+    systemProperty "openstack.password", System.getProperty("openstack.password")
+    systemProperty "openstack.tenantName", System.getProperty("openstack.tenantName")
+    systemProperty "openstack.apiKey", System.getProperty("openstack.apiKey")
     testLogging {
         exceptionFormat = 'full'
         showStandardStreams = true
+        events 'started', 'passed'
     }
 }
 

@@ -8,7 +8,7 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	private Integer minPort
 	private Integer maxPort
 	private String ipProtocol
-	private List<String> ipRange
+	private List<String> ipRange = new ArrayList<String>() 
 
 	public SecurityGroupRule(SecurityGroupInterface securityGroup) {
 		this.securityGroup = securityGroup
@@ -37,6 +37,11 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	@Override
 	public void removeIpRange(List<String> ipRange) {
 
+	}
+
+	@Override
+	public List<String> getIpRange() {
+		ipRange
 	}
 
 	@Override
@@ -71,6 +76,11 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 
 	@Override
 	public void save() {
+
+	}
+
+	@Override
+	public void delete() {
 
 	}
 }

@@ -15,13 +15,14 @@ public interface SecurityGroupInterface {
 
 	public Collection<SecurityGroupRuleInterface> getRules()
 
-	public void addRule(SecurityGroupInterface rule)
+	public SecurityGroupRuleInterface createRule()
 
-	public void removeRule(SecurityGroupInterface rule)
+	public void removeRule(SecurityGroupRuleInterface rule)
 
 	public void clearRules()
 
-
 	public void save()
+
+	public void delete()
 
 }

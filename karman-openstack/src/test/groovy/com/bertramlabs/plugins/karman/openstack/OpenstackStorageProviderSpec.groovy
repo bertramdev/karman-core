@@ -5,6 +5,7 @@ import com.bertramlabs.plugins.karman.openstack.OpenstackStorageProvider
 import spock.lang.Specification
 
 class OpenstackStorageProviderSpec extends Specification {
+
 	def "storage provider creates"() {
 		when:
 		OpenstackStorageProvider storageProvider = OpenstackStorageProvider.create(
