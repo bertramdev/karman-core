@@ -107,8 +107,10 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		}
 
 		// Save each rule
+		clearRules()
 		desiredRules.each { desiredRule -> 
 			desiredRule.save()
+			rules << desiredRule
 		}
 	}
 

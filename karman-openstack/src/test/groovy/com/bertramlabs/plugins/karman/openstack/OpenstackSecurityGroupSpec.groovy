@@ -156,7 +156,7 @@ class OpenstackSecurityGroupSpec extends Specification {
 		cleanup:
 		securityGroup.delete()
 	}
-
+	
 	def "update an existing rule in a security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
@@ -187,6 +187,27 @@ class OpenstackSecurityGroupSpec extends Specification {
 		refetchRule?.getMaxPort() == 25
 		refetchRule?.getIpProtocol() == "udp"
 
+		cleanup:
+		securityGroup.delete()
+	}
+
+	def "rules get new ids on save"() {
+		setup:
+		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		SecurityGroupRule rule = securityGroup.createRule()
+		rule.addIpRange("50.10.10.10/32")
+		rule.setMinPort(23)
+		rule.setMaxPort(24)
+		rule.setIpProtocol('tcp')
+		securityGroup.save()
+		def oldId = securityGroup.getRules().first().getId()
+		
+		when:
+		securityGroup.save()
+		
+		then:
+		securityGroup.getRules().first().getId() != oldId
+		
 		cleanup:
 		securityGroup.delete()
 	}
