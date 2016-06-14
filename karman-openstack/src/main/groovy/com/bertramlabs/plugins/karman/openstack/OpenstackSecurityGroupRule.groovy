@@ -74,7 +74,7 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		if(!result.success) {
 			throw new RuntimeException("Error in creating or updating security group rule: ${result.error}")
 		} else {
-			initializeFromOptions(result.content)
+			initializeFromOptions(result.content?.security_group_rule)
 		}
 	}
 
