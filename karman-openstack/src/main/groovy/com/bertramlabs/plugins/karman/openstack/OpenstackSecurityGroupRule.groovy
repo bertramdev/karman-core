@@ -16,6 +16,7 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	private OpenstackNetworkProvider provider
 	private Map options
 	private String id
+	private String previousId
 	
 	public OpenstackSecurityGroupRule(OpenstackNetworkProvider provider, SecurityGroupInterface securityGroup, Map options) {
 		super(securityGroup)
@@ -28,6 +29,10 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	@Override
 	public String getId() {
 		return id
+	}
+
+	public String getPreviousId() {
+		return previousId
 	}
 
 	@Override
@@ -60,6 +65,7 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 
 	@Override
 	public void save() {
+		this.previousId = this.getId() // Store off the existing Id as it gets replaced during save :(
 		def accessInfo = provider.getAccessInfo()
 		def opts = [body: createPayload()]
 
