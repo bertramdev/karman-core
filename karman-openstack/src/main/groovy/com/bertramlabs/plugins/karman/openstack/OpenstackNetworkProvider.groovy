@@ -44,6 +44,7 @@ import org.apache.http.client.utils.URIBuilder
  * </pre>
  *
  * @author David Estes
+ * @author Bob Whiton
  */
 @Commons
 public class OpenstackNetworkProvider extends NetworkProvider {
