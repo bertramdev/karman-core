@@ -48,7 +48,7 @@ class S3Directory extends Directory {
 			def prefixes = []
 			objectListing.commonPrefixes?.each { String prefix ->
 				if(prefix != options.prefix) {
-					prefixes << prefix.substring(options.prefix.length()).split(options.delimiter)[0]
+					prefixes << options.prefix + prefix.substring(options.prefix.length()).split(options.delimiter)[0]
 				}
 			}
 			prefixes.unique()
