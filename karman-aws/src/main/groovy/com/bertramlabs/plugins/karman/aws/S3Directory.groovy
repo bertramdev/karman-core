@@ -43,7 +43,29 @@ class S3Directory extends Directory {
 	List listFiles(options = [:]) {
         ListObjectsRequest request = new ListObjectsRequest(name, options?.prefix, options?.marker, options?.delimiter, options?.maxKeys)
         ObjectListing objectListing = s3Client.listObjects(request)
-        objectListing.objectSummaries.collect { S3ObjectSummary summary -> cloudFileFromS3Object(summary) }
+		def files = []
+		if(options.prefix && options.delimiter) {
+			def prefixes = []
+			objectListing.commonPrefixes?.each { String prefix ->
+				if(prefix != options.prefix) {
+					prefixes << prefix.substring(options.prefix.length()).split(options.delimiter)[0]
+				}
+			}
+			prefixes.unique()
+			prefixes?.each { String prefix ->
+				files << cloudFileFromPrefix(prefix)
+			}
+
+
+			objectListing.objectSummaries?.each { S3ObjectSummary summary ->
+				if(summary.key != options.prefix || !options.prefix.endsWith(options.delimiter)) {
+					files << cloudFileFromS3Object(summary)
+				}
+			}
+		} else {
+			files += objectListing.objectSummaries.collect { S3ObjectSummary summary -> cloudFileFromS3Object(summary) }
+		}
+		return files
 	}
 
     /**
@@ -77,6 +99,17 @@ class S3Directory extends Directory {
                 existsFlag: true
         )
     }
+
+
+	// PRIVATE
+
+	private S3CloudPrefix cloudFileFromPrefix(String prefix) {
+		new S3CloudPrefix(
+			provider: provider,
+			parent: this,
+			name: prefix
+		)
+	}
 
     private AmazonS3Client getS3Client(String region = '') {
         provider.s3Client
