@@ -2,5 +2,5 @@ build/
 .gradle
 .DS_Store
 .idea
-gradle.properties
+/gradle.properties
 .java-version
