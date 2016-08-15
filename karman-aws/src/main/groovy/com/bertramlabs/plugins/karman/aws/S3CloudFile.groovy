@@ -220,7 +220,7 @@ class S3CloudFile extends CloudFile {
             assert writeableStream
             Long contentLength = object.objectMetadata.contentLength
             setMetaAttribute(Headers.S3_CANNED_ACL, acl)
-			if(contentLength && contentLength <= 4*1024l*1024l*1024l && parent.provider.forceMultipart == false) {
+			if(contentLength != null && contentLength <= 4*1024l*1024l*1024l && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
 			} else {
 				saveChunked()
