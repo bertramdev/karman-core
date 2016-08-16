@@ -7,6 +7,7 @@ import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.client.methods.HttpPut
@@ -329,10 +330,32 @@ class OpenstackCloudFile extends CloudFile {
 	 * Delete file
 	 */
 	def delete() {
-		if (valid) {
-			s3Client.deleteObject(parent.name, name)
-			existsFlag = false
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+
+		URI listUri
+		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
+
+
+		HttpDelete request = new HttpDelete(uriBuilder.build())
+		request.addHeader("Accept", "application/json")
+		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
+		openstackMeta.each{entry ->
+			if(entry.key != 'Content-Length') {
+				request.addHeader(entry.key,entry.value.toString())
+			}
 		}
+
+		HttpClient client = new DefaultHttpClient()
+		HttpParams params = client.getParams()
+		HttpConnectionParams.setConnectionTimeout(params, 30000)
+		HttpConnectionParams.setSoTimeout(params, 20000)
+
+		HttpResponse response = client.execute(request)
+		if(response.statusLine.statusCode != 201) {
+			return false
+		}
+		existsFlag = false
+		return true
 	}
 
 	/**

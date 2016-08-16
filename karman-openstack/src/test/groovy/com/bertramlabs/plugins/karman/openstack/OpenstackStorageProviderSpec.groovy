@@ -39,4 +39,21 @@ class OpenstackStorageProviderSpec extends Specification {
 		then:
 		cloudFile.getURL()
 	} */
+
+	/* def "delete a file"() {
+		setup:
+		OpenstackStorageProvider storageProvider = OpenstackStorageProvider.create(
+			provider:'openstack',
+			//username:System.getProperty('openstack.username'),
+			//apiKey:System.getProperty('openstack.apiKey'),
+			//identityUrl:System.getProperty('openstack.identityUrl')
+		)
+
+		when:
+		def cloudFile = storageProvider['testing']['WEB2-MORPH-0.VHD']
+		cloudFile.delete()
+
+		then:
+		!cloudFile.exists()
+	} */
 }
