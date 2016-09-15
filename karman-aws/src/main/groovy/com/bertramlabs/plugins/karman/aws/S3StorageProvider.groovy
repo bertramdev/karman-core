@@ -45,7 +45,7 @@ class S3StorageProvider extends StorageProvider {
     Boolean useGzip = false
     Boolean forceMultipart = false
     AmazonS3Client client = null
-	Long chunkSize = 10l*1024l*1024l
+	Long chunkSize = 100l*1024l*1024l
     public S3StorageProvider(Map options) {
         accessKey      = options.accessKey      ?: accessKey
         secretKey      = options.secretKey      ?: secretKey
