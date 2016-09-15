@@ -62,6 +62,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def path = uriBuilder.getPath() ?: 'v2.0';
 			HttpResponse response
+			
 			if (path.indexOf('v2.0') > 0 ) {
 				authMap = [
 					auth: [

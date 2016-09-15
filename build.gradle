@@ -17,6 +17,7 @@ apply plugin: 'idea'
 group = 'com.bertramlabs.plugins'
 
 repositories {
+	mavenLocal()
 	jcenter()
 	mavenCentral()
 }
