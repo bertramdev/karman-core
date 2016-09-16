@@ -28,22 +28,17 @@ class OpenstackSecurityGroupSpec extends Specification {
 
 	def "get security group by name"() {
 		setup:
-		def securityGroups = networkProvider.getSecurityGroups()
-		def defaultId
-		securityGroups.each{ sg ->
-			if(sg.getName() == 'default') {
-				defaultId = sg.getId()
-			}
-		}
-
+		SecurityGroup newSecurityGroup = networkProvider.createSecurityGroup('test-name')
+		newSecurityGroup.setDescription('test description')
+		newSecurityGroup.save()
+		def defaultId = newSecurityGroup.getId()
+		
 		when:
 		SecurityGroupInterface securityGroup = networkProvider.getSecurityGroup(defaultId)
 
 		then:
-		securityGroups != null
 		securityGroup.getId() == defaultId
-		securityGroup.getName() == 'default'
-		securityGroup.getRules().size() > 0
+		securityGroup.getName() == 'test-name'
 	}
 
 	def "create a security group"() {
