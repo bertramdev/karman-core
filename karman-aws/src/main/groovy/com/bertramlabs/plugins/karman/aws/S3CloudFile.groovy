@@ -173,7 +173,10 @@ class S3CloudFile extends CloudFile {
      */
     URL getURL(Date expirationDate = null) {
         if (valid) {
-            if (expirationDate) {
+            if (provider.baseUrl) {
+                return new URL("${provider.baseUrl}/${name}")
+            }
+            else if (expirationDate) {
                 s3Client.generatePresignedUrl(parent.name, name, expirationDate)
             } else {
                 new URL("https://${parent.name}.s3.amazonaws.com/${name}")
@@ -219,6 +222,7 @@ class S3CloudFile extends CloudFile {
         if (valid) {
             assert writeableStream
             setMetaAttribute(Headers.S3_CANNED_ACL, acl)
+
             Long contentLength = object.objectMetadata.contentLength
 			if(contentLength != null && contentLength <= 4*1024l*1024l*1024l && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)

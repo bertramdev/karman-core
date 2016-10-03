@@ -38,6 +38,7 @@ class S3StorageProvider extends StorageProvider {
     String secretKey = ''
     String region = ''
     String endpoint = ''
+    String baseUrl
     String symmetricKey
     String protocol = 'https'
     Integer maxConnections = 50
