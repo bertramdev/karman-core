@@ -175,8 +175,7 @@ class S3CloudFile extends CloudFile {
         if (valid) {
             if (provider.baseUrl) {
                 return new URL("${provider.baseUrl}/${name}")
-            }
-            else if (expirationDate) {
+            }else if (expirationDate) {
                 s3Client.generatePresignedUrl(parent.name, name, expirationDate)
             } else {
                 new URL("https://${parent.name}.s3.amazonaws.com/${name}")

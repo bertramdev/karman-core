@@ -59,6 +59,7 @@ class S3StorageProvider extends StorageProvider {
         defaultFileACL = options.defaultFileACL ?: defaultFileACL
         useGzip        = options.useGzip        ?: useGzip
         forceMultipart = options.forceMultipart ?: forceMultipart
+        baseUrl = options.baseUrl ?: baseUrl
 		chunkSize = options.chunkSize ?: chunkSize
     }
 
