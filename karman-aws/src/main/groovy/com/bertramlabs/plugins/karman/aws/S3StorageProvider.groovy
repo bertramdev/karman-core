@@ -39,8 +39,13 @@ class S3StorageProvider extends StorageProvider {
     String region = ''
     String endpoint = ''
     String baseUrl
+    Map<String,String> baseUrls
     String symmetricKey
     String protocol = 'https'
+    String proxyHost
+    String proxyPort
+    String proxyUser
+    String proxyPassword
     Integer maxConnections = 50
     Boolean keepAlive = false
     Boolean useGzip = false
@@ -59,7 +64,13 @@ class S3StorageProvider extends StorageProvider {
         defaultFileACL = options.defaultFileACL ?: defaultFileACL
         useGzip        = options.useGzip        ?: useGzip
         forceMultipart = options.forceMultipart ?: forceMultipart
+
         baseUrl = options.baseUrl ?: baseUrl
+        baseUrls = options.baseUrls ?: baseUrls
+        proxyHost = options.proxyHost ?: proxyHost
+        proxyPort = options.proxyPort ?: proxyPort
+        proxyUser = options.proxyUser ?: proxyUser
+        proxyPassword = options.proxyPassword ?: proxyPassword
 		chunkSize = options.chunkSize ?: chunkSize
     }
 
