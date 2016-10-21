@@ -205,7 +205,7 @@ class S3CloudFile extends CloudFile {
 	 * @return inputStream
 	 */
 	InputStream getInputStream() {
-		if(provider.baseUrls[parent.name]) {
+		if(provider.baseUrls && provider.baseUrls[parent.name]) {
 			//if we are using a custom base url to fetch it like a cloudfront edge server
 			URIBuilder uriBuilder = new URIBuilder("${provider.baseUrls[parent.name]}/${encodedName}".toString())
 			HttpGet request = new HttpGet(uriBuilder.build())
@@ -330,10 +330,10 @@ class S3CloudFile extends CloudFile {
 	 */
 	URL getURL(Date expirationDate = null) {
 		if(valid) {
-			if(provider.baseUrls[parent.name]) {
-				return new URL("${provider.baseUrls[parent.name]}/${name}")
-			} else if(provider.baseUrl) {
+			if(provider.baseUrl) {
 				return new URL("${provider.baseUrl}/${name}")
+			} else if(provider.baseUrls && provider.baseUrls[parent.name]) {
+				return new URL("${provider.baseUrls[parent.name]}/${name}")
 			} else if(expirationDate) {
 				s3Client.generatePresignedUrl(parent.name, name, expirationDate)
 			} else {
