@@ -16,7 +16,10 @@
 
 package com.bertramlabs.plugins.karman
 
+import com.bertramlabs.plugins.karman.images.VirtualImageProviderInterface
 import com.bertramlabs.plugins.karman.local.LocalStorageProvider
+import com.bertramlabs.plugins.karman.network.NetworkProviderInterface
+
 /**
 * Static class for holding a global Configuration Map
 * @author David Estes
@@ -34,12 +37,17 @@ class KarmanConfigHolder {
 	* Map of available provider types registered with the StorageProvider factory
 	*/
 	//static providerTypes = [local: LocalStorageProvider]
-	static providerTypes = KarmanProviders.loadProviders()
+	static Map<String,Class<StorageProviderInterface>> providerTypes = KarmanProviders.loadProviders()
 
 	/**
 	 * Map of available network providers registered with the network provider factory
 	 */
-	static networkProviderTypes = KarmanProviders.loadNetworkProviders()
+	static Map<String,Class<NetworkProviderInterface>> networkProviderTypes = KarmanProviders.loadNetworkProviders()
+
+	/**
+	 * Map of available image providers registered with the network provider factory
+	 */
+	static Map<String,Class<VirtualImageProviderInterface>> imageProviderTypes = KarmanProviders.loadImageProviders()
 
 	/**
 	* Merges a Map of config properties into the global Config Map
@@ -50,6 +58,13 @@ class KarmanConfigHolder {
 
 		if(configMap.providerTypes) {
 			KarmanConfigHolder.providerTypes += configMap.providerTypes
+		}
+		if(configMap.networkProviderTypes) {
+			KarmanConfigHolder.networkProviderTypes += configMap.networkProviderTypes
+		}
+
+		if(configMap.imageProviderTypes) {
+			KarmanConfigHolder.imageProviderTypes += configMap.imageProviderTypes
 		}
 	}
 }

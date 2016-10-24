@@ -16,6 +16,11 @@
 
 package com.bertramlabs.plugins.karman
 
+/**
+ * Base interface for all Storage Provider classes (as it pertains to object storage)
+ * @see {@link StorageProvider}
+ * @author David Estes
+ */
 interface StorageProviderInterface {
 	String getProviderName()
 
