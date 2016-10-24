@@ -74,21 +74,27 @@ class AWSVirtualImageProvider extends VirtualImageProvider{
 		DescribeImagesRequest imageRequest = new DescribeImagesRequest().withFilters(new LinkedList<Filter>())
 		imageRequest.getFilters().add(new Filter().withName("is-public").withValues("false"))
 		List<Image> awsImages = getEC2Client().describeImages(imageRequest).getImages()
-		return awsImages?.collect{ new AWSVirtualImage(it)}
+		return awsImages?.collect{ new AWSVirtualImage(this, it)}
 	}
 
 	@Override
 	Collection<VirtualImageInterface> getVirtualImages() {
-		return null
+		return getVirtualImages([:])
 	}
 
 	@Override
 	VirtualImageInterface getVirtualImage(String uid) {
+		DescribeImagesRequest imageRequest = new DescribeImagesRequest().withImageIds(new LinkedList<String>())
+		imageRequest.getImageIds().add(uid)
+		List<Image> awsImages = getEC2Client().describeImages(imageRequest).getImages()
+		if(awsImages.size() > 0) {
+			return new AWSVirtualImage(this,awsImages[0])
+		}
 		return null
 	}
 
 	@Override
 	VirtualImageInterface createVirtualImage(String name) {
-		return null
+		return new AWSVirtualImage(this,name);
 	}
 }

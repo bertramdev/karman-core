@@ -11,6 +11,8 @@ import com.bertramlabs.plugins.karman.util.Architecture
 import com.bertramlabs.plugins.karman.util.OperatingSystem
 
 /**
+ * Karman representation of an Amazon AMI record. This gets abstracted out into a standard Karman {@link VirtualImage} object
+ * The base Amazon Image representation can be acquired via the 'getAmazonImage()' method.
  * @author David Estes
  */
 public class AWSVirtualImage extends VirtualImage {
@@ -21,6 +23,11 @@ public class AWSVirtualImage extends VirtualImage {
 	List<AWSVirtualImageVolume> volumes
 	Image amazonImage
 	AWSVirtualImageProvider provider
+
+	AWSVirtualImage(AWSVirtualImageProvider provider, String name) {
+		this.provider = provider
+		this.name = name
+	}
 
 	AWSVirtualImage(AWSVirtualImageProvider provider, Image image) {
 		name = image.name
