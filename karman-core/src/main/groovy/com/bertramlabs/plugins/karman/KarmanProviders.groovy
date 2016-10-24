@@ -1,5 +1,6 @@
 package com.bertramlabs.plugins.karman
 
+import com.bertramlabs.plugins.karman.images.VirtualImageProviderInterface
 import com.bertramlabs.plugins.karman.network.NetworkProviderInterface
 import groovy.util.logging.Commons
 
@@ -7,8 +8,10 @@ import groovy.util.logging.Commons
 class KarmanProviders {
 	static final String FACTORIES_RESOURCE_LOCATION = "META-INF/karman/providers.properties"
 	static final String NETWORK_FACTORIES_RESOURCE_LOCATION = "META-INF/karman/networkProviders.properties"
+	static final String IMAGE_FACTORIES_RESOURCE_LOCATION = "META-INF/karman/imageProviders.properties"
     private static Map<String,Class<StorageProviderInterface>> providers = null
 	private static Map<String,Class<NetworkProviderInterface>> networkProviders = null
+	private static Map<String,Class<VirtualImageProviderInterface>> imageProviders = null
     /**
      * Load the storage provider classes and adds them to the provider factory
      *
@@ -82,5 +85,42 @@ class KarmanProviders {
 			}
 		}
 		return networkProviders
+	}
+
+	/**
+	 * Load the image provider classes and adds them to the provider factory {@link com.bertramlabs.plugins.karman.images.VirtualImageProvider}
+	 *
+	 * @param classLoader The classloader
+	 *
+	 * @return A list of image provider classes
+	 */
+	static synchronized Map<String,Class<VirtualImageProviderInterface>> loadImageProviders(ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
+
+		if(networkProviders == null) {
+			def resources = classLoader.getResources(NETWORK_FACTORIES_RESOURCE_LOCATION)
+			imageProviders = [:]
+
+			resources.each { URL res ->
+				Properties providerProperties = new Properties()
+				providerProperties.load(res.openStream())
+
+				providerProperties.keySet().each { providerName ->
+					try {
+						String className = providerProperties.getProperty(providerName)
+						def cls = classLoader.loadClass(className)
+						if(VirtualImageProviderInterface.isAssignableFrom(cls)) {
+							if(!imageProviders[providerName]) {
+								imageProviders[providerName] = cls
+							}
+						} else {
+							log.warn("Karman Virtual Image Provider $className not registered because it does not implement the VirtualImageProviderInterface")
+						}
+					} catch(Throwable e) {
+						log.error("Error Loading Karman Virtual Image Provider $className: $e.message",e)
+					}
+				}
+			}
+		}
+		return imageProviders
 	}
 }

@@ -41,7 +41,7 @@ import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
 * </pre>
 * @author David Estes
 */
-abstract class StorageProvider implements StorageProviderInterface {
+public abstract class StorageProvider implements StorageProviderInterface {
 
 	CloudFileACL defaultFileACL
 
