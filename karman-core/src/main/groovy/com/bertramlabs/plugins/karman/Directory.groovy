@@ -95,7 +95,15 @@ abstract class Directory implements DirectoryInterface {
 	* </pre>
 	*/
 	public void putAt(String key, CloudFile file)  {
-		file.save()
+		def cloudFile = getFile(key)	
+        def mimeType = Mimetypes.instance.getMimetype(key)
+        
+		if(mimeType) {
+			cloudFile.contentType = mimeType
+		}
+		cloudFile.setContentLength(file.getContentLength())
+		cloudFile.setInputStream(file.getInputStream())
+		cloudFile.save()
 	}
 
 
@@ -112,7 +120,15 @@ abstract class Directory implements DirectoryInterface {
 	* </pre>
 	*/
     public void putAt(String key, File file)  {
-        putAt(key, file.bytes)
+		def cloudFile = getFile(key)	
+        def mimeType = Mimetypes.instance.getMimetype(key)
+        
+		if(mimeType) {
+			cloudFile.contentType = mimeType
+		}
+		cloudFile.setContentLength(file.length())
+		cloudFile.setInputStream(file.newInputStream())
+		cloudFile.save()
     }
 
     /**
