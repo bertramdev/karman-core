@@ -62,7 +62,6 @@ public class OpenstackStorageProvider extends StorageProvider {
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def path = uriBuilder.getPath() ?: 'v2.0';
 			HttpResponse response
-			
 			if (path.indexOf('v2.0') > 0 ) {
 				authMap = [
 					auth: [
@@ -112,7 +111,15 @@ public class OpenstackStorageProvider extends StorageProvider {
 
 				String responseText = responseEntity.content.text
 				log.info("Auth response: ${responseText}")
-				accessInfo = new JsonSlurper().parseText(responseText)
+				if(responseText) {
+					try {
+						accessInfo = new JsonSlurper().parseText(responseText) ?: [:]	
+					} catch(je) {
+						//parse error, ignore for v1
+						accessInfo = [:]
+					}
+					
+				}
 				accessInfo += [
 				    auth:[
 				        token:response.getHeaders('X-Storage-Token')[0].value,
@@ -156,6 +163,10 @@ public class OpenstackStorageProvider extends StorageProvider {
 			if(!authenticate()) {
 				return null
 			}
+		}
+
+		if(accessInfo.auth.storageUrl) {
+			return accessInfo.auth.storageUrl
 		}
 
 		if (accessInfo.storage) {
