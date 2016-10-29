@@ -42,8 +42,6 @@ public class AWSVirtualImage extends VirtualImage {
 			operatingSystem = OperatingSystem.linuxInstance(image.architecture == ArchitectureValues.X86_64.toString() ? Architecture.X86_64 : Architecture.X86)
 		}
 
-
-
 	}
 
 	@Override
