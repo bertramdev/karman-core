@@ -68,11 +68,28 @@ class AWSVirtualImageProvider extends VirtualImageProvider{
 		client
 	}
 
-
+	/**
+	 * The Amazon implementation to list all available AMI's via the AWS Java SDK
+	 * Note: By default only self owned images will be listed. This can be overridden by specifying the owners Collection
+	 * @param options - Filter options for listing images (owner can be specified (defaults to 'self')).
+	 * * owner - can be the account id of the account we have execute access to or some special options such as (self, amazon , aws-marketplace , microsoft)
+	 * @return resultant virtual images
+	 */
 	@Override
 	Collection<VirtualImageInterface> getVirtualImages(Map options) {
 		DescribeImagesRequest imageRequest = new DescribeImagesRequest().withFilters(new LinkedList<Filter>())
-		imageRequest.getFilters().add(new Filter().withName("is-public").withValues("false"))
+		if(options?.public == true) {
+			imageRequest.getFilters().add(new Filter().withName("is-public").withValues("true"))
+		} else if(options?.public == false) {
+			imageRequest.getFilters().add(new Filter().withName("is-public").withValues("false"))
+		}
+
+		if(options?.owners != null) {
+			imageRequest.setOwners(options.owners)
+		} else {
+			imageRequest.setOwners(['self'])
+		}
+
 		List<Image> awsImages = getEC2Client().describeImages(imageRequest).getImages()
 		return awsImages?.collect{ new AWSVirtualImage(this, it)}
 	}

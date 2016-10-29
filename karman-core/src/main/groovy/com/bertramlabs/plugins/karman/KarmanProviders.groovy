@@ -96,8 +96,8 @@ class KarmanProviders {
 	 */
 	static synchronized Map<String,Class<VirtualImageProviderInterface>> loadImageProviders(ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
 
-		if(networkProviders == null) {
-			def resources = classLoader.getResources(NETWORK_FACTORIES_RESOURCE_LOCATION)
+		if(imageProviders == null) {
+			def resources = classLoader.getResources(IMAGE_FACTORIES_RESOURCE_LOCATION)
 			imageProviders = [:]
 
 			resources.each { URL res ->

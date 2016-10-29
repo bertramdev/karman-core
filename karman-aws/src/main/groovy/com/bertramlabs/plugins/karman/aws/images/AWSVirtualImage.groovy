@@ -1,20 +1,22 @@
 package com.bertramlabs.plugins.karman.aws.images
 
 import com.amazonaws.services.ec2.model.ArchitectureValues
+import com.amazonaws.services.ec2.model.BlockDeviceMapping
 import com.amazonaws.services.ec2.model.DeregisterImageRequest
 import com.amazonaws.services.ec2.model.Image
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.images.VirtualImage
 import com.bertramlabs.plugins.karman.images.VirtualImageType
-import com.bertramlabs.plugins.karman.images.VirtualImageVolumeInterface
 import com.bertramlabs.plugins.karman.util.Architecture
 import com.bertramlabs.plugins.karman.util.OperatingSystem
+import groovy.transform.CompileStatic
 
 /**
  * Karman representation of an Amazon AMI record. This gets abstracted out into a standard Karman {@link VirtualImage} object
  * The base Amazon Image representation can be acquired via the 'getAmazonImage()' method.
  * @author David Estes
  */
+@CompileStatic
 public class AWSVirtualImage extends VirtualImage {
 
 	String uid
@@ -30,23 +32,18 @@ public class AWSVirtualImage extends VirtualImage {
 	}
 
 	AWSVirtualImage(AWSVirtualImageProvider provider, Image image) {
+		this.amazonImage = image
 		name = image.name
 		this.provider = provider
 		uid = image.getImageId()
 		if(image.platform == 'windows') {
-			operatingSystem = OperatingSystem.windowsInstance(ArchitectureValues.X86_64 ? Architecture.X86_64 : Architecture.X86)
+			operatingSystem = OperatingSystem.windowsInstance(image.architecture == ArchitectureValues.X86_64.toString() ? Architecture.X86_64 : Architecture.X86)
 		} else {
-			operatingSystem = OperatingSystem.linuxInstance(ArchitectureValues.X86_64 ? Architecture.X86_64 : Architecture.X86)
+			operatingSystem = OperatingSystem.linuxInstance(image.architecture == ArchitectureValues.X86_64.toString() ? Architecture.X86_64 : Architecture.X86)
 		}
 
 
-		volumes = image.blockDeviceMappings.collect{ mapping ->
-			AWSVirtualImageVolume volume = new AWSVirtualImageVolume(mapping)
-			if(image.rootDeviceName == mapping.deviceName) {
-				volume.rootVolume = true
-			}
-			return volume
-		}
+
 	}
 
 	@Override
@@ -70,7 +67,7 @@ public class AWSVirtualImage extends VirtualImage {
 	@Override
 	Long getContentLength() {
 		Long total = 0
-		volumes?.each { volume ->
+		getVolumes()?.each { AWSVirtualImageVolume volume ->
 			total += volume.size ?: 0
 		}
 		return total
@@ -78,7 +75,20 @@ public class AWSVirtualImage extends VirtualImage {
 
 	@Override
 	Long getVolumeCount() {
-		return volumes.size()
+		return getVolumes()?.size() ?: 0
+	}
+
+	List<AWSVirtualImageVolume> getVolumes() {
+		if(!volumes && amazonImage?.blockDeviceMappings.size() > 0) {
+			volumes = amazonImage.blockDeviceMappings.collect{ BlockDeviceMapping mapping ->
+				AWSVirtualImageVolume volume = new AWSVirtualImageVolume(mapping)
+				if(amazonImage.rootDeviceName == mapping.deviceName) {
+					volume.rootVolume = true
+				}
+				return volume
+			}
+		}
+		return volumes
 	}
 
 	@Override

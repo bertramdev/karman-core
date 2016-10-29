@@ -80,6 +80,21 @@ public enum Architecture {
 	 * ARM v8 Architectural representation
 	 */
 	ARM_V8("arm_v8")
+
+	/** The header value representing the canned acl */
+	private final String architecture
+
+	private Architecture(String architecture) {
+		this.architecture = architecture
+	}
+
+	/**
+	 * Returns the header value for this canned acl.
+	 */
+	public String toString() {
+		return architecture
+	}
+
 }
 
 /**
@@ -98,4 +113,18 @@ public enum OsFamily {
 	BSD("bsd"),
 	REDOX("redox"),
 	OTHER("other")
+
+	/** The header value representing the canned acl */
+	private final String osFamily
+
+	private OsFamily(String osFamily) {
+		this.osFamily = osFamily
+	}
+
+	/**
+	 * Returns the header value for this canned acl.
+	 */
+	public String toString() {
+		return osFamily
+	}
 }

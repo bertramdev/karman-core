@@ -24,9 +24,9 @@ class AWSVirtualImageVolume implements VirtualImageVolumeInterface {
 	AWSVirtualImageVolume(BlockDeviceMapping deviceMapping) {
 		this.deviceMapping = deviceMapping
 		deviceName = deviceMapping.deviceName
-		uid = deviceMapping.getEbs().getSnapshotId()
-		size = deviceMapping.ebs.getVolumeSize()
-		volumeType = deviceMapping.ebs.getVolumeType()
+		uid = deviceMapping.getEbs()?.getSnapshotId()
+		size = deviceMapping.ebs?.getVolumeSize()
+		volumeType = deviceMapping.ebs?.getVolumeType()
 		volumeLabel = deviceMapping.getVirtualName()
 	}
 

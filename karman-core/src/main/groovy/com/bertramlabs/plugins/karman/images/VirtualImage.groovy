@@ -19,6 +19,6 @@ public abstract class VirtualImage implements VirtualImageInterface {
 	 * Returns the name of the file
 	 */
 	String toString() {
-		return "VirtualImage: ${name} - ${uid}"
+		return "VirtualImage: ${getName()} - ${getUid()}"
 	}
 }
