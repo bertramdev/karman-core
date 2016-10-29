@@ -34,7 +34,11 @@ test {
 		showStandardStreams = true
 	}
 }
-
+tasks.withType(JavaExec) {
+    // Assign all Java system properties from
+    // the command line to the JavaExec task.
+    systemProperties System.properties
+}
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.4'
 }
