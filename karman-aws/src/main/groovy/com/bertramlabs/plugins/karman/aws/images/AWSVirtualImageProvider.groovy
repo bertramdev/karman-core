@@ -30,7 +30,7 @@ class AWSVirtualImageProvider extends VirtualImageProvider{
 	Boolean keepAlive = false
 	AmazonEC2Client client
 
-	public AWSVirtualImageStorageProvider(Map options) {
+	public AWSVirtualImageProvider(Map options) {
 		accessKey      = options.accessKey      ?: accessKey
 		secretKey      = options.secretKey      ?: secretKey
 		region         = options.region         ?: region

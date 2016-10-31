@@ -48,4 +48,11 @@ class AWSListVirtualImagesSpec extends Specification {
 		virtualImages.find{ img -> img.public == true} != null
 	}
 
+	void "can grab a virtual image by uid (ubuntu 14.04 us-west-1)"() {
+		when:
+			def virtualImage = imageProvider.getVirtualImage('ami-c52dd781')
+		then:
+			virtualImage != null && virtualImage.volumes[0].uid != null
+	}
+
 }

@@ -21,22 +21,37 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 
 	@Override
 	public void addIpRange(String ipRange) {
+		if(!this.ipRange) {
+			this.ipRange = new ArrayList<String>()
+		}
+		if(!this.ipRange?.find{rng -> rng == ipRange}) {
+			this.ipRange.add(ipRange)
+		}
 
 	}
 
 	@Override
 	public void addIpRange(List<String> ipRange) {
-
+		if(!this.ipRange) {
+			this.ipRange = new ArrayList<String>()
+		}
+		ipRange.each { newRng ->
+			if(!this.ipRange?.find{rng -> rng == newRng}) {
+				this.ipRange.add(newRng)
+			}
+		}
 	}
 
 	@Override
 	public void removeIpRange(String ipRange) {
-
+		this.ipRange?.remove(ipRange)
 	}
 
 	@Override
 	public void removeIpRange(List<String> ipRange) {
-
+		ipRange.each { newRng ->
+			this.ipRange?.remove(newRng)
+		}
 	}
 
 	@Override
@@ -74,13 +89,4 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 		return this.ipProtocol
 	}
 
-	@Override
-	public void save() {
-
-	}
-
-	@Override
-	public void delete() {
-
-	}
 }
