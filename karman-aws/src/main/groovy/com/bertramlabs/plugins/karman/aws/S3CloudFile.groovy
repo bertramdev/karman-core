@@ -27,6 +27,9 @@ import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.apache.http.ParseException
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.NTCredentials
+import org.apache.http.client.CredentialsProvider
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
@@ -47,9 +50,11 @@ import org.apache.http.conn.ssl.X509HostnameVerifier
 import org.apache.http.entity.InputStreamEntity
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.DefaultHttpResponseFactory
+import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.client.ProxyAuthenticationStrategy
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager
 import org.apache.http.impl.conn.DefaultHttpResponseParser
 import org.apache.http.impl.conn.DefaultHttpResponseParserFactory
@@ -293,6 +298,20 @@ class S3CloudFile extends CloudFile {
 			BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(registry, connFactory)
 
 			clientBuilder.setConnectionManager(connectionManager)
+
+			//Proxy Settings
+			if(provider.proxyHost) {
+				clientBuilder.setProxy(new HttpHost(provider.proxyHost, provider.proxyPort))
+				if(provider.proxyUser) {
+					CredentialsProvider credsProvider = new BasicCredentialsProvider();
+					NTCredentials ntCreds = new NTCredentials(provider.proxyUser, provider.proxyPassword, provider.proxyWorkstation, provider.proxyDomain)
+					credsProvider.setCredentials(new AuthScope(provider.proxyHost,provider.proxyPort), ntCreds)
+
+					clientBuilder.setDefaultCredentialsProvider(credsProvider)
+					clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+				}
+			}
+
 			HttpClient client = clientBuilder.build()
 			HttpResponse response = client.execute(request)
 			HttpEntity entity = response.getEntity()

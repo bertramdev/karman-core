@@ -43,9 +43,11 @@ class S3StorageProvider extends StorageProvider {
     String symmetricKey
     String protocol = 'https'
     String proxyHost
-    String proxyPort
+    Integer proxyPort
     String proxyUser
     String proxyPassword
+    String proxyWorkstation
+    String proxyDomain
     Integer maxConnections = 50
     Boolean keepAlive = false
     Boolean useGzip = false
@@ -71,6 +73,8 @@ class S3StorageProvider extends StorageProvider {
         proxyPort = options.proxyPort ?: proxyPort
         proxyUser = options.proxyUser ?: proxyUser
         proxyPassword = options.proxyPassword ?: proxyPassword
+        proxyDomain = options.proxyDomain ?: proxyDomain
+        proxyWorkstation = options.proxyWorkstation ?: proxyWorkstation
 		chunkSize = options.chunkSize ?: chunkSize
     }
 
@@ -94,6 +98,24 @@ class S3StorageProvider extends StorageProvider {
             configuration.setUseTcpKeepAlive(keepAlive)
             configuration.setMaxConnections(maxConnections)
             configuration.setProtocol(protocol == 'https' ? com.amazonaws.Protocol.HTTPS : com.amazonaws.Protocol.HTTP)
+            if(proxyHost) {
+                configuration.setProxyHost(proxyHost)
+            }
+            if(proxyPort) {
+                configuration.setProxyPort(proxyPort)
+            }
+            if(proxyUser) {
+                configuration.setProxyUsername(proxyUser)
+            }
+            if(proxyPassword) {
+                configuration.setProxyPassword(proxyPassword)
+            }
+            if(proxyDomain) {
+                configuration.setProxyDomain(proxyDomain)
+            }
+            if(proxyWorkstation) {
+                configuration.setProxyWorkstation(proxyWorkstation)
+            }
             configuration.setUseGzip(useGzip)
             if(symmetricKey) {
                 EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
