@@ -7,19 +7,70 @@ import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.util.XmlSlurper
 import groovy.util.logging.Commons
+import org.apache.http.Header
 import org.apache.http.HttpEntity
-import org.apache.http.HttpResponse
+import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
+import org.apache.http.HttpResponse
+import org.apache.http.ParseException
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.NTCredentials
+import org.apache.http.client.CredentialsProvider
 import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.methods.HttpHead
+import org.apache.http.client.methods.HttpPut
+import org.apache.http.client.utils.URIBuilder
+import org.apache.http.config.MessageConstraints
+import org.apache.http.config.Registry
+import org.apache.http.config.RegistryBuilder
+import org.apache.http.conn.ConnectTimeoutException
+import org.apache.http.conn.HttpConnectionFactory
+import org.apache.http.conn.ManagedHttpClientConnection
+import org.apache.http.conn.routing.HttpRoute
+import org.apache.http.conn.socket.ConnectionSocketFactory
+import org.apache.http.conn.socket.PlainConnectionSocketFactory
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
+import org.apache.http.conn.ssl.X509HostnameVerifier
+import org.apache.http.entity.InputStreamEntity
 import org.apache.http.entity.StringEntity
+import org.apache.http.impl.DefaultHttpResponseFactory
+import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.client.ProxyAuthenticationStrategy
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager
+import org.apache.http.impl.conn.DefaultHttpResponseParser
+import org.apache.http.impl.conn.DefaultHttpResponseParserFactory
+import org.apache.http.impl.conn.ManagedHttpClientConnectionFactory
+import org.apache.http.impl.io.DefaultHttpRequestWriterFactory
+import org.apache.http.io.HttpMessageParser
+import org.apache.http.io.HttpMessageParserFactory
+import org.apache.http.io.HttpMessageWriterFactory
+import org.apache.http.io.SessionInputBuffer
 import org.apache.http.message.BasicHeader
+import org.apache.http.message.BasicLineParser
+import org.apache.http.message.LineParser
 import org.apache.http.params.HttpConnectionParams
 import org.apache.http.params.HttpParams
+import org.apache.http.protocol.HttpContext
+import org.apache.http.ssl.SSLContexts
+import org.apache.http.util.CharArrayBuffer
 import org.apache.http.util.EntityUtils
-import org.apache.http.client.utils.URIBuilder
+
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSession
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+import java.lang.reflect.InvocationTargetException
+import java.net.URLEncoder
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+
 import java.text.*;
 
 /**
@@ -51,6 +102,12 @@ public class AzureStorageProvider extends StorageProvider {
 
 	String storageAccount
 	String storageKey
+	String proxyHost
+	Integer proxyPort
+	String proxyUser
+	String proxyPassword
+	String proxyWorkstation
+	String proxyDomain
 
 	public String getProviderName() {
 		return providerName
@@ -61,7 +118,7 @@ public class AzureStorageProvider extends StorageProvider {
 	}
 
 	public String createSignedSignature(opts=[:]) {
-		log.info "createSignedSignature: ${opts}"
+		log.debug "createSignedSignature: ${opts}"
 		// Create the canonical header
 		def msHeadersMap = opts.headers?.findAll { k, v -> k.startsWith('x-ms-') }?.sort()
 		def msHeaderParams = []
@@ -108,7 +165,7 @@ public class AzureStorageProvider extends StorageProvider {
 
 		def signature = signParams.join('\n')
 
-		log.info "signature: ${signature}"
+		log.debug "signature: ${signature}"
 
 		// Sign and encode it
 		Mac mac = Mac.getInstance("HmacSHA256")
@@ -166,7 +223,7 @@ public class AzureStorageProvider extends StorageProvider {
 		return directories
 	}
 
-	protected DefaultHttpClient prepareRequest(HttpRequest request, opts=[:]) {
+	protected HttpClient prepareRequest(HttpRequest request, opts=[:]) {
 		if(!opts.headers) {
 			opts.headers = [:]
 		}
@@ -183,10 +240,111 @@ public class AzureStorageProvider extends StorageProvider {
 			}
 		}
 		
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
+		HttpClientBuilder clientBuilder = HttpClients.custom()
+		clientBuilder.setHostnameVerifier(new X509HostnameVerifier() {
+			public boolean verify(String host, SSLSession sess) {
+				return true
+			}
+
+			public void verify(String host, SSLSocket ssl) {
+
+			}
+
+			public void verify(String host, String[] cns, String[] subjectAlts) {
+
+			}
+
+			public void verify(String host, X509Certificate cert) {
+
+			}
+
+		})
+		SSLContext sslcontext = SSLContexts.createSystemDefault()
+		
+		//ignoreSSL(sslcontext)
+		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext) {
+			@Override
+			public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
+				if(socket instanceof SSLSocket) {
+					try {
+						socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
+						PropertyUtils.setProperty(socket, "host", host.getHostName());
+					} catch(NoSuchMethodException ex) {
+					}
+					catch(IllegalAccessException ex) {
+					}
+					catch(InvocationTargetException ex) {
+					}
+				}
+				return super.connectSocket(30000, socket, host, remoteAddress, localAddress, context)
+			}
+		}
+
+		HttpMessageParserFactory<HttpResponse> responseParserFactory = new DefaultHttpResponseParserFactory() {
+
+			@Override
+			public HttpMessageParser<HttpResponse> create(SessionInputBuffer ibuffer, MessageConstraints constraints) {
+				LineParser lineParser = new BasicLineParser() {
+
+					@Override
+					public Header parseHeader(final CharArrayBuffer buffer) {
+						try {
+							return super.parseHeader(buffer);
+						} catch (ParseException ex) {
+							return new BasicHeader(buffer.toString(), null);
+						}
+					}
+
+				};
+				return new DefaultHttpResponseParser(
+					ibuffer, lineParser, DefaultHttpResponseFactory.INSTANCE, constraints ?: MessageConstraints.DEFAULT) {
+
+					@Override
+					protected boolean reject(final CharArrayBuffer line, int count) {
+						//We need to break out of forever head reads
+						if(count > 100) {
+							return true
+						}
+						return false;
+
+					}
+
+				};
+			}
+		}
+
+		clientBuilder.setSSLSocketFactory(sslConnectionFactory)
+		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
+			.register("https", sslConnectionFactory)
+			.register("http", PlainConnectionSocketFactory.INSTANCE)
+			.build();
+
+		HttpMessageWriterFactory<HttpRequest> requestWriterFactory = new DefaultHttpRequestWriterFactory();
+
+		HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory = new ManagedHttpClientConnectionFactory(
+			requestWriterFactory, responseParserFactory);
+		BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(registry, connFactory)
+		clientBuilder.setConnectionManager(connectionManager)
+
+		// Proxy Settings
+		if(proxyHost) {
+			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
+			if(proxyUser) {
+				CredentialsProvider credsProvider = new BasicCredentialsProvider();
+				NTCredentials ntCreds = new NTCredentials(proxyUser, proxyPassword, proxyWorkstation, proxyDomain)
+				credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), ntCreds)
+
+				clientBuilder.setDefaultCredentialsProvider(credsProvider)
+				clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+			}
+		}
+
+		RequestConfig config = RequestConfig.custom()
+			.setConnectTimeout(30000)
+			.setSocketTimeout(20000).build()
+		clientBuilder.setDefaultRequestConfig(config)
+
+		HttpClient client = clientBuilder.build()
 
 		return client
 	}

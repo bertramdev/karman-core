@@ -48,18 +48,6 @@ class AzureDirectorySpec extends Specification {
 		e.message?.size() != 0
 	}
 
-	def "create a directory with a space in the name"() {
-		when:
-		AzureDirectory directory = new AzureDirectory(name: "${getTestDirectoryName()} space", provider: storageProvider)
-		def saveResult = directory.save()
-
-		then:
-		saveResult == true
-
-		cleanup:
-		directory.delete()
-	}
-
 	def "delete a directory"() {
 		setup:
 		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)

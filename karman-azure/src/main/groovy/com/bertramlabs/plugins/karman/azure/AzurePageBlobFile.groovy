@@ -341,7 +341,7 @@ class AzurePageBlobFile extends CloudFile {
 			signParams << ""
 			signParams << queryParams.rsct
 			def signature = signParams.join('\n')
-			log.info "signature: ${signature}"
+			log.debug "signature: ${signature}"
 
 			// Sign and encode it
 			Mac mac = Mac.getInstance("HmacSHA256")
@@ -358,7 +358,7 @@ class AzurePageBlobFile extends CloudFile {
 			}
 
 			def url = uriBuilder.build().toURL()
-			log.info "url generated: ${url}"
+			log.debug "url generated: ${url}"
 
 			return url
 		}
@@ -395,7 +395,6 @@ class AzurePageBlobFile extends CloudFile {
 					azureMeta[header.name] = header.value
 				}
 			}
-			log.info "azureMeta: ${azureMeta}"
 			EntityUtils.consume(response.entity)
 			metaDataLoaded = true
 		}
