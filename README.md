@@ -16,6 +16,7 @@ Modules:
 * karman-aws (Amazon S3)
 * karman-openstack (Openstack Swift Object Store)
 * karman-rackspace (Rackspace CDN Object Store)
+* karman-azure (Azure Object Store)
 
 
 Documentation

@@ -1,1 +1,1 @@
-include 'karman-core','karman-aws','karman-rackspace', 'karman-openstack', 'karman-grails', 'karman-openstack'
+include 'karman-core','karman-aws','karman-rackspace', 'karman-openstack', 'karman-grails', 'karman-openstack', 'karman-azure'
