@@ -33,7 +33,7 @@ import javax.crypto.spec.SecretKeySpec
 @Commons
 class AzurePageBlobFile extends CloudFile {
 	
-	AzureDirectory parent
+	AzureContainer parent
 
 	Map azureMeta = [:]
 	private InputStream writeStream
@@ -124,17 +124,16 @@ class AzurePageBlobFile extends CloudFile {
 
 	InputStream getInputStream() {
 		if(valid) {
+			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 			def opts = [
 				verb: 'GET',
 				queryParams: [],
-				path: "${parent.name}/${getEncodedName()}"
+				path: "${parent.name}/${getEncodedName()}",
+				uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}"
 			]
 
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-			URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
-			
-			HttpGet request = new HttpGet(uriBuilder.build())
-			HttpClient client = azureProvider.prepareRequest(request, opts) 
+			def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts) 
 			HttpResponse response = client.execute(request)
 			response.getAllHeaders()?.each { Header header ->
 				if(header.name != 'x-ms-request-id') {
@@ -165,6 +164,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	def save(acl) {
+		log.info "save started"
 		if (valid) {
 			assert writeStream
 
@@ -179,26 +179,18 @@ class AzurePageBlobFile extends CloudFile {
 			
 			// First... must create the page blob (if it doesn't exist)
 			if(!this.exists()) {
-				URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}${parent.name}/${getEncodedName()}".toString())
-				HttpPut request = new HttpPut(uriBuilder.build())
-
 				def createPageBlobOpts = [
 					verb: 'PUT',
 					queryParams: [:],
 					headers: ['x-ms-blob-type': 'PageBlob', 'x-ms-blob-content-length': contentLength],
-					path: "${parent.name}/${getEncodedName()}"
+					path: "${parent.name}/${getEncodedName()}",
+					uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString()
 				]
 
-				HttpClient client = azureProvider.prepareRequest(request, createPageBlobOpts) 
+				def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(createPageBlobOpts) 
 				HttpResponse response = client.execute(request)			
 				if(response.statusLine.statusCode != 201) {
-					HttpEntity responseEntity = response.getEntity()
-					def xmlDoc = new XmlSlurper().parse(responseEntity.content)
-					EntityUtils.consume(response.entity)
-					def errMessage = "Error creating page blob ${parent.name}/${getEncodedName()}: ${xmlDoc.Message}"
-					log.error errMessage
-					log.error xmlDoc
-					throw new Exception(errMessage)
+					azureProvider.throwResponseFailure(response, "Error creating page blob ${parent.name}/${getEncodedName()}")
 				}
 			}
 
@@ -230,10 +222,13 @@ class AzurePageBlobFile extends CloudFile {
 			existsFlag = true
 			return true
 		}
+		log.info "save complete"
 		return false
 	}
 
 	private void uploadChunk(ChunkedInputStream chunkedStream, Long startByte, Long contentLength) {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'PUT',
 			queryParams: [comp: 'page'],
@@ -242,53 +237,168 @@ class AzurePageBlobFile extends CloudFile {
 				'Content-Length': contentLength,
 				'x-ms-page-write':'update'
 			],
-			path: "${parent.name}/${getEncodedName()}"
+			path: "${parent.name}/${getEncodedName()}",
+			uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString()
 		]
 	
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-		HttpPut request = new HttpPut(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+		def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(opts) 
 
 		request.setEntity(new InputStreamEntity(chunkedStream, contentLength))
 		HttpResponse response = client.execute(request)	
 		if(response.statusLine.statusCode != 201) {
-			HttpEntity responseEntity = response.getEntity()
-			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
-			EntityUtils.consume(response.entity)
-
-			def errMessage = "Error sending bytes to page blob ${parent.name}/${name} for startByte: ${startByte}, pageSize: ${contentLength}: ${xmlDoc.Message}"
-			log.error errMessage
-			log.error xmlDoc
-
-			throw new Exception(errMessage)
+			azureProvider.throwResponseFailure(response, "Error sending bytes to page blob ${parent.name}/${name} for startByte: ${startByte}, pageSize: ${contentLength}")
 		}
 	}
 
 	def delete() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'DELETE',
 			queryParams: [],
-			path: "${parent.name}/${name}"
+			headers: ['x-ms-delete-snapshots':'include'],
+			path: "${parent.name}/${name}",
+			uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}"
 		]
 
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
-		
-		HttpDelete request = new HttpDelete(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+		def (HttpClient client, HttpDelete request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
 		if(response.statusLine.statusCode != 202) {
-			HttpEntity responseEntity = response.getEntity()
-			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
-			EntityUtils.consume(response.entity)
+			try {
+			azureProvider.throwResponseFailure(response, "Error deleting page blob")
+			} catch(e) {}
 
-			def errMessage = "Error deleting page blob ${parent.name}/${name}: ${xmlDoc.Message}"
-			log.error errMessage
-			log.error xmlDoc
+			return false
+		}
+
+		return true
+	}
+
+	def copy(String srcURI, snapshot=null) {
+		log.info "Copy: ${srcURI}, ${snapshot}"
+		if (valid) {
+			
+			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			
+			// Make sure the directory exists
+			def parentContainer = azureProvider[parent.name]
+			if(!parentContainer.exists()) {
+				parentContainer.save()
+			}
+			
+			if(snapshot) {
+				srcURI += "?${snapshot}"
+			}
+
+			def copyPageBlobOpts = [
+				verb: 'PUT',
+				queryParams: [:],
+				headers: ['x-ms-copy-source': srcURI],
+				path: "${parent.name}/${getEncodedName()}",
+				uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString()
+			]
+
+			def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(copyPageBlobOpts) 
+			HttpResponse response = client.execute(request)			
+			if(response.statusLine.statusCode != 202) {
+				azureProvider.throwResponseFailure(response, "Error copying page blob")
+			}
+
+			metaDataLoaded = false
+			azureMeta = [:]
+			existsFlag = true
+
+			def copyId = response.getHeaders('x-ms-copy-id').first().value 
+			return copyId
+		}
+		return false
+	}
+
+	def snapshot() {
+		log.info "snapshot started"
+		if (valid) {
+			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			
+			def snapshotBlobOpts = [
+				verb: 'PUT',
+				queryParams: [comp:'snapshot'],
+				path: "${parent.name}/${getEncodedName()}",
+				uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString()
+			]
+
+			def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(snapshotBlobOpts) 
+			HttpResponse response = client.execute(request)			
+			if(response.statusLine.statusCode != 201) {
+				azureProvider.throwResponseFailure(response, "Error snapshotting page blob")
+			}
+
+			metaDataLoaded = false
+			azureMeta = [:]
+			existsFlag = true
+
+			def snapshotDate = response.getHeaders('x-ms-snapshot').first().value 
+			return snapshotDate
+		}
+		log.info "snapshot complete"
+		return false
+	}
+
+	Boolean snapshotExists(String snapshotDate) {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		if(valid) {
+			def opts = [
+				verb: 'HEAD',
+				queryParams: [snapshot: snapshotDate],
+				path: "${parent.name}/${getEncodedName()}",
+				uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString() 
+			]
+
+			def (HttpClient client, HttpHead request) = azureProvider.prepareRequest(opts) 
+			HttpResponse response = client.execute(request)
+			return (response.statusLine.statusCode == 200) 
+		}
+		return false
+	}
+
+	def deleteSnapshot(String snapshotDate) {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
+		def opts = [
+			verb: 'DELETE',
+			queryParams: [snapshot: snapshotDate],
+			path: "${parent.name}/${name}",
+			uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}"
+		]
+
+		def (HttpClient client, HttpDelete request) = azureProvider.prepareRequest(opts) 
+		HttpResponse response = client.execute(request)
+		if(response.statusLine.statusCode != 202) {
+			try {
+			azureProvider.throwResponseFailure(response, "Error deleting page blob snapshot")
+			} catch(e) {}
+
+			return false
+		}
+
+		return true
+	}
+
+	def deleteSnapshots() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
+		def opts = [
+			verb: 'DELETE',
+			headers: ['x-ms-delete-snapshots':'only'],
+			path: "${parent.name}/${name}",
+			uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}"
+		]
+
+		def (HttpClient client, HttpDelete request) = azureProvider.prepareRequest(opts) 
+		HttpResponse response = client.execute(request)
+		if(response.statusLine.statusCode != 202) {
+			try {
+			azureProvider.throwResponseFailure(response, "Error deleting page blob snapshots")
+			} catch(e) {}
 
 			return false
 		}
@@ -304,82 +414,81 @@ class AzurePageBlobFile extends CloudFile {
 	URL getURL(Date expirationDate = null) {
 		if (valid) {
 			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-			
-			// Calculate the start/end time
-			if(!expirationDate) {
-				def startDate = new Date()
-				use (groovy.time.TimeCategory) {
-				    expirationDate = startDate + 1.day
+			if(expirationDate) {
+				// Calculate the start/end time
+				if(!expirationDate) {
+					def startDate = new Date()
+					use (groovy.time.TimeCategory) {
+					    expirationDate = startDate + 1.day
+					}
 				}
+
+				def endDateFormat = expirationDate.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
+
+				def queryParams = [
+					sp: 'r',
+					se: endDateFormat,
+					sv: "2015-12-11",
+					rscd: 'file; attachment',
+					rsct: 'binary',
+					sr: 'b',
+					sig: ''
+				]
+
+				// Generate the signature
+				def signParams = [] 
+				signParams << queryParams.sp
+				signParams << ""
+				signParams << queryParams.se
+				signParams << "/blob/${azureProvider.storageAccount}/${parent.name}/${getEncodedName()}"
+				signParams << ""
+				signParams << ""
+				signParams << ""
+				signParams << queryParams.sv
+				signParams << ""
+				signParams << queryParams.rscd
+				signParams << ""
+				signParams << ""
+				signParams << queryParams.rsct
+				def signature = signParams.join('\n')
+				log.debug "signature: ${signature}"
+
+				// Sign and encode it
+				Mac mac = Mac.getInstance("HmacSHA256")
+				SecretKeySpec secretKeySpec = new SecretKeySpec(azureProvider.storageKey.toString().decodeBase64(), "HmacSHA256")
+				mac.init(secretKeySpec)
+				byte[] digest = mac.doFinal(signature.toString().getBytes('UTF-8'))
+				def encodedSignature = digest.encodeBase64().toString()
+				queryParams.sig = encodedSignature
+
+				// Construct the URI
+				URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
+				queryParams?.each { k, v ->
+					uriBuilder.addParameter(k, v)
+				}
+
+				def url = uriBuilder.build().toURL()
+				log.debug "url generated: ${url}"
+
+				return url
+			} else {
+				return new URL("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}")
 			}
-
-			def endDateFormat = expirationDate.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-
-			def queryParams = [
-				sp: 'r',
-				se: endDateFormat,
-				sv: "2015-12-11",
-				rscd: 'file; attachment',
-				rsct: 'binary',
-				sr: 'b',
-				sig: ''
-			]
-
-			// Generate the signature
-			def signParams = [] 
-			signParams << queryParams.sp
-			signParams << ""
-			signParams << queryParams.se
-			signParams << "/blob/${azureProvider.storageAccount}/${parent.name}/${getEncodedName()}"
-			signParams << ""
-			signParams << ""
-			signParams << ""
-			signParams << queryParams.sv
-			signParams << ""
-			signParams << queryParams.rscd
-			signParams << ""
-			signParams << ""
-			signParams << queryParams.rsct
-			def signature = signParams.join('\n')
-			log.debug "signature: ${signature}"
-
-			// Sign and encode it
-			Mac mac = Mac.getInstance("HmacSHA256")
-			SecretKeySpec secretKeySpec = new SecretKeySpec(azureProvider.storageKey.toString().decodeBase64(), "HmacSHA256")
-			mac.init(secretKeySpec)
-			byte[] digest = mac.doFinal(signature.toString().getBytes('UTF-8'))
-			def encodedSignature = digest.encodeBase64().toString()
-			queryParams.sig = encodedSignature
-
-			// Construct the URI
-			URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
-			queryParams?.each { k, v ->
-				uriBuilder.addParameter(k, v)
-			}
-
-			def url = uriBuilder.build().toURL()
-			log.debug "url generated: ${url}"
-
-			return url
 		}
 	}
 
 	private void loadObjectMetaData() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		if(valid) {
 			def opts = [
 				verb: 'HEAD',
 				queryParams: [],
-				path: "${parent.name}/${getEncodedName()}"
+				path: "${parent.name}/${getEncodedName()}",
+				uri: "${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString() 
 			]
 
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-			URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${parent.name}/${getEncodedName()}".toString())
-			opts.queryParams?.each { k, v ->
-				uriBuilder.addParameter(k, v)
-			}
-
-			HttpHead request = new HttpHead(uriBuilder.build())
-			HttpClient client = azureProvider.prepareRequest(request, opts) 
+			def (HttpClient client, HttpHead request) = azureProvider.prepareRequest(opts) 
 			HttpResponse response = client.execute(request)
 			HttpEntity responseEntity = response.getEntity()
 			

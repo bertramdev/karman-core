@@ -35,4 +35,22 @@ class AzureStorageProviderSpec extends Specification {
 		expect:
 		storageProvider.getProviderName() == 'azure-pageblob'
 	}
+
+	def "storage provider with http"() {
+		setup:
+		storageProvider = AzureStorageProvider.create(
+			provider:'azure-pageblob',
+			storageAccount:System.getProperty('azure.storageAccount'),
+			storageKey:System.getProperty('azure.storageKey'),
+			protocol: 'http'
+		)
+
+		when:
+		def directories = storageProvider.getDirectories()
+
+		then:
+		directories != null
+		storageProvider.getEndpointUrl().startsWith('http')
+		!storageProvider.getEndpointUrl().startsWith('https')
+	}
 }

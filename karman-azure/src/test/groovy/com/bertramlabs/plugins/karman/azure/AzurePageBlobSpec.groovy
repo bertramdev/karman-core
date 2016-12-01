@@ -10,7 +10,7 @@ import spock.lang.Specification
 class AzurePageBlobSpec extends Specification {
 
 	static AzureStorageProvider storageProvider
-	static AzureDirectory directory
+	static AzureContainer directory
 
 	def setupSpec() {
 		storageProvider = AzureStorageProvider.create(
@@ -19,7 +19,7 @@ class AzurePageBlobSpec extends Specification {
 			storageKey:System.getProperty('azure.storageKey')
 		)
 
-		directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		if(!directory.exists()) {
 			directory.save()
 		}
@@ -65,6 +65,16 @@ class AzurePageBlobSpec extends Specification {
 		
 		then:
 		cloudFile.exists() == false
+	}
+
+	def "exists for a file in a non-existent directory"() {
+		when:
+		AzurePageBlobFile cloudFile = storageProvider['karman-bogus']['bogus-file']
+		AzurePageBlobFile anotherBogusCloudFile = storageProvider.getDirectory('karman-bogus').getFile('bogus-file')
+		
+		then:
+		cloudFile.exists() == false
+		anotherBogusCloudFile.exists() == false
 	}
 
 	def "getName"() {
@@ -120,7 +130,7 @@ class AzurePageBlobSpec extends Specification {
 		cloudFile.isDirectory() == false
 		cloudFile.getContentLength() == tempFile.size()
 	}
-
+	
 	def "getUrl without expiration"() {
 		setup:
 		File tempFile = File.createTempFile("temp",".tmp")
@@ -132,6 +142,27 @@ class AzurePageBlobSpec extends Specification {
 		cloudFile.setContentLength(tempFile.size())
 		def saveResult = cloudFile.save()
 		URL downloadURL = cloudFile.getURL()
+
+		then:
+		downloadURL.toString().contains(directory.name)
+		downloadURL.toString().contains('get-url-test')
+	}
+
+	def "getUrl with expiration"() {
+		setup:
+		File tempFile = File.createTempFile("temp",".tmp")
+		tempFile << getOneKiloString()
+
+		when:
+		AzurePageBlobFile cloudFile = directory.getFile('get-url-test')
+		cloudFile.setInputStream(new FileInputStream(tempFile))
+		cloudFile.setContentLength(tempFile.size())
+		def saveResult = cloudFile.save()
+		def expiration = new Date()
+		use (groovy.time.TimeCategory) {
+			expiration = expiration + 1.day
+		}
+		URL downloadURL = cloudFile.getURL(expiration)
 
 		// Now fetch the file and compare it to what we expect
 		def fetchedFile = File.createTempFile("temp",".tmp")
@@ -202,13 +233,174 @@ class AzurePageBlobSpec extends Specification {
 		AzurePageBlobFile fileUnderTest = directory.getFile('get-inputstream-test')
 		def fetchedFile = File.createTempFile("temp",".tmp")
 		def fetchedFileOS = fetchedFile.newOutputStream()  
-        fetchedFileOS << fileUnderTest.getInputStream()
-        fetchedFileOS.close()
+		fetchedFileOS << fileUnderTest.getInputStream()
+		fetchedFileOS.close()
 
 		then:
 		getOneKiloString() == fetchedFile.text
 	}
 
+	def "copy a file and verify the status"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		AzurePageBlobFile cloudFile = directory.getFile('src-copy-file')
+		cloudFile.setBytes(bytes)
+		def saveResult = cloudFile.save()
+
+		when:
+		def copyResult = directory.getFile('tgt-copy-file').copy(cloudFile.getURL().toString())
+		def count = 0
+		def copyCompletionTime
+		while(count < 10 && copyCompletionTime == null) {
+			copyCompletionTime = directory.getFile('tgt-copy-file').getMetaAttribute('x-ms-copy-completion-time')
+			if(!copyCompletionTime) {
+				sleep(5000)
+			}
+			count++
+		}
+
+		then:
+		copyResult != null
+		copyCompletionTime != null
+		directory.getFile('tgt-copy-file').exists()
+	}
+
+	def "create a snapshot"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		
+		AzurePageBlobFile cloudFile = directory.getFile('snapshot-blob')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+
+		when:
+		def snapshotDate = cloudFile.snapshot()
+
+		then:
+		snapshotDate != null
+		cloudFile.snapshotExists(snapshotDate)
+		cloudFile.exists()
+	}
+
+	def "delete a snapshot"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		
+		AzurePageBlobFile cloudFile = directory.getFile('snapshot-blob-delete')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+		def snapshotDate = cloudFile.snapshot()
+
+		when:
+		cloudFile.deleteSnapshot(snapshotDate)
+
+		then:
+		cloudFile.snapshotExists(snapshotDate) == false
+		cloudFile.exists()
+	}
+
+	def "delete a blob that has a snapshot"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		
+		AzurePageBlobFile cloudFile = directory.getFile('delete-blob-with-snapshot')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+		def snapshotDate = cloudFile.snapshot()
+
+		when:
+		def deleteResult = cloudFile.delete()
+
+		then:
+		deleteResult == true
+		cloudFile.exists() == false
+	}
+
+	def "delete only blob snapshots"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		
+		AzurePageBlobFile cloudFile = directory.getFile('delete-blob-with-snapshot')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+		def snapshot1 = cloudFile.snapshot()
+		def snapshot2 = cloudFile.snapshot()
+		assert(cloudFile.snapshotExists(snapshot1))
+		assert(cloudFile.snapshotExists(snapshot2))
+
+		when:
+		def deleteResult = cloudFile.deleteSnapshots()
+
+		then:
+		cloudFile.snapshotExists(snapshot1) == false
+		cloudFile.snapshotExists(snapshot2) == false
+		deleteResult == true
+		cloudFile.exists() == true
+	}
+
+	def "snapshot exists on invalid snapshotid"() {
+		setup:
+		// Create a 1024 kb file
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		
+		AzurePageBlobFile cloudFile = directory.getFile('blob-without-snapshot')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+
+		when:
+		def snapshotExists = cloudFile.snapshotExists('blah')
+
+		then:
+		snapshotExists == false
+		cloudFile.exists()
+	}
+
+	def "copy a file from a snapshot"() {
+		setup:
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		AzurePageBlobFile cloudFile = directory.getFile('src-copy-file-with-snapshot')
+		cloudFile.setBytes(bytes)
+		cloudFile.save()
+		def snapshotId = cloudFile.snapshot()
+		assert(snapshotId != null && snapshotId != false)
+
+		when:
+		def copyResult = directory.getFile('tgt-copy-file-from-snapshot').copy(cloudFile.getURL().toString(), snapshotId)
+		def count = 0
+		def copyCompletionTime
+		while(count < 10 && copyCompletionTime == null) {
+			copyCompletionTime = directory.getFile('tgt-copy-file-from-snapshot').getMetaAttribute('x-ms-copy-completion-time')
+			if(!copyCompletionTime) {
+				sleep(5000)
+			}
+			count++
+		}
+
+		then:
+		copyResult != null
+		copyCompletionTime != null
+		directory.getFile('tgt-copy-file-from-snapshot').exists()
+	}
+
+	def "getUrl for file not saved"() {
+		setup:
+		AzurePageBlobFile cloudFile = directory.getFile('get-url-test-not-saved')
+		
+		expect:
+		cloudFile.getURL().toString().contains('get-url-test-not-saved')
+	}
 
 //	def "create a very large file using a local file"() {
 //		setup:

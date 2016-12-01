@@ -22,25 +22,22 @@ import org.apache.http.util.EntityUtils
  * Created by bwhiton on 11/22/2016.
  */
 @Commons
-class AzureDirectory extends Directory {
+class AzureContainer extends Directory {
 	/**
 	 * Check if container exists
 	 * @return Boolean
 	 */
 	Boolean exists() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'GET',
 			queryParams: [restype:'container'],
-			path: name]
-
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${name}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-
-		HttpGet request = new HttpGet(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+			path: name,
+			uri: "${azureProvider.getEndpointUrl()}/${name}".toString()
+		]
+		
+		def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
 		HttpEntity responseEntity = response.getEntity()
 
@@ -53,19 +50,16 @@ class AzureDirectory extends Directory {
 	 * @return List
 	 */
 	List listFiles(options = [:]) {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'GET',
 			queryParams: [restype:'container', comp: 'list'],
-			path: name]
+			path: name,
+			uri: "${azureProvider.getEndpointUrl()}/${name}".toString()
+		]
 
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${name}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-
-		HttpGet request = new HttpGet(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+		def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
 		HttpEntity responseEntity = response.getEntity()
 		def xmlDoc = new XmlSlurper().parse(responseEntity.content)
@@ -74,7 +68,7 @@ class AzureDirectory extends Directory {
 		def blobs = []
 		if(response.statusLine.statusCode == 200) {
 			xmlDoc.Blobs?.Blob?.each { blob ->
-				blobs << new AzurePageBlobFile(name: container.Name, provider: provider)
+				blobs << new AzurePageBlobFile(name: blob.Name, provider: provider)
 			}
 		} else {
 			def errMessage = "Error getting blobs from directory with name ${opts.path}: ${xmlDoc.Message}"
@@ -90,19 +84,16 @@ class AzureDirectory extends Directory {
 	 * @return Container
 	 */
 	def save() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'PUT',
 			queryParams: [restype:'container'],
-			path: name]
+			path: name,
+			uri: "${azureProvider.getEndpointUrl()}/${name}".toString()
+		]
 
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${name}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-
-		HttpPut request = new HttpPut(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+		def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
 		HttpEntity responseEntity = response.getEntity()
 		
@@ -124,19 +115,16 @@ class AzureDirectory extends Directory {
 	 * @return Container
 	 */
 	def delete() {
+		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+
 		def opts = [
 			verb: 'DELETE',
 			queryParams: [restype:'container'],
-			path: name]
+			path: name,
+			uri: "${azureProvider.getEndpointUrl()}/${name}".toString()
+		]
 
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${azureProvider.getEndpointUrl()}/${name}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-
-		HttpDelete request = new HttpDelete(uriBuilder.build())
-		HttpClient client = azureProvider.prepareRequest(request, opts) 
+		def (HttpClient client, HttpDelete request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
 		HttpEntity responseEntity = response.getEntity()
 

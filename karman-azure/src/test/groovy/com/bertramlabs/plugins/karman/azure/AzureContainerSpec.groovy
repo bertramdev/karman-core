@@ -7,7 +7,7 @@ import com.bertramlabs.plugins.karman.azure.AzureStorageProvider
 import spock.lang.Specification
 
 @Commons
-class AzureDirectorySpec extends Specification {
+class AzureContainerSpec extends Specification {
 
 	static AzureStorageProvider storageProvider
 
@@ -21,7 +21,7 @@ class AzureDirectorySpec extends Specification {
 
 	def "create a directory"() {
 		when:
-		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		def saveResult = directory.save()
 		def directories = storageProvider.getDirectories()
 		def savedDirectory = directories.find { it.name == directory.name }
@@ -40,7 +40,7 @@ class AzureDirectorySpec extends Specification {
 	
 	def "create a directory with an invalid name"() {
 		when:
-		AzureDirectory directory = new AzureDirectory(name: 'INVALID*Name', provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: 'INVALID*Name', provider: storageProvider)
 		directory.save()
 
 		then:
@@ -50,7 +50,7 @@ class AzureDirectorySpec extends Specification {
 
 	def "delete a directory"() {
 		setup:
-		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		directory.save()
 		def directories = storageProvider.getDirectories()
 		def savedDirectory = directories.find { it.name == directory.name }
@@ -68,7 +68,7 @@ class AzureDirectorySpec extends Specification {
 
 	def "delete a directory that does not exist"() {
 		setup:
-		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		
 		when:
 		directory.delete()
@@ -80,10 +80,10 @@ class AzureDirectorySpec extends Specification {
 
 	def "directory exists for real directory"() {
 		setup:
-		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		directory.save()
-		AzureDirectory newDirectoryReference = new AzureDirectory(name: directory.getName(), provider: storageProvider)
-		AzureDirectory bogusDirectory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer newDirectoryReference = new AzureContainer(name: directory.getName(), provider: storageProvider)
+		AzureContainer bogusDirectory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 
 		expect:
 		directory.exists()
@@ -96,7 +96,7 @@ class AzureDirectorySpec extends Specification {
 
 	def "listFiles for empty directory"() {
 		setup:
-		AzureDirectory directory = new AzureDirectory(name: getTestDirectoryName(), provider: storageProvider)
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
 		directory.save()
 		
 		when:
@@ -104,6 +104,33 @@ class AzureDirectorySpec extends Specification {
 
 		then:
 		files.size() == 0
+		
+		cleanup:
+		directory.delete()
+	}
+
+	def "listFiles for directory with files"() {
+		setup:
+		AzureContainer directory = new AzureContainer(name: getTestDirectoryName(), provider: storageProvider)
+		directory.save()
+
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		AzurePageBlobFile cloudFile1 = directory.getFile('file1')
+		cloudFile1.setBytes(bytes)
+		cloudFile1.save()
+
+		AzurePageBlobFile cloudFile2 = directory.getFile('file2')
+		cloudFile2.setBytes(bytes)
+		cloudFile2.save()
+		
+		when:
+		def files = directory.listFiles()
+
+		then:
+		files.size() == 2
+		files[0].name == 'file1'
+		files[1].name == 'file2'
 		
 		cleanup:
 		directory.delete()

@@ -108,13 +108,14 @@ public class AzureStorageProvider extends StorageProvider {
 	String proxyPassword
 	String proxyWorkstation
 	String proxyDomain
+	String protocol = 'https'
 
 	public String getProviderName() {
 		return providerName
 	}
 
 	public String getEndpointUrl() {
-		return "https://${storageAccount}.blob.core.windows.net/"
+		return "${protocol}://${storageAccount}.blob.core.windows.net"
 	}
 
 	public String createSignedSignature(opts=[:]) {
@@ -185,25 +186,19 @@ public class AzureStorageProvider extends StorageProvider {
 	}
 
 	Directory getDirectory(String name) {
-		new AzureDirectory(name: name, provider: this)
+		new AzureContainer(name: name, provider: this)
 	}
 
 	List<Directory> getDirectories() {
 		def opts = [
 			verb: 'GET',
 			queryParams: [comp: 'list'], 
-			path: '']
+			path: '',
+			uri: "${getEndpointUrl()}".toString()
+		]
 
-		URI listUri
-		URIBuilder uriBuilder = new URIBuilder("${getEndpointUrl()}".toString())
-		opts.queryParams?.each { k, v ->
-			uriBuilder.addParameter(k, v)
-		}
-
-		HttpGet request = new HttpGet(uriBuilder.build())
-		HttpClient client = prepareRequest(request, opts) 
+		def (HttpClient client, HttpGet request) = prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
-
 		if(response.statusLine.statusCode != 200) {
 			HttpEntity responseEntity = response.getEntity()
 			log.error("Error fetching Directory List ${response.statusLine.statusCode}, content: ${responseEntity.content}")
@@ -218,12 +213,38 @@ public class AzureStorageProvider extends StorageProvider {
 		def provider = this
 		def directories = []
 		xmlDoc.Containers?.Container?.each { container ->
-			directories << new AzureDirectory(name: container.Name, provider: provider)
+			directories << new AzureContainer(name: container.Name, provider: provider)
 		}
 		return directories
 	}
 
-	protected HttpClient prepareRequest(HttpRequest request, opts=[:]) {
+	protected prepareRequest(opts) {
+
+		URIBuilder uriBuilder = new URIBuilder(opts.uri)
+		if(opts.queryParams) {
+			opts.queryParams?.each { k, v ->
+				uriBuilder.addParameter(k, v)
+			}
+		}
+
+		def request
+		switch(opts.verb) {
+			case 'HEAD':
+				request = new HttpHead(uriBuilder.build())
+				break
+			case 'PUT':
+				request = new HttpPut(uriBuilder.build())
+				break
+			case 'GET':
+				request = new HttpGet(uriBuilder.build())
+				break
+			case 'DELETE':
+				request = new HttpDelete(uriBuilder.build())
+				break
+			default:
+				throw new Exception('verb was not specified')
+		}
+		
 		if(!opts.headers) {
 			opts.headers = [:]
 		}
@@ -346,6 +367,16 @@ public class AzureStorageProvider extends StorageProvider {
 
 		HttpClient client = clientBuilder.build()
 
-		return client
+		return [client, request]
+	}
+
+	protected throwResponseFailure(response, message) {
+		HttpEntity responseEntity = response.getEntity()
+		def xmlDoc = new XmlSlurper().parse(responseEntity.content)
+		EntityUtils.consume(response.entity)
+		def errMessage = "${message}: ${xmlDoc.Message}"
+		log.error errMessage
+		log.error xmlDoc
+		throw new Exception(errMessage)
 	}
 }
