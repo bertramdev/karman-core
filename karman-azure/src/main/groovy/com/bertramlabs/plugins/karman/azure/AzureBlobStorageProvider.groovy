@@ -97,7 +97,7 @@ import java.text.*;
  * @author Bob Whiton
  */
 @Commons
-public class AzureStorageProvider extends StorageProvider {
+public class AzureBlobStorageProvider extends StorageProvider {
 	static String providerName = "azure-pageblob"
 
 	String storageAccount

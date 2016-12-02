@@ -124,7 +124,7 @@ class AzurePageBlobFile extends CloudFile {
 
 	InputStream getInputStream() {
 		if(valid) {
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 			def opts = [
 				verb: 'GET',
@@ -168,7 +168,7 @@ class AzurePageBlobFile extends CloudFile {
 		if (valid) {
 			assert writeStream
 
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 			def contentLength = azureMeta['Content-Length'] // What we plan on saving
 
 			// Make sure the directory exists
@@ -227,7 +227,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	private void uploadChunk(ChunkedInputStream chunkedStream, Long startByte, Long contentLength) {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'PUT',
@@ -251,7 +251,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	def delete() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'DELETE',
@@ -278,7 +278,7 @@ class AzurePageBlobFile extends CloudFile {
 		log.info "Copy: ${srcURI}, ${snapshot}"
 		if (valid) {
 			
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 			
 			// Make sure the directory exists
 			def parentContainer = azureProvider[parent.name]
@@ -317,7 +317,7 @@ class AzurePageBlobFile extends CloudFile {
 	def snapshot() {
 		log.info "snapshot started"
 		if (valid) {
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 			
 			def snapshotBlobOpts = [
 				verb: 'PUT',
@@ -344,7 +344,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	Boolean snapshotExists(String snapshotDate) {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 		if(valid) {
 			def opts = [
 				verb: 'HEAD',
@@ -361,7 +361,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	def deleteSnapshot(String snapshotDate) {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'DELETE',
@@ -384,7 +384,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	def deleteSnapshots() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'DELETE',
@@ -413,7 +413,7 @@ class AzurePageBlobFile extends CloudFile {
 	 */
 	URL getURL(Date expirationDate = null) {
 		if (valid) {
-			AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 			if(expirationDate) {
 				// Calculate the start/end time
 				if(!expirationDate) {
@@ -478,7 +478,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	private void loadObjectMetaData() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		if(valid) {
 			def opts = [

@@ -3,17 +3,17 @@ package com.bertramlabs.plugins.karman.azure
 import groovy.util.logging.Commons
 import java.util.UUID
 import com.bertramlabs.plugins.karman.KarmanConfigHolder
-import com.bertramlabs.plugins.karman.azure.AzureStorageProvider
+import com.bertramlabs.plugins.karman.azure.AzureBlobStorageProvider
 import spock.lang.Specification
 
 @Commons
 class AzurePageBlobSpec extends Specification {
 
-	static AzureStorageProvider storageProvider
+	static AzureBlobStorageProvider storageProvider
 	static AzureContainer directory
 
 	def setupSpec() {
-		storageProvider = AzureStorageProvider.create(
+		storageProvider = AzureBlobStorageProvider.create(
 			provider:'azure-pageblob',
 			storageAccount:System.getProperty('azure.storageAccount'),
 			storageKey:System.getProperty('azure.storageKey')

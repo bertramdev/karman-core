@@ -28,7 +28,7 @@ class AzureContainer extends Directory {
 	 * @return Boolean
 	 */
 	Boolean exists() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'GET',
@@ -50,7 +50,7 @@ class AzureContainer extends Directory {
 	 * @return List
 	 */
 	List listFiles(options = [:]) {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'GET',
@@ -84,7 +84,7 @@ class AzureContainer extends Directory {
 	 * @return Container
 	 */
 	def save() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'PUT',
@@ -115,7 +115,7 @@ class AzureContainer extends Directory {
 	 * @return Container
 	 */
 	def delete() {
-		AzureStorageProvider azureProvider = (AzureStorageProvider) provider
+		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
 			verb: 'DELETE',
