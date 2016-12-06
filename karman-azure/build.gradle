@@ -41,7 +41,7 @@ sourceSets {
 }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.0.7'
+	provided 'org.codehaus.groovy:groovy-all:2.0.7'
 
     compile project(':karman-core')
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
@@ -57,10 +57,10 @@ publishing {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     name 'karman-azure'
-                    description 'Karman Storage Provider interface for rackspace cloud files api'
+                    description 'Karman Storage Provider interface for Azure Cloud Storage api'
                     url 'https://github.com/bertramdev/karman-core'
                     scm {
-                        url 'https://github.com/bertramdev/karman-azure'
+                        url 'https://github.com/bertramdev/karman-core'
                         connection 'scm:https://bertramdev@github.com/bertramdev/karman-core.git'
                         developerConnection 'scm:git://github.com/bertramdev/karman-core.git'
                     }
