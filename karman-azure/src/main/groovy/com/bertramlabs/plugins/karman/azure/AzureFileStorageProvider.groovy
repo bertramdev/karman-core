@@ -14,7 +14,7 @@ import org.apache.http.util.EntityUtils
 import java.text.*;
 
 /**
- * Storage provider implementation for the Azure Storage PageBlob and Container API
+ * Storage provider implementation for the Azure File and Directory API
  * This is the starting point from which all calls to Azure originate for storing blobs within the Cloud File Containers
  * <p>
  * Below is an example of how this might be initialized.
@@ -23,12 +23,12 @@ import java.text.*;
  * {@code
  * import com.bertramlabs.plugins.karman.StorageProvider
  * def provider = StorageProvider(
- *  provider: 'azure-pageblob',
+ *  provider: 'azure',
  *  storageAccount: 'storage account name',
  *  storageKey: 'storage key'
  * )
  *
- * def blob = provider['container']['example.txt'] 
+ * def blob = provider['container']['parentpath/childpath/example.txt'] 
  * blob.setBytes(byteArray)
  * blob.save()
  * }
@@ -37,23 +37,22 @@ import java.text.*;
  * @author Bob Whiton
  */
 @Commons
-public class AzureBlobStorageProvider extends AzureStorageProvider {
-	static String providerName = "azure-pageblob"
+public class AzureFileStorageProvider extends AzureStorageProvider {
+	static String providerName = "azure"
 
 	public String getProviderName() {
 		return providerName
 	}
 
-	@Override
 	public String getEndpointUrl() {
-		return "${protocol}://${storageAccount}.blob.core.windows.net"
+		return "${protocol}://${storageAccount}.file.core.windows.net"
 	}
 
 	Directory getDirectory(String name) {
-		new AzureContainer(name: name, provider: this)
+		new AzureShare(name: name, provider: this, shareName: name)
 	}
 
-	List<Directory> getDirectories() {
+	List<AzureShare> getDirectories() {
 		def opts = [
 			verb: 'GET',
 			queryParams: [comp: 'list'], 
@@ -75,10 +74,10 @@ public class AzureBlobStorageProvider extends AzureStorageProvider {
 		EntityUtils.consume(response.entity)
 		
 		def provider = this
-		def directories = []
-		xmlDoc.Containers?.Container?.each { container ->
-			directories << new AzureContainer(name: container.Name, provider: provider)
+		def shares = []
+		xmlDoc.Shares?.Share?.each { share ->
+			shares << new AzureShare(name: share.Name, provider: provider, shareName: share.Name)
 		}
-		return directories
+		return shares
 	}
 }
