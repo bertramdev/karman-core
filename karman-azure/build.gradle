@@ -125,9 +125,7 @@ task(console, dependsOn: 'classes', type: JavaExec) {
 }
 
 test {
-    systemProperty "azure.storageAccount", System.getProperty("azure.storageAccount")
-    systemProperty "azure.storageKey", System.getProperty("azure.storageKey")
-    systemProperty "azure.testContainer", System.getProperty("azure.testContainer")
+    systemProperties System.properties
     testLogging {
         exceptionFormat = 'full'
         showStandardStreams = true
