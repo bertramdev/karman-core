@@ -287,7 +287,7 @@ class AzurePageBlobFile extends CloudFile {
 			}
 			
 			if(snapshot) {
-				srcURI += "?${snapshot}"
+				srcURI += "?snapshot=${snapshot}"
 			}
 
 			def copyPageBlobOpts = [
