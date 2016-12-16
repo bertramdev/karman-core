@@ -514,9 +514,15 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 	private boolean isValid() {
-		assert parent
-		assert parent.name
-		assert name
+		if(!parent) {
+			throw new Exception("No parent specified")
+		}
+		if(!parent.name) {
+			throw new Exception("No parent name specified")
+		}
+		if(!name) {
+			throw new Exception("No name specified")
+		}
 		true
 	}
 }

@@ -475,8 +475,12 @@ class AzureFile extends CloudFile {
 	}
 
 	private boolean isValid() {
-		assert name
-		assert shareName
+		if(!shareName) {
+			throw new Exception("No shareName specified")
+		}
+		if(!name) {
+			throw new Exception("No name specified")
+		}
 		true
 	}
 }
