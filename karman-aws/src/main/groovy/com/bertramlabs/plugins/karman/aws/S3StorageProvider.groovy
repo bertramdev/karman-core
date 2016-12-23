@@ -16,6 +16,8 @@
 
 package com.bertramlabs.plugins.karman.aws
 
+import com.amazonaws.auth.BasicSessionCredentials
+import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.RegionUtils
@@ -36,6 +38,7 @@ class S3StorageProvider extends StorageProvider {
 
     String accessKey = ''
     String secretKey = ''
+    String token = ''
     String region = ''
     String endpoint = ''
     String baseUrl
@@ -53,10 +56,11 @@ class S3StorageProvider extends StorageProvider {
     Boolean useGzip = false
     Boolean forceMultipart = false
     AmazonS3Client client = null
-	Long chunkSize = 100l*1024l*1024l
+    Long chunkSize = 100l*1024l*1024l
     public S3StorageProvider(Map options) {
         accessKey      = options.accessKey      ?: accessKey
         secretKey      = options.secretKey      ?: secretKey
+        token          = options.token          ?: token
         region         = options.region         ?: region
         endpoint       = options.endpoint       ?: endpoint
         symmetricKey   = options.symmetricKey   ?: symmetricKey
@@ -75,25 +79,34 @@ class S3StorageProvider extends StorageProvider {
         proxyPassword = options.proxyPassword ?: proxyPassword
         proxyDomain = options.proxyDomain ?: proxyDomain
         proxyWorkstation = options.proxyWorkstation ?: proxyWorkstation
-		chunkSize = options.chunkSize ?: chunkSize
+        chunkSize = options.chunkSize ?: chunkSize
     }
 
-	Directory getDirectory(String name) {
-		new S3Directory(name: name, provider: this)
-	}
+    Directory getDirectory(String name) {
+        new S3Directory(name: name, provider: this)
+    }
 
-	List<Directory> getDirectories() {
-		List<Bucket> buckets = s3Client.listBuckets()
+    List<Directory> getDirectories() {
+        List<Bucket> buckets = s3Client.listBuckets()
         buckets.collect { bucket -> directoryFromS3Bucket(bucket)}
-	}
+    }
 
     AmazonS3Client getS3Client() {
 
         if(client) {
             return client
         }
-        if (accessKey && secretKey) {
-            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey)
+
+        AWSCredentials credentials = null
+
+        if (accessKey && secretKey && token) {
+            credentials = new BasicSessionCredentials (accessKey, secretKey, token)       
+        }
+        else if (accessKey && secretKey && !token) {
+            credentials = new BasicAWSCredentials(accessKey, secretKey)
+        }
+
+        if (credentials != null) {
             ClientConfiguration configuration = new ClientConfiguration()
             configuration.setUseTcpKeepAlive(keepAlive)
             configuration.setMaxConnections(maxConnections)
@@ -142,10 +155,10 @@ class S3StorageProvider extends StorageProvider {
     // PRIVATE
 
     private S3Directory directoryFromS3Bucket(bucket) {
-		new S3Directory(
+        new S3Directory(
                 name: bucket.name,
                 provider: this
         )
-	}
+    }
 
 }
