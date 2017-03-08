@@ -30,6 +30,10 @@ class KarmanConfigHolder {
 		defaultFileACL: CloudFileACL.Private
 	]
 
+	static String getTempDir() {
+		return config?.tempDir
+	}
+
 	/**
 	* Map of available provider types registered with the StorageProvider factory
 	*/

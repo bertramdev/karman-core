@@ -118,16 +118,17 @@ abstract class CloudFile implements CloudFileInterface {
 		File tempFile
 		OutputStream out
 		 try {
-			 if(provider.tempDir || KarmanConfigHolder.config?.tempDir) {
-				 File tempDirFile = new File(provider.tempDir ?: KarmanConfigHolder.config?.tempDir)
+			 if(provider.tempDir || KarmanConfigHolder.getTempDir()) {
+				 File tempDirFile = new File(provider.tempDir ?: KarmanConfigHolder.getTempDir())
 				 if(!tempDirFile.exists()) {
 					 tempDirFile.mkdirs()
 				 }
 				 temporaryDirectory = tempDirFile.toPath()
 			 }
 
-			 Path tempFilePath = Files.createTempFile(temporaryDirectory,name)
-			 tempFile = new File(tempFilePath)
+			 Path tempFilePath = Files.createTempFile(temporaryDirectory,name,null)
+			 tempFile = tempFilePath.toFile()
+
 			 byte[] buffer = new byte[8192*2];
 			 int len;
 			 out = tempFile.newOutputStream()
