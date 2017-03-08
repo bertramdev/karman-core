@@ -200,7 +200,20 @@ class OpenstackCloudFile extends CloudFile {
 			assert writeStream
 
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-
+			if(!this.getContentLength()) {
+				File tmpFile = cacheStreamToFile(name,writeStream)
+				this.setContentLength(tmpFile.size())
+				InputStream is = tmpFile.newInputStream()
+				try {
+					this.setInputStream(tmpFile.newInputStream())
+					return this.save(acl)
+				} finally {
+					if(is) {
+						try { is.close()} catch(ex) {}
+					}
+					cleanupCacheStream(tmpFile)
+				}
+			}
 			// do chunk save
 			if (openstackProvider.chunkSize > 0 && chunked) {
 				return saveWithChunks(acl)

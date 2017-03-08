@@ -41,7 +41,7 @@ sourceSets {
 }
 
 dependencies {
-	provided 'org.codehaus.groovy:groovy-all:2.0.7'
+	compileOnly 'org.codehaus.groovy:groovy-all:2.0.7'
 
     compile project(':karman-core')
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"

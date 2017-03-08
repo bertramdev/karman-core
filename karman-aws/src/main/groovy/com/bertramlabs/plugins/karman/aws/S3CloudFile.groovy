@@ -403,8 +403,21 @@ class S3CloudFile extends CloudFile {
 			Long contentLength = object.objectMetadata.contentLength
 			if(contentLength != null && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
-			} else {
+			} else if(contentLength != null) {
 				saveChunked()
+			} else {
+				File tmpFile = cacheStreamToFile(name,rawSourceStream)
+				this.setContentLength(tmpFile.size())
+				InputStream is = tmpFile.newInputStream()
+				try {
+					this.setInputStream(tmpFile.newInputStream())
+					return this.save(acl)
+				} finally {
+					if(is) {
+						try { is.close()} catch(ex) {}
+					}
+					cleanupCacheStream(tmpFile)
+				}
 			}
 			object = null
 			summary = null

@@ -80,6 +80,7 @@ class S3StorageProvider extends StorageProvider {
         proxyDomain = options.proxyDomain ?: proxyDomain
         proxyWorkstation = options.proxyWorkstation ?: proxyWorkstation
         chunkSize = options.chunkSize ?: chunkSize
+		tempDir = options.tempDir ?: tempDir
     }
 
     Directory getDirectory(String name) {

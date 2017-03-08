@@ -169,6 +169,22 @@ class AzureFile extends CloudFile {
 			AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 			def contentLength = azureMeta['Content-Length'] // What we plan on saving
 
+			if(!contentLength) {
+				if(!this.getContentLength()) {
+					File tmpFile = cacheStreamToFile(name,writeStream)
+					this.setContentLength(tmpFile.size())
+					InputStream is = tmpFile.newInputStream()
+					try {
+						this.setInputStream(tmpFile.newInputStream())
+						return this.save(acl)
+					} finally {
+						if(is) {
+							try { is.close()} catch(ex) {}
+						}
+						cleanupCacheStream(tmpFile)
+					}
+				}
+			}
 			// Make sure the directory exists
 			ensurePathExists()
 			

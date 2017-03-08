@@ -16,6 +16,10 @@
 
 package com.bertramlabs.plugins.karman
 
+import java.nio.file.Files
+import java.nio.file.Path
+import groovy.transform.CompileStatic
+
 /**
 * Provides a standardized interface for dealing with files stored in the cloud.
 * Several methods exist on the CloudFile object to provide similar interactions as one
@@ -100,5 +104,56 @@ abstract class CloudFile implements CloudFileInterface {
 	*/
 	def save() {
 		save(provider.defaultFileACL)
+	}
+
+	/**
+	 * This method is used for storing file contents to a temporary on disk file so the final ContentLength can be assessed
+	 * before being uploaded to a target cloud
+	 * @param inputStream
+	 * @return
+	 */
+	@CompileStatic
+	protected File cacheStreamToFile(String name, InputStream inputStream) {
+		Path temporaryDirectory
+		File tempFile
+		OutputStream out
+		 try {
+			 if(provider.tempDir || KarmanConfigHolder.config?.tempDir) {
+				 File tempDirFile = new File(provider.tempDir ?: KarmanConfigHolder.config?.tempDir)
+				 if(!tempDirFile.exists()) {
+					 tempDirFile.mkdirs()
+				 }
+				 temporaryDirectory = tempDirFile.toPath()
+			 }
+
+			 Path tempFilePath = Files.createTempFile(temporaryDirectory,name)
+			 tempFile = new File(tempFilePath)
+			 byte[] buffer = new byte[8192*2];
+			 int len;
+			 out = tempFile.newOutputStream()
+			 while ((len = inputStream.read(buffer)) != -1) {
+				 out.write(buffer, 0, len);
+			 }
+
+		 } catch(ex) {
+			 if(out) {
+				 try { out.flush() ; out.close()}  catch(ex2) {}
+			 }
+			 if(tempFile) {
+				 tempFile.delete()
+			 }
+			 if(inputStream) {
+				 try { inputStream.close()} catch(ex3) {}
+			 }
+			 throw ex
+		 }
+
+		return tempFile
+	}
+
+	protected cleanupCacheStream(File file) {
+		if(file && file.exists()) {
+			file.delete()
+		}
 	}
 }
