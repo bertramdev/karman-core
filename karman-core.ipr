@@ -11,6 +11,9 @@
       <entry name="!?*.groovy"/>
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true"/>
+    <bytecodeTargetLevel target="1.8">
+      <module name="karman-grails" target="1.7"/>
+    </bytecodeTargetLevel>
   </component>
   <component name="CopyrightManager" default="">
     <module2copyright/>
@@ -50,6 +53,8 @@
       <module fileurl="file://$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" filepath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml"/>
       <module fileurl="file://$PROJECT_DIR$/karman-openstack/karman-openstack.iml" filepath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml"/>
       <module fileurl="file://$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" filepath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/karman-azure/karman-azure.iml" filepath="$PROJECT_DIR$/karman-azure/karman-azure.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/karman-grails/karman-grails.iml" filepath="$PROJECT_DIR$/karman-grails/karman-grails.iml"/>
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" assert-keyword="true" jdk-15="true" project-jdk-type="JavaSDK" assert-jdk-15="true" project-jdk-name="1.8">

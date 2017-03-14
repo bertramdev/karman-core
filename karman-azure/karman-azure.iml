@@ -120,6 +120,17 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/davydotcom/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.0.7/8da1fb3da46ef806f7e8eaa639448ee38c38bdcb/groovy-all-2.0.7.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/davydotcom/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.0.7/8dba3e4192ac62c874ca1923ca2d8ae22bf9729a/groovy-all-2.0.7-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
   <component name="ModuleRootManager"/>
 </module>
