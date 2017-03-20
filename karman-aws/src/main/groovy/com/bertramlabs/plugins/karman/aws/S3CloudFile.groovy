@@ -406,7 +406,7 @@ class S3CloudFile extends CloudFile {
 			assert writeableStream
 			setMetaAttribute(Headers.S3_CANNED_ACL, acl)
 
-			Long contentLength = getContentLength()
+			Long contentLength = (internalContentLengthSet || !exists()) ? internalContentLength : object.objectMetadata.contentLength
 			if(contentLength != null && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
 			} else if(contentLength != null) {
