@@ -96,7 +96,8 @@ class S3CloudFile extends CloudFile {
 	private Boolean loaded = false
 	private Boolean metaDataLoaded = false
 	private Boolean existsFlag = null
-
+	private Long internalContentLength = null
+	private Boolean internalContentLengthSet =false
 	/**
 	 * Meta attributes setter/getter
 	 */
@@ -169,11 +170,16 @@ class S3CloudFile extends CloudFile {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
+		if(internalContentLengthSet || !exists()) {
+			return internalContentLength
+		}
 		s3Object.objectMetadata.contentLength
 	}
 
 	void setContentLength(Long length) {
 		setMetaAttribute(Headers.CONTENT_LENGTH, length)
+		internalContentLength = length
+		internalContentLengthSet = true
 	}
 
 	/**
@@ -400,10 +406,10 @@ class S3CloudFile extends CloudFile {
 			assert writeableStream
 			setMetaAttribute(Headers.S3_CANNED_ACL, acl)
 
-			Long contentLength = object.objectMetadata.contentLength
-			if(contentLength && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
+			Long contentLength = getContentLength()
+			if(contentLength != null && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
-			} else if(contentLength) {
+			} else if(contentLength != null) {
 				saveChunked()
 			} else {
 				File tmpFile = cacheStreamToFile(name,rawSourceStream)
