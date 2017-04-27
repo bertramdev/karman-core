@@ -85,6 +85,7 @@ abstract class AzureStorageProvider extends StorageProvider {
 	String proxyWorkstation
 	String proxyDomain
 	String protocol = 'https'
+	String baseEndpointDomain
 
 	abstract String getEndpointUrl()
 

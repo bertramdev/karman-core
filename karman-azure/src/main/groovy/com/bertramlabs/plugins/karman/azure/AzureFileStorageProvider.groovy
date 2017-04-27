@@ -45,7 +45,8 @@ public class AzureFileStorageProvider extends AzureStorageProvider {
 	}
 
 	public String getEndpointUrl() {
-		return "${protocol}://${storageAccount}.file.core.windows.net"
+		def base = baseEndpointDomain ?: 'core.windows.net'
+		return "${protocol}://${storageAccount}.file.${base}"
 	}
 
 	Directory getDirectory(String name) {

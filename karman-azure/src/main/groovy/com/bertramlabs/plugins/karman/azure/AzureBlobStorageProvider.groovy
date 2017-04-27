@@ -46,7 +46,8 @@ public class AzureBlobStorageProvider extends AzureStorageProvider {
 
 	@Override
 	public String getEndpointUrl() {
-		return "${protocol}://${storageAccount}.blob.core.windows.net"
+		def base = baseEndpointDomain ?: 'core.windows.net'
+		return "${protocol}://${storageAccount}.blob.${base}"
 	}
 
 	Directory getDirectory(String name) {
