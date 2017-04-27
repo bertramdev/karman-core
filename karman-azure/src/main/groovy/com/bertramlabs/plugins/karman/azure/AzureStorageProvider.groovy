@@ -33,6 +33,8 @@ import org.apache.http.conn.socket.ConnectionSocketFactory
 import org.apache.http.conn.socket.PlainConnectionSocketFactory
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.conn.ssl.X509HostnameVerifier
+import org.apache.http.conn.ssl.SSLContextBuilder
+import org.apache.http.conn.ssl.TrustStrategy
 import org.apache.http.entity.InputStreamEntity
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.DefaultHttpResponseFactory
@@ -75,7 +77,9 @@ import java.text.*;
 
 @Commons
 abstract class AzureStorageProvider extends StorageProvider {
-	
+	static Integer WEB_CONNECTION_TIMEOUT = 20 * 1000
+	static Integer WEB_SOCKET_TIMEOUT = 20 * 1000
+
 	String storageAccount
 	String storageKey
 	String proxyHost
@@ -217,24 +221,29 @@ abstract class AzureStorageProvider extends StorageProvider {
 			}
 
 		})
-		SSLContext sslcontext = SSLContexts.createSystemDefault()
-		
-		//ignoreSSL(sslcontext)
-		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext) {
+
+		SSLContext sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				@Override
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+					return true
+				}
+			}).build()
+		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
 			@Override
 			public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
 				if(socket instanceof SSLSocket) {
 					try {
 						socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
+						log.debug "hostname: ${host?.getHostName()}"
 						PropertyUtils.setProperty(socket, "host", host.getHostName());
-					} catch(NoSuchMethodException ex) {
-					}
-					catch(IllegalAccessException ex) {
-					}
-					catch(InvocationTargetException ex) {
+					} catch (NoSuchMethodException ex) {}
+					catch (IllegalAccessException ex) {}
+					catch (InvocationTargetException ex) {}
+					catch (Exception ex) {
+						log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
 					}
 				}
-				return super.connectSocket(30000, socket, host, remoteAddress, localAddress, context)
+				return super.connectSocket(WEB_CONNECTION_TIMEOUT, socket, host, remoteAddress, localAddress, context)
 			}
 		}
 
