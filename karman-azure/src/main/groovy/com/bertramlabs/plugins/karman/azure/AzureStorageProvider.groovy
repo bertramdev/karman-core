@@ -77,8 +77,6 @@ import java.text.*;
 
 @Commons
 abstract class AzureStorageProvider extends StorageProvider {
-	static Integer WEB_CONNECTION_TIMEOUT = 20 * 1000
-	static Integer WEB_SOCKET_TIMEOUT = 20 * 1000
 
 	String storageAccount
 	String storageKey
@@ -243,7 +241,7 @@ abstract class AzureStorageProvider extends StorageProvider {
 						log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
 					}
 				}
-				return super.connectSocket(WEB_CONNECTION_TIMEOUT, socket, host, remoteAddress, localAddress, context)
+				return super.connectSocket(20 * 1000, socket, host, remoteAddress, localAddress, context)
 			}
 		}
 
