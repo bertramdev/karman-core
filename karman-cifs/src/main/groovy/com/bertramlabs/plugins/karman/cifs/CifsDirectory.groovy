@@ -65,8 +65,8 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			prefix = fileSystem.getPathMatcher(option.prefix)
 		//iterate files
 		def fileList = file?.listFile()
-		fileList?.each { file ->
-			def path = parentPath ? fileSystem.getPath(parentPath, file.name)
+		fileList?.each { fileRow ->
+			def path = parentPath ? fileSystem.getPath(parentPath, fileRow.name) : "/"
 			def addFile = true
 			if(excludes?.size() > 0) {
 				excludes?.each { exclude ->
@@ -77,7 +77,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			if(addFile == true && includes?.size() > 0) {
 				addFile = false
 				includes?.each { include ->
-					if(include.matches(path))
+					if(include.matches(path)) {
 						addFile == true
 					}
 				}
@@ -88,10 +88,10 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 					addFile = true
 			}
 			if(addFile == true) {
-				results << new CifsCloudFile(provider:provider, parent:this, name:file.name)
+				results << new CifsCloudFile(provider:provider, parent:this, name:fileRow.name)
 				if(file.isDirectory()) {
 					def newParent = parentPath + delimiter + file.name
-					recurseFiles(file, newParent, results, options)
+					recurseFiles(fileRow, newParent, results, options)
 				}
 			}
 		}

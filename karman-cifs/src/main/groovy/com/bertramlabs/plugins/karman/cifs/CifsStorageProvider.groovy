@@ -63,7 +63,7 @@ class CifsStorageProvider extends StorageProvider {
 			baseDirectory = new SmbFile(basePath)
 		baseDirectory.listFiles()?.each { file ->
 			if(file.isDirectory())
-				directories << new LocalDirectory(name:file.name, provider:this)
+				directories << new CifsDirectory(name:file.name, provider:this)
 		}
 		return directories
 	}
