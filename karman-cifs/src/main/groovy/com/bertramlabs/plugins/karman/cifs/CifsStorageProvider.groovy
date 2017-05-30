@@ -24,6 +24,11 @@ class CifsStorageProvider extends StorageProvider {
 
 	static String providerName = "cifs"
 
+	public String getProviderName() {
+		return providerName
+	}
+
+
 	String username
 	String password = ''
 	String domain = ''
@@ -34,10 +39,10 @@ class CifsStorageProvider extends StorageProvider {
 	public CifsStorageProvider(Map options) {
 		host = options.host
 		baseUrl  = options.baseUrl  ?: baseUrl
-		username = opts.username ?: username
+		username = options.username ?: username
 
-		password = opts.password ?: password
-		domain = opts.domain ?: domain
+		password = options.password ?: password
+		domain = options.domain ?: domain
 		if(options.defaultFileACL) {
 			//this.defaultFileACL = options.defaultFileACL
 		}
@@ -54,8 +59,8 @@ class CifsStorageProvider extends StorageProvider {
 		new CifsDirectory(name:name, provider:this)
 	}
 
-	public String getSmbUrl(path=null) {
-		"smb://${host}/${path ? path : ''}"
+	public String getSmbUrl(String path=null) {
+		"smb://${host}/${path ? (path + '/') : ''}"
 	}
 
 	def getDirectories() {

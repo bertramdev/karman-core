@@ -2,8 +2,6 @@ package com.bertramlabs.plugins.karman.cifs
 
 import com.bertramlabs.plugins.karman.CloudFile
 import groovy.util.logging.Commons
-import com.bertramlabs.plugins.karman.KarmanConfigHolder
-import com.bertramlabs.plugins.karman.nfs.NfsStorageProvider
 import spock.lang.Specification
 
 @Commons
@@ -12,10 +10,12 @@ class CifsStorageProviderSpec extends Specification {
 	static CifsStorageProvider storageProvider
 
 	def setupSpec() {
-		storageProvider = NfsStorageProvider.create(
-			provider:'CifsStorageProviderSpec',
-			host: System.getProperty('nfs.host'),
-			exportFolder: System.getProperty('nfs.mount')
+		storageProvider = CifsStorageProvider.create(
+			provider:'cifs',
+			host: System.getProperty('cifs.host'),
+			domain: '.',
+			username: System.getProperty('cifs.username'),
+			password: System.getProperty('cifs.password')
 		)
 	}
 
@@ -41,15 +41,25 @@ class CifsStorageProviderSpec extends Specification {
 
 	def "can write to a file"() {
 		given:
-		def dir = storageProvider['/karman-test']
-		dir.save()
+
+		def dir = storageProvider[System.getProperty('cifs.share')]
 		when:
 			CloudFile file = dir['test.txt'].text("Hello From Spock!")
 			file.save()
 		then:
 			file.getText("UTF-8") == "Hello From Spock!"
 		cleanup:
-			file.delete()
+			file?.delete()
+	}
+
+	def "can list files in a directory"() {
+		given:
+			def dir = storageProvider[System.getProperty('cifs.share')]
+		when:
+			def files = dir.listFiles()
+			println files
+		then:
+			files.size() > 0
 	}
 
 	// def "storage provider with http"() {

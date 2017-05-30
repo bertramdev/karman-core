@@ -27,15 +27,17 @@ import jcifs.smb.SmbFile
 class CifsCloudFile extends CloudFile {
 
 	CifsDirectory parent
+	InputStream sourceStream
 
 	SmbFile getCifsFile() {
 		def rtn
 		def cifsAuth = provider.getCifsAuthentication()
 		def parentFile = parent.getCifsFile()
+		// def path = parentFile.path + '/' + name
 		if(cifsAuth)
 			rtn = new SmbFile(parentFile.path, name, cifsAuth)
 		else
-			rtn = new SmbFile(parentFile.path, name)
+			rtn = new SmbFile(path, name)
 		return rtn
 	}
 
@@ -49,19 +51,12 @@ class CifsCloudFile extends CloudFile {
 	}
 
 	InputStream getInputStream() {
-		getCifsFile().newInputStream()
+		getCifsFile().getInputStream()
 	}
 
 	@CompileStatic
 	void setInputStream(InputStream inputS) {
-		byte[] buffer = new byte[8192 * 2]
-		int len
-		OutputStream out = this.getOutputStream()
-		while((len = inputS.read(buffer)) != -1) {
-			out.write(buffer, 0, len);
-		}
-		out.flush()
-		out.close()
+		sourceStream = inputS
 	}
 
 	OutputStream getOutputStream() {
@@ -70,7 +65,7 @@ class CifsCloudFile extends CloudFile {
 			ensurePathExists()
 			cifsFile.createNewFile()
 		}
-		cifsFile.newOutputStream()
+		cifsFile.getOutputStream()
 	}
 
 	String getText(String encoding = null) {
@@ -135,8 +130,27 @@ class CifsCloudFile extends CloudFile {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-  def save(acl = '') {
-    // Auto saves
+	@CompileStatic
+  	def save(acl = '') {
+		if(sourceStream) {
+			OutputStream os
+			try {
+				byte[] buffer = new byte[8192 * 2]
+				int len
+				os = this.getOutputStream()
+				while((len = sourceStream.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+				}
+			} finally {
+				try {
+					os.flush()
+					os.close()
+				} catch(ex) {}
+				sourceStream.close()
+			}
+			sourceStream = null
+		}
+
 		return
 	}
 
@@ -160,11 +174,11 @@ class CifsCloudFile extends CloudFile {
 
 	private cleanUpTree() {
 		def cifsFile = getCifsFile()
-		def parentDir = cifsFile.parentFile
+		SmbFile parentDir =  new SmbFile(cifsFile.parent, provider.getCifsAuthentication())
 		while(parentDir.canonicalPath != parent.cifsFile.canonicalPath) {
 			if(parentDir.list().size() == 0) {
 				parentDir.delete()
-				parentDir = parentDir.parentFile
+				parentDir = new SmbFile(parentDir.parent, provider.getCifsAuthentication())
 			} else {
 				break
 			}
@@ -172,8 +186,8 @@ class CifsCloudFile extends CloudFile {
 	}
 
   private ensurePathExists() {
-  	def cifsFile = getCifsFile()
-  	def parentFile = cifsFile.getParentFile()
+  	SmbFile cifsFile = getCifsFile()
+	SmbFile parentFile =  new SmbFile(cifsFile.parent, provider.getCifsAuthentication())
     if(!parentFile.exists()) {
     	parentFile.mkdirs()
     }

@@ -24,15 +24,17 @@ import jcifs.smb.SmbFile
 
 class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 
+	CifsStorageProvider provider
 	String region
 
-	File getCifsFile() {
+	SmbFile getCifsFile() {
 		def rtn
 		def cifsAuth = provider.getCifsAuthentication()
+		def dirName = name + '/'
 		if(cifsAuth)
-			rtn = new SmbFile(smbUrl, name, cifsAuth)
+			rtn = new SmbFile(provider.getSmbUrl(dirName), cifsAuth)
 		else
-			rtn = new SmbFile(smbUrl, name)
+			rtn = new SmbFile(provider.getSmbUrl(dirName))
 		return rtn
 	}
 
@@ -64,9 +66,9 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 		if(options.prefix)
 			prefix = fileSystem.getPathMatcher(option.prefix)
 		//iterate files
-		def fileList = file?.listFile()
+		def fileList = file?.listFiles()
 		fileList?.each { fileRow ->
-			def path = parentPath ? fileSystem.getPath(parentPath, fileRow.name) : "/"
+			def path = parentPath ? fileSystem.getPath(parentPath, fileRow.name) : ""
 			def addFile = true
 			if(excludes?.size() > 0) {
 				excludes?.each { exclude ->
@@ -89,8 +91,8 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			}
 			if(addFile == true) {
 				results << new CifsCloudFile(provider:provider, parent:this, name:fileRow.name)
-				if(file.isDirectory()) {
-					def newParent = parentPath + delimiter + file.name
+				if(fileRow.isDirectory()) {
+					def newParent = (parentPath ?: '') + file.name
 					recurseFiles(fileRow, newParent, results, options)
 				}
 			}
