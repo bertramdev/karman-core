@@ -93,6 +93,9 @@ class NfsCloudFile extends CloudFile{
 	def save(acl = '') {
 		// Auto saves
 		if(sourceStream) {
+			if(!baseFile.parentFile.exists()) {
+				baseFile.parentFile.mkdirs()
+			}
 			def os
 			try {
 				os = getOutputStream()
@@ -112,6 +115,19 @@ class NfsCloudFile extends CloudFile{
 	@Override
 	def delete() {
 		baseFile.delete()
+		cleanUpTree()
+	}
+
+	private cleanUpTree() {
+		Nfs3File parentDir =  baseFile.parentFile
+		while(parentDir.absolutePath != parent.baseFile.absolutePath) {
+			if(parentDir.list().size() == 0) {
+				parentDir.delete()
+				parentDir = parentDir.parentFile
+			} else {
+				break
+			}
+		}
 	}
 
 	void setMetaAttribute(key, value) {

@@ -64,7 +64,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			includes << fileSystem.getPathMatcher(include)	
 		}
 		if(options.prefix)
-			prefix = fileSystem.getPathMatcher(option.prefix)
+			prefix = fileSystem.getPathMatcher(options.prefix)
 		//iterate files
 		def fileList = file?.listFiles()
 		fileList?.each { fileRow ->

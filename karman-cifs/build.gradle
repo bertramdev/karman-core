@@ -53,7 +53,7 @@ publishing {
 				asNode().children().last() + {
 					resolveStrategy = Closure.DELEGATE_FIRST
 					name 'karman-cifs'
-					description 'Karman Storage Provider interface for amazon web services (primarily S3)'
+					description 'Karman Storage Provider interface for CIFS (Samba) File Shares'
 					url 'https://github.com/bertramdev/karman-core'
 					scm {
 						url 'https://github.com/bertramdev/karman-core'
@@ -72,6 +72,11 @@ publishing {
 							id 'davydotcom'
 							name 'David Estes'
 							email 'davydotcom@gmail.com'
+						}
+						developer {
+							id 'bwheeler'
+							name 'Brian Wheeler'
+							email 'bwheeler@bcap.com'
 						}
 					}
 				}

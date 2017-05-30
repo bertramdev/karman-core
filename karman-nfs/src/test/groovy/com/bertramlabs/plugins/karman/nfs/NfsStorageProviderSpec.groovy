@@ -56,6 +56,24 @@ class NfsStorageProviderSpec extends Specification {
 		storageProvider.getProviderName() == 'nfs'
 	}
 
+	def "can list files in a directory"() {
+		given:
+		def dir = storageProvider['/karman-test']
+		dir.save()
+		dir['test.txt'].text("Hello From Spock!").save()
+		dir['hello/testsub.txt'].text("Hello From Spock!").save()
+		dir['test2.txt'].text("Hello From Spock!").save()
+		when:
+		def files = dir.listFiles()
+		println files
+		then:
+		files.size() > 0
+		cleanup:
+		dir['test.txt'].delete()
+		dir['hello/testsub.txt'].delete()
+		dir['test2.txt'].delete()
+	}
+
 	def "can write to a file"() {
 		given:
 		def dir = storageProvider['/karman-test']

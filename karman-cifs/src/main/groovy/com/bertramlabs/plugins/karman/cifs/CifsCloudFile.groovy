@@ -27,6 +27,7 @@ import jcifs.smb.SmbFile
 class CifsCloudFile extends CloudFile {
 
 	CifsDirectory parent
+	CifsStorageProvider provider
 	InputStream sourceStream
 
 	SmbFile getCifsFile() {
@@ -133,6 +134,10 @@ class CifsCloudFile extends CloudFile {
 	@CompileStatic
   	def save(acl = '') {
 		if(sourceStream) {
+			def parentFile = new SmbFile(cifsFile.parent,provider.getCifsAuthentication())
+			if(!parentFile.exists()) {
+				parentFile.mkdirs()
+			}
 			OutputStream os
 			try {
 				byte[] buffer = new byte[8192 * 2]
