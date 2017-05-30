@@ -1,0 +1,136 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.4"
+}
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'com.bertramlabs.plugins'
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+    maven { url 'http://dl.bintray.com/bertramlabs/karman' }
+}
+
+
+configurations {
+    provided
+}
+ 
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
+dependencies {
+	compileOnly 'org.codehaus.groovy:groovy-all:2.0.7'
+
+    compile project(':karman-core')
+    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+    compile 'com.emc.ecs:nfs-client:1.0.3'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'karman-nfs'
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'karman-nfs'
+                    description 'Karman Storage Provider interface for NFS Shares'
+                    url 'https://github.com/bertramdev/karman-core'
+                    scm {
+                        url 'https://github.com/bertramdev/karman-core'
+                        connection 'scm:https://bertramdev@github.com/bertramdev/karman-core.git'
+                        developerConnection 'scm:git://github.com/bertramdev/karman-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'davydotcom'
+                            name 'David Estes'
+                            email 'destes@bcap.com'
+                        }
+                    }
+                }
+            }
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+configurations {
+    provided
+}
+ 
+
+
+//Define bintrayUser and bintrayKey in ~/.gradle/gradle.properties
+bintray {
+    if(project.hasProperty('bintrayUser')) {
+        user = bintrayUser
+        key = bintrayKey
+    }
+    publications = ['maven']
+    pkg {
+        repo = 'karman'
+        userOrg = 'bertramlabs'
+        name = 'karman-nfs'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/bertramdev/karman-core.git'
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task(console, dependsOn: 'classes', type: JavaExec) {
+  main = 'groovy.ui.Console'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+test {
+    systemProperties System.properties
+    testLogging {
+        exceptionFormat = 'full'
+        showStandardStreams = true
+        events 'started', 'passed'
+    }
+}
+
+
+bintrayUpload.dependsOn build, sourcesJar, javadocJar
