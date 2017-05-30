@@ -19,6 +19,7 @@ package com.bertramlabs.plugins.karman.local
 import com.bertramlabs.plugins.karman.*
 
 class LocalStorageProvider extends StorageProvider {
+
 	static String providerName = "local"
 
 	String basePath
@@ -31,11 +32,10 @@ class LocalStorageProvider extends StorageProvider {
 		//	this.defaultFileACL = options.defaultFileACL
 		}
 	}
+	
 	Directory getDirectory(String name) {
 		new LocalDirectory(name: name, provider: this)
 	}
-
-
 
 	def getDirectories() {
 		def directories = []

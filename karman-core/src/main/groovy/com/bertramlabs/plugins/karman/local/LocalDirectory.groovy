@@ -15,16 +15,17 @@
  */
 
 package com.bertramlabs.plugins.karman.local
+
 import com.bertramlabs.plugins.karman.*
 import org.apache.tools.ant.DirectoryScanner
 
 class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
+
 	String region
 
 	File getFsFile() {
-		new File(provider.basePath,name)
+		new File(provider.basePath, name)
 	}
-	
 
 	Boolean exists() {
 		fsFile.exists()
@@ -47,7 +48,6 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 				} else {
 					scanner.setIncludes([prefix + '**/*'] as String[])		
 				}
-				
 			} else {
 				if(delimiter == '/') {
 					scanner.setIncludes([prefix+'*',prefix + '*/**/*'] as String[])		
@@ -58,11 +58,9 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 		} else if (options.delimiter) {
 			scanner.setIncludes(['*'] as String[])		
 		}
-
 		scanner.setBasedir(fsFile.canonicalPath)
 		scanner.setCaseSensitive(false)
 		scanner.scan()
-
 		def results = scanner.getIncludedDirectories().flatten() + scanner.getIncludedFiles().flatten()
 		results.collect {
 			new LocalCloudFile(provider: provider, parent: this, name: it)

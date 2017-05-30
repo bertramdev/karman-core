@@ -111,11 +111,11 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-    public void putAt(String key, File file)  {
-        putAt(key, file.bytes)
-    }
+  public void putAt(String key, File file)  {
+    putAt(key, file.bytes)
+  }
 
-    /**
+  /**
 	* Not directly Used. Enables DSL for setting values of files.
 	* <p>
 	* Example use of Directory DSL
@@ -128,10 +128,9 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-    public void putAt(String key, byte[] bytes)  {
+  public void putAt(String key, byte[] bytes)  {
 		def cloudFile = getFile(key)	
-        def mimeType = Mimetypes.instance.getMimetype(key)
-        
+    def mimeType = Mimetypes.instance.getMimetype(key)
 		if(mimeType) {
 			cloudFile.contentType = mimeType
 		}
@@ -152,10 +151,8 @@ abstract class Directory implements DirectoryInterface {
 	*/
 	public void putAt(String key, String text)  {
 		def cloudFile = getFile(key)
-		
-        def mimeType = Mimetypes.instance.getMimetype(key)
-        
-        if(mimeType) {
+		def mimeType = Mimetypes.instance.getMimetype(key)
+    if(mimeType) {
 			cloudFile.contentType = mimeType
 		}
 		cloudFile.text = text
@@ -192,11 +189,10 @@ abstract class Directory implements DirectoryInterface {
 		putAt(propName,value)
 	}
 
-
 	/**
 	* Creates or saves this directory to the cloud store if it does not already exist.
 	*/
-    def mkdir() {
+  def mkdir() {
 		save()
 	}
 
@@ -221,6 +217,6 @@ abstract class Directory implements DirectoryInterface {
 	*/
 	String toString() {
 		return name
-    }
+  }
 
 }
