@@ -21,6 +21,7 @@ import groovy.util.logging.Commons
 import java.io.ByteArrayInputStream;
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
+import jcifs.smb.SmbFile
 
 @Commons
 class CifsCloudFile extends CloudFile {
