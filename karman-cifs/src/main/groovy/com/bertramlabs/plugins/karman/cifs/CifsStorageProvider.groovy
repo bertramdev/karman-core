@@ -27,14 +27,15 @@ class CifsStorageProvider extends StorageProvider {
 	String username
 	String password = ''
 	String domain = ''
-	String basePath
+	String host
 	String baseUrl
 	NtlmPasswordAuthentication cifsAuthentication
 
 	public CifsStorageProvider(Map options) {
-		basePath = options.basePath ?: basePath
+		host = options.host
 		baseUrl  = options.baseUrl  ?: baseUrl
 		username = opts.username ?: username
+
 		password = opts.password ?: password
 		domain = opts.domain ?: domain
 		if(options.defaultFileACL) {
@@ -53,17 +54,22 @@ class CifsStorageProvider extends StorageProvider {
 		new CifsDirectory(name:name, provider:this)
 	}
 
+	public String getSmbUrl(path=null) {
+		"smb://${host}/${path ? path : ''}"
+	}
+
 	def getDirectories() {
 		def directories = []
 		def cifsAuth = getCifsAuthentication()
 		def baseDirectory
 		if(cifsAuth)
-			baseDirectory = new SmbFile(basePath, cifsAuth)
+			baseDirectory = new SmbFile(smbUrl, cifsAuth)
 		else
-			baseDirectory = new SmbFile(basePath)
+			baseDirectory = new SmbFile(smbUrl)
+
 		baseDirectory.listFiles()?.each { file ->
 			if(file.isDirectory())
-				directories << new LocalDirectory(name:file.name, provider:this)
+				directories << new CifsDirectory(name:file.name, provider:this)
 		}
 		return directories
 	}

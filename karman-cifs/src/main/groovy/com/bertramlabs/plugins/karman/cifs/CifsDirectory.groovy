@@ -30,9 +30,9 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 		def rtn
 		def cifsAuth = provider.getCifsAuthentication()
 		if(cifsAuth)
-			rtn = new SmbFile(provider.basePath, name, cifsAuth)
+			rtn = new SmbFile(smbUrl, name, cifsAuth)
 		else
-			rtn = new SmbFile(provider.basePath, name)
+			rtn = new SmbFile(smbUrl, name)
 		return rtn
 	}
 
