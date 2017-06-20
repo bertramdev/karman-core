@@ -98,7 +98,7 @@ class CifsCloudFile extends CloudFile {
 
 	Long getContentLength() {
 		def cifsFile = getCifsFile()
-		return cifsFile.size()
+		return cifsFile.length()
 	}
 
 	String getContentType() {
