@@ -412,7 +412,7 @@ class S3CloudFile extends CloudFile {
 			} else if(contentLength != null) {
 				saveChunked()
 			} else {
-				File tmpFile = cacheStreamToFile(name,rawSourceStream)
+				File tmpFile = cacheStreamToFile(null,rawSourceStream)
 				this.setContentLength(tmpFile.size())
 				InputStream is = tmpFile.newInputStream()
 				try {

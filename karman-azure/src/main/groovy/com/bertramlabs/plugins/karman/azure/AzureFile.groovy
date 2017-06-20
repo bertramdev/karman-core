@@ -171,7 +171,7 @@ class AzureFile extends CloudFile {
 
 			if(!contentLength) {
 				if(!this.getContentLength()) {
-					File tmpFile = cacheStreamToFile(name,writeStream)
+					File tmpFile = cacheStreamToFile(null,writeStream)
 					this.setContentLength(tmpFile.size())
 					InputStream is = tmpFile.newInputStream()
 					try {

@@ -171,7 +171,7 @@ class AzurePageBlobFile extends CloudFile {
 			AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 			def contentLength = azureMeta['Content-Length'] // What we plan on saving
 			if(!this.getContentLength()) {
-				File tmpFile = cacheStreamToFile(name,writeStream)
+				File tmpFile = cacheStreamToFile(null,writeStream)
 				this.setContentLength(tmpFile.size())
 				InputStream is = tmpFile.newInputStream()
 				try {

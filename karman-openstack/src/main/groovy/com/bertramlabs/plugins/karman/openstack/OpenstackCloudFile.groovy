@@ -201,7 +201,7 @@ class OpenstackCloudFile extends CloudFile {
 
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			if(!this.getContentLength()) {
-				File tmpFile = cacheStreamToFile(name,writeStream)
+				File tmpFile = cacheStreamToFile(null,writeStream)
 				this.setContentLength(tmpFile.size())
 				InputStream is = tmpFile.newInputStream()
 				try {
