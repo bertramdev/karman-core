@@ -468,16 +468,26 @@ class AzureFile extends CloudFile {
 		
 		def currentDirectory = azureProvider[shareName]
 		if(!currentDirectory.exists()) {
-			currentDirectory.save()
+			try {
+				currentDirectory.save()	
+			} catch(ex) {
+				log.warn("Error ensuring path exists: ${shareName} - ${ex.message}...This may be ok though, moving on.")
+			}
 		}
 
 		pathParts.eachWithIndex{ part, idx ->
 			// Last part is the file name... ignore
 			if(idx != pathParts.size() - 1) {
-				currentDirectory = currentDirectory.getDirectory(part)
-				if(!currentDirectory.exists()) {
-					currentDirectory.save()
+				try {
+					currentDirectory = currentDirectory.getDirectory(part)
+					if(!currentDirectory.exists()) {
+						currentDirectory.save()
+					}	
+				} catch(ex) {
+					// We should do a log warn here but keep going
+					log.warn("Error ensuring path exists: ${part} - ${ex.message}...This may be ok though, moving on.")
 				}
+				
 			}
 		}	
 	}
