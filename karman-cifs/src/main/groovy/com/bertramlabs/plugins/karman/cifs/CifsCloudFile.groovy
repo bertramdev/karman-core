@@ -38,7 +38,7 @@ class CifsCloudFile extends CloudFile {
 		if(cifsAuth)
 			rtn = new SmbFile(parentFile.path, name, cifsAuth)
 		else
-			rtn = new SmbFile(path, name)
+			rtn = new SmbFile(parentFile.path, name)
 		return rtn
 	}
 
@@ -194,7 +194,12 @@ class CifsCloudFile extends CloudFile {
   	SmbFile cifsFile = getCifsFile()
 	SmbFile parentFile =  new SmbFile(cifsFile.parent, provider.getCifsAuthentication())
     if(!parentFile.exists()) {
-    	parentFile.mkdirs()
+    	try {
+    		parentFile.mkdirs()	
+    	} catch(ex) {
+    		log.warn("Error Creating Parent Path Directories, It may be because something tried to write in parallel. If this is the case this error can safely be ignored! ${ex.message}")
+    	}
+    	
     }
   }
 
