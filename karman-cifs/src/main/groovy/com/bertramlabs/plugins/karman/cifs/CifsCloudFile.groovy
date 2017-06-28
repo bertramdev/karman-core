@@ -134,7 +134,7 @@ class CifsCloudFile extends CloudFile {
 	@CompileStatic
   	def save(acl = '') {
 		if(sourceStream) {
-			def parentFile = new SmbFile(cifsFile.parent,provider.getCifsAuthentication())
+			def parentFile = provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent,provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent) 
 			if(!parentFile.exists()) {
 				parentFile.mkdirs()
 			}
@@ -179,11 +179,13 @@ class CifsCloudFile extends CloudFile {
 
 	private cleanUpTree() {
 		def cifsFile = getCifsFile()
-		SmbFile parentDir =  new SmbFile(cifsFile.parent, provider.getCifsAuthentication())
+
+		
+		SmbFile parentDir =  provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent, provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
 		while(parentDir.canonicalPath != parent.cifsFile.canonicalPath) {
 			if(parentDir.list().size() == 0) {
 				parentDir.delete()
-				parentDir = new SmbFile(parentDir.parent, provider.getCifsAuthentication())
+				parentDir = provider.getCifsAuthentication() ? new SmbFile(parentDir.parent, provider.getCifsAuthentication()) : new SmbFile(parentDir.parent)
 			} else {
 				break
 			}
@@ -192,7 +194,7 @@ class CifsCloudFile extends CloudFile {
 
   private ensurePathExists() {
   	SmbFile cifsFile = getCifsFile()
-	SmbFile parentFile =  new SmbFile(cifsFile.parent, provider.getCifsAuthentication())
+	SmbFile parentFile =  provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent, provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
     if(!parentFile.exists()) {
     	try {
     		parentFile.mkdirs()	
