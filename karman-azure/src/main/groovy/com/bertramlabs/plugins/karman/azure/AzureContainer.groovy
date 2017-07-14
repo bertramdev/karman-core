@@ -68,7 +68,7 @@ class AzureContainer extends Directory {
 		def blobs = []
 		if(response.statusLine.statusCode == 200) {
 			xmlDoc.Blobs?.Blob?.each { blob ->
-				blobs << new AzurePageBlobFile(name: blob.Name, provider: provider)
+				blobs << new AzurePageBlobFile(parent: this, name: blob.Name, provider: provider)
 			}
 		} else {
 			def errMessage = "Error getting blobs from directory with name ${opts.path}: ${xmlDoc.Message}"
