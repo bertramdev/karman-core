@@ -2,37 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4c0d6dc-99ad-469a-8019-516cdfae0e9c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-core_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-core_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-aws/karman-aws.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-azure/karman-azure.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-core.iml" afterPath="$PROJECT_DIR$/karman-core.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-core.ipr" afterPath="$PROJECT_DIR$/karman-core.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-core.iws" afterPath="$PROJECT_DIR$/karman-core.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-grails/karman-grails.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy" afterPath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -115,7 +85,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OpenstackNetworkProvider.groovy" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OpenstackNetworkProvider.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="5415">
@@ -123,6 +93,16 @@
               <folding>
                 <element signature="e#50#111#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="21" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2660,6 +2640,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -2705,7 +2686,20 @@
       <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="Scratches" />
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="karman-core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="karman-core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="Grails" />
     </panes>
   </component>
@@ -2835,12 +2829,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1501591534181</updated>
-      <workItem from="1501591535305" duration="333000" />
+      <workItem from="1501591535305" duration="369000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="333000" />
+    <option name="totallyTimeSpent" value="369000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="1023" extended-state="6" />
@@ -3149,6 +3143,14 @@
           <folding>
             <element signature="e#50#111#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="21" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
