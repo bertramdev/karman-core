@@ -5,23 +5,63 @@ import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
-import org.apache.http.HttpEntity
-import org.apache.http.HttpResponse
 import org.apache.http.client.methods.*
-import org.apache.http.entity.*
-import org.apache.http.impl.client.*
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.HttpEntity
+import org.apache.http.HttpHost
+import org.apache.http.HttpRequest
+import org.apache.http.HttpResponse
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.NTCredentials
+import org.apache.http.client.CredentialsProvider
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
+import org.apache.http.client.utils.URIBuilder
+import org.apache.http.config.Registry
+import org.apache.http.config.RegistryBuilder
+import org.apache.http.conn.ConnectTimeoutException
+import org.apache.http.conn.HttpConnectionFactory
+import org.apache.http.conn.ManagedHttpClientConnection
+import org.apache.http.conn.routing.HttpRoute
+import org.apache.http.conn.socket.ConnectionSocketFactory
+import org.apache.http.conn.socket.PlainConnectionSocketFactory
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
+import org.apache.http.conn.ssl.X509HostnameVerifier
+import org.apache.http.conn.ssl.SSLContextBuilder
+import org.apache.http.conn.ssl.TrustStrategy
 import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.client.ProxyAuthenticationStrategy
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager
+import org.apache.http.impl.conn.DefaultHttpResponseParserFactory
+import org.apache.http.impl.conn.ManagedHttpClientConnectionFactory
+import org.apache.http.impl.io.DefaultHttpRequestWriterFactory
+import org.apache.http.io.HttpMessageParser
+import org.apache.http.io.HttpMessageParserFactory
+import org.apache.http.io.HttpMessageWriterFactory
+import org.apache.http.io.SessionInputBuffer
 import org.apache.http.message.BasicHeader
+import org.apache.http.message.BasicLineParser
+import org.apache.http.message.LineParser
 import org.apache.http.params.HttpConnectionParams
 import org.apache.http.params.HttpParams
+import org.apache.http.protocol.HttpContext
+import org.apache.http.ssl.SSLContexts
+import org.apache.http.util.CharArrayBuffer
 import org.apache.http.util.EntityUtils
-import org.apache.http.client.utils.URIBuilder
+
+import javax.net.ssl.SSLSession
+import javax.net.ssl.SSLSocket
+import java.lang.reflect.InvocationTargetException
+import java.security.cert.X509Certificate
+
+import javax.net.ssl.SSLContext
 
 /**
  * Network provider implementation for the Openstack Networking API
@@ -40,7 +80,7 @@ import org.apache.http.client.utils.URIBuilder
  *  region: 'IAD'
  * )
  *
- * }
+ *}
  * </pre>
  *
  * @author David Estes
@@ -58,6 +98,12 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String tenantName
 	String domainId = 'default'
 	Map accessInfo
+	String proxyHost
+	Integer proxyPort
+	String proxyUser
+	String proxyPassword
+	String proxyWorkstation
+	String proxyDomain
 
 	protected Boolean authenticate() {
 		try {
@@ -65,17 +111,15 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			URIBuilder uriBuilder = new URIBuilder(identityUrl)
 			def identityVersion = parseEndpointVersion(identityUrl) ? "/${parseEndpointVersion(identityUrl)}" : '/v3'
 			HttpResponse response
-			if (identityVersion == '/v3') {
-				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0,identityVersion.size() - 1) : identityVersion, "auth", "tokens"].join("/"))
+			if(identityVersion == '/v3') {
+				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion, "auth", "tokens"].join("/"))
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
-				authPost.addHeader("Content-Type","application/json");
-				authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[id:this.domainId ?: 'default']]]]]]
+				authPost.addHeader("Content-Type", "application/json");
+				authMap = [auth: [identity: [methods: ['password'], password: [user: [name: this.username, password: this.password, domain: [id: this.domainId ?: 'default']]]]]]
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-				HttpClient client = new DefaultHttpClient()
-				HttpParams params = client.getParams()
-				HttpConnectionParams.setConnectionTimeout(params, 30000)
-				HttpConnectionParams.setSoTimeout(params, 20000)
+				HttpClient client = prepareHttpClient()
+
 				response = client.execute(authPost)
 				HttpEntity responseEntity = response.getEntity();
 				if(response.getStatusLine().statusCode != 201) {
@@ -95,21 +139,21 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 						auth: [
 							"RAX-KSKEY:apiKeyCredentials": [
 								username: this.username,
-								apiKey: this.apiKey
+								apiKey  : this.apiKey
 							]
 						]
 					]
 				} else if(password) {
-					authMap = [auth:[passwordCredentials:[username:this.username, password:this.password]]]
+					authMap = [auth: [passwordCredentials: [username: this.username, password: this.password]]]
 					if(tenantName) {
 						authMap.auth.tenantName = tenantName
 					}
 				}
 
-				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0,identityVersion.size() - 1) : identityVersion, "tokens"].join("/"))
+				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion, "tokens"].join("/"))
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
-				authPost.addHeader("Content-Type","application/json");
+				authPost.addHeader("Content-Type", "application/json");
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
 				HttpClient client = new DefaultHttpClient()
 				HttpParams params = client.getParams()
@@ -136,7 +180,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			EntityUtils.consume(response.entity)
 			return true
 		} catch(ex) {
-			log.error("Error occurred during the authentication phase - ${ex.message}",ex)
+			log.error("Error occurred during the authentication phase - ${ex.message}", ex)
 			return false
 		}
 	}
@@ -198,29 +242,29 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			uriBuilder.setPath(path)
 			HttpRequestBase request
 			if(method == 'GET') {
-				request = new HttpGet(uriBuilder.build())	
-			} else if (method == 'POST') {
-				request = new HttpPost(uriBuilder.build())	
+				request = new HttpGet(uriBuilder.build())
+			} else if(method == 'POST') {
+				request = new HttpPost(uriBuilder.build())
 				if(opts.body) {
-					request.addHeader("Content-Type","application/json");
+					request.addHeader("Content-Type", "application/json");
 					request.setEntity(new StringEntity(new JsonBuilder(opts.body).toString()))
 				}
-			} else if (method == 'PUT') {
-				request = new HttpPut(uriBuilder.build())	
+			} else if(method == 'PUT') {
+				request = new HttpPut(uriBuilder.build())
 				if(opts.body) {
-					request.addHeader("Content-Type","application/json");
+					request.addHeader("Content-Type", "application/json");
 					request.setEntity(new StringEntity(new JsonBuilder(opts.body).toString()))
 				}
-			} else if (method == 'DELETE') {
+			} else if(method == 'DELETE') {
 				request = new HttpDelete(uriBuilder.build())
 			}
 			request.addHeader("Accept", "application/json")
 			request.addHeader(new BasicHeader('X-Auth-Token', token))
 
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
+
+
+
+			HttpClient client = prepareHttpClient();
 
 			log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
 
@@ -252,36 +296,36 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 		accessInfo.endpointInfo = [:]
 
 		if(accessInfo.identityApiVersion == 'v3') {
-			def computeApiResults = tokenResults.token.catalog.find{it.type == 'compute'}
+			def computeApiResults = tokenResults.token.catalog.find { it.type == 'compute' }
 			def match = findEndpointHost(computeApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.computeApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.computeVersion = match ? parseEndpointVersion(match) : null
-			def imageApiResults = tokenResults.token.catalog.find{it.type == 'image'}
+			def imageApiResults = tokenResults.token.catalog.find { it.type == 'image' }
 			match = findEndpointHost(imageApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.imageApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.imageVersion = match ? parseEndpointVersion(match, true, 'v2') : null
-			def storageApiResults = tokenResults.token.catalog.find{it.type == 'volume'}
+			def storageApiResults = tokenResults.token.catalog.find { it.type == 'volume' }
 			match = findEndpointHost(storageApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.storageApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.storageVersion = match ? parseEndpointVersion(match) : null
-			def networkApiResults = tokenResults.token.catalog.find{it.type == 'network'}
+			def networkApiResults = tokenResults.token.catalog.find { it.type == 'network' }
 			match = findEndpointHost(networkApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match) : null
 		} else {
-			def computeApiResults = tokenResults.access.serviceCatalog.find{it.type == 'compute'}
+			def computeApiResults = tokenResults.access.serviceCatalog.find { it.type == 'compute' }
 			def match = findEndpointHost(computeApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.computeApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.computeVersion = match ? parseEndpointVersion(match) : null
-			def imageApiResults = tokenResults.access.serviceCatalog.find{it.type == 'image'}
+			def imageApiResults = tokenResults.access.serviceCatalog.find { it.type == 'image' }
 			match = findEndpointHost(imageApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.imageApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.imageVersion = match ? parseEndpointVersion(match, true, 'v2') : null
-			def storageApiResults = tokenResults.access.serviceCatalog.find{it.type == 'volume'}
+			def storageApiResults = tokenResults.access.serviceCatalog.find { it.type == 'volume' }
 			match = findEndpointHost(storageApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.storageApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.storageVersion = match ? parseEndpointVersion(match) : null
-			def networkApiResults = tokenResults.access.serviceCatalog.find{it.type == 'network'}
+			def networkApiResults = tokenResults.access.serviceCatalog.find { it.type == 'network' }
 			match = findEndpointHost(networkApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
 			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match) : null
@@ -290,10 +334,14 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 	private findEndpointHost(endpoints, osHost) {
 		def rtn
-		def endpoint = endpoints?.find{it.publicURL?.indexOf(osHost) > -1  || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1}
+		def endpoint = endpoints?.find {
+			it.publicURL?.indexOf(osHost) > -1 || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1
+		}
 		if(!endpoint) {
 			osHost = osHost.substring(osHost.indexOf('.') + 1)
-			endpoint = endpoints?.find{it.publicURL?.indexOf(osHost) > -1 || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1}
+			endpoint = endpoints?.find {
+				it.publicURL?.indexOf(osHost) > -1 || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1
+			}
 		}
 		if(!endpoint)
 			endpoint = endpoints.first()
@@ -305,6 +353,89 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				rtn = (endpoint.adminURL && endpoint.adminURL.indexOf(osHost) > -1) ? endpoint.adminURL : null
 		}
 		return rtn
+	}
+
+
+	private HttpClient prepareHttpClient() {
+		HttpClientBuilder clientBuilder = HttpClients.custom()
+		clientBuilder.setHostnameVerifier(new X509HostnameVerifier() {
+			public boolean verify(String host, SSLSession sess) {
+				return true
+			}
+
+			public void verify(String host, SSLSocket ssl) {
+
+			}
+
+			public void verify(String host, String[] cns, String[] subjectAlts) {
+
+			}
+
+			public void verify(String host, X509Certificate cert) {
+
+			}
+
+		})
+
+		//We want to ignore certificate errors for this
+		SSLContext sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+			@Override
+			public boolean isTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+				return true
+			}
+		}).build()
+		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
+			@Override
+			public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
+				if(socket instanceof SSLSocket) {
+					try {
+						socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
+						log.debug "hostname: ${host?.getHostName()}"
+						PropertyUtils.setProperty(socket, "host", host.getHostName());
+					} catch(NoSuchMethodException ex) {
+					}
+					catch(IllegalAccessException ex) {
+					}
+					catch(InvocationTargetException ex) {
+					}
+					catch(Exception ex) {
+						log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
+					}
+				}
+				return super.connectSocket(20 * 1000, socket, host, remoteAddress, localAddress, context)
+			}
+		}
+
+		clientBuilder.setSSLSocketFactory(sslConnectionFactory)
+		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
+			.register("https", sslConnectionFactory)
+			.register("http", PlainConnectionSocketFactory.INSTANCE)
+			.build();
+		HttpMessageWriterFactory<HttpRequest> requestWriterFactory = new DefaultHttpRequestWriterFactory();
+		HttpMessageParserFactory<HttpResponse> responseParserFactory = new DefaultHttpResponseParserFactory()
+		HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory = new ManagedHttpClientConnectionFactory(
+			requestWriterFactory, responseParserFactory);
+		BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(registry, connFactory)
+		clientBuilder.setConnectionManager(connectionManager)
+
+		// Proxy Settings
+		if(proxyHost) {
+			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
+			if(proxyUser) {
+				CredentialsProvider credsProvider = new BasicCredentialsProvider();
+				NTCredentials ntCreds = new NTCredentials(proxyUser, proxyPassword, proxyWorkstation, proxyDomain)
+				credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), ntCreds)
+
+				clientBuilder.setDefaultCredentialsProvider(credsProvider)
+				clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+			}
+		}
+
+		RequestConfig config = RequestConfig.custom()
+			.setConnectTimeout(30000)
+			.setSocketTimeout(20000).build()
+		clientBuilder.setDefaultRequestConfig(config)
+		return clientBuilder.build()
 	}
 
 	private parseEndpoint(osUrl) {
