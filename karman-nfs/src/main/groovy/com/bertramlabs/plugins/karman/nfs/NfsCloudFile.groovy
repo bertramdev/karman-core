@@ -105,7 +105,12 @@ class NfsCloudFile extends CloudFile{
 			def os
 			try {
 				os = getOutputStream()
-				os << sourceStream
+				byte[] buffer = new byte[8192*2];
+				int len;
+				OutputStream out = this.outputStream
+				while ((len = sourceStream.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+				}
 			} finally {
 				try {
 					os.flush()
