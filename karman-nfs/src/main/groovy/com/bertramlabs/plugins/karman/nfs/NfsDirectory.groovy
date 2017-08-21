@@ -22,12 +22,8 @@ class NfsDirectory extends Directory {
 	}
 
 	List listFiles(options = [:]) {
-		def rtn = []
-		recurseFiles(baseFile, null, rtn, options)
-		return rtn
-	}
+		Collection<NfsCloudFile> rtn = []
 
-	List recurseFiles(Nfs3File file, String parentPath, List results, options = [:]) {
 		def delimiter = options.delimiter ?: '/'
 		FileSystem fileSystem = FileSystems.getDefault()
 		def prefix
@@ -40,41 +36,72 @@ class NfsDirectory extends Directory {
 		options.includes?.each { include ->
 			includes << fileSystem.getPathMatcher(include)
 		}
-		if(options.prefix)
-			prefix = fileSystem.getPathMatcher(options.prefix)
-		//iterate files
-		def fileList = file?.listFiles()
-		fileList?.each { fileRow ->
-			def path = parentPath ? fileSystem.getPath(parentPath, fileRow.path) : "/"
-			def addFile = true
-			if(excludes?.size() > 0) {
-				excludes?.each { exclude ->
-					if(exclude.matches(path))
-						addFile == false
-				}
+		prefix = options.prefix
+
+		convertFilesToCloudFiles(baseFile, includes,excludes, prefix, rtn)
+
+		for(int counter=0;counter < rtn.size(); counter++) {
+			NfsCloudFile currentFile = rtn[counter]
+			if(currentFile.isDirectory()) {
+				convertFilesToCloudFiles(currentFile.baseFile, includes,excludes,prefix, rtn, counter+1)
 			}
-			if(addFile == true && includes?.size() > 0) {
-				addFile = false
-				includes?.each { include ->
-					if(include.matches(path)) {
-						addFile == true
+		}
+		if(prefix) {
+			rtn = rtn.findAll { file ->
+				if(file.name.length() >= prefix.length()) {
+					if(file.name.take(prefix.length()) == prefix) {
+						return true
 					}
 				}
+				return false
 			}
-			if(addFile == true && prefix) {
-				addFile = false
-				if(prefix.matches(path))
-					addFile = true
+		}
+
+		return rtn
+	}
+
+	private void convertFilesToCloudFiles(Nfs3File parentFile, includes, excludes,prefix, fileList, position=0) {
+		Collection<NfsCloudFile> files = [];
+		parentFile.listFiles()?.each { listFile ->
+			def path = listFile.path.substring(baseFile.path.length()+1)
+			if(isMatchedFile(path,includes,excludes,prefix)) {
+				files << new NfsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
 			}
-			if(addFile == true) {
-				results << new NfsCloudFile(provider:provider, parent:this, name:fileRow.path)
-				if(fileRow.isDirectory()) {
-					def newParent = (parentPath ?: '') + delimiter + file.name
-					recurseFiles(fileRow, newParent, results, options)
+		}
+		if(files) {
+			fileList.addAll(position, files)
+		}
+	}
+
+	private Boolean isMatchedFile(path, includes,excludes,prefix) {
+		Boolean rtn = true
+		if(excludes?.size() > 0) {
+			excludes?.each { exclude ->
+				if(exclude.matches(path))
+					rtn = false
+			}
+		}
+		if(includes?.size() > 0) {
+			includes?.each { include ->
+				if(include.matches(path)) {
+					rtn = true
 				}
 			}
 		}
+		if(prefix) {
+			if(path.length() >= prefix.length()) {
+				if(path.take(prefix.length()) != prefix) {
+					rtn = false
+				}
+			} else if(path.length() < prefix.length()) {
+				if(prefix.take(path.length()) != path) {
+					rtn = false
+				}
+			}
+		}
+		return rtn
 	}
+
 
 	@Override
 	CloudFile getFile(String name) {

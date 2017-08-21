@@ -65,9 +65,12 @@ class NfsStorageProviderSpec extends Specification {
 		dir['test2.txt'].text("Hello From Spock!").save()
 		when:
 		def files = dir.listFiles()
+		def subfiles = dir.listFiles(prefix:'hello/')
 		println files
 		then:
 		files.size() > 0
+		subfiles.size() == 1
+		dir['hello/testsub.txt'].getText('UTF-8') == "Hello From Spock!"
 		cleanup:
 		dir['test.txt'].delete()
 		dir['hello/testsub.txt'].delete()
