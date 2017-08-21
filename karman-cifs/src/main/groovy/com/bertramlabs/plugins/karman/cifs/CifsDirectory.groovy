@@ -86,7 +86,10 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 	private void convertFilesToCloudFiles(SmbFile parentFile, includes, excludes,prefix, fileList, position=0) {
 		Collection<CifsCloudFile> files = [];
 		parentFile.listFiles()?.each { listFile ->
-			def path = listFile.path.substring(baseFile.path.length()+1)
+			def path = listFile.path.substring(baseFile.path.length())
+			if(path.startsWith('/')) {
+				path = path.substring(1)
+			}
 			if(isMatchedFile(path,includes,excludes,prefix)) {
 				files << new CifsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
 			}
