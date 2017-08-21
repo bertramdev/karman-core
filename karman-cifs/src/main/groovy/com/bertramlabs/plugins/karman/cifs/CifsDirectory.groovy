@@ -124,7 +124,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 		}
 		return rtn
 	}
-	
+
 
 	def save() {
 		def baseDir = getCifsFile()

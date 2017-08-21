@@ -67,10 +67,16 @@ class NfsCloudFile extends CloudFile{
 	}
 
 	Boolean isDirectory() {
+		if(!baseFile.exists()) {
+			return false
+		}
 		return baseFile.isDirectory()
 	}
 
 	Boolean isFile() {
+		if(!baseFile.exists()) {
+			return false
+		}
 		return baseFile.isFile()
 	}
 
