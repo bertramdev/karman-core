@@ -134,10 +134,15 @@ class CifsCloudFile extends CloudFile {
 	@CompileStatic
   	def save(acl = '') {
 		if(sourceStream) {
-			def parentFile = provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent,provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent) 
-			if(!parentFile.exists()) {
-				parentFile.mkdirs()
+			SmbFile parentFile = provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent,provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
+			try {
+				if(!parentFile.exists()) {
+					parentFile.mkdirs()
+				}
+			} catch(ex) {
+				log.warn("Error ensuring path exists: ${parentFile.path} - ${ex.message}...This may be ok though, moving on.")
 			}
+
 			copyStream(sourceStream, getOutputStream())
 			sourceStream = null
 		}

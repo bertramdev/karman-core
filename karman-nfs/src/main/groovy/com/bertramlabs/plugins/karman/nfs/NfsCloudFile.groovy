@@ -101,10 +101,16 @@ class NfsCloudFile extends CloudFile{
 	def save(acl = '') {
 		// Auto saves
 		if(sourceStream) {
-			if(!baseFile.parentFile.exists()) {
-				baseFile.parentFile.mkdirs()
+			try {
+				if(!baseFile.parentFile.exists()) {
+					baseFile.parentFile.mkdirs()
+				}
+			} catch(ex) {
+				log.warn("Error ensuring path exists: ${baseFile.parentFile.path} - ${ex.message}...This may be ok though, moving on.")
 			}
-			copyStream(sourceStream, getOutputStream())
+
+
+				copyStream(sourceStream, getOutputStream())
 			sourceStream = null
 		}
 		return
