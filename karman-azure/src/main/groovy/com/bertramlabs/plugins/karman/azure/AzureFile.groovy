@@ -194,7 +194,7 @@ class AzureFile extends CloudFile {
 					verb: 'PUT',
 					queryParams: [:],
 					headers: ['x-ms-type': 'file', 'x-ms-content-length': contentLength],
-					path: getFullPath(false),
+					path: getFullPath(true),
 					uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
 				]
 
@@ -212,7 +212,7 @@ class AzureFile extends CloudFile {
 						verb: 'PUT',
 						queryParams: [comp:'properties'],
 						headers: ['x-ms-content-length': contentLength],
-						path: getFullPath(false),
+						path: getFullPath(true),
 						uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
 					]
 
