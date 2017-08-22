@@ -138,25 +138,28 @@ class CifsCloudFile extends CloudFile {
 			if(!parentFile.exists()) {
 				parentFile.mkdirs()
 			}
-			OutputStream os
-			try {
-				byte[] buffer = new byte[8192 * 2]
-				int len
-				os = this.getOutputStream()
-				while((len = sourceStream.read(buffer)) != -1) {
-					os.write(buffer, 0, len);
-				}
-			} finally {
-				try {
-					os.flush()
-					os.close()
-				} catch(ex) {}
-				sourceStream.close()
-			}
+			copyStream(sourceStream, getOutputStream())
 			sourceStream = null
 		}
 
 		return
+	}
+
+	@CompileStatic
+	private copyStream(InputStream source, OutputStream out) {
+		try {
+			byte[] buffer = new byte[8192*2];
+			int len;
+			while ((len = source.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
+		} finally {
+			try {
+				out.flush()
+				out.close()
+			} catch(ex) {}
+			source.close()
+		}
 	}
 
 	def delete() {

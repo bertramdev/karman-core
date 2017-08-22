@@ -6,6 +6,7 @@ import com.bertramlabs.plugins.karman.util.Mimetypes
 import com.emc.ecs.nfsclient.nfs.io.Nfs3File
 import com.emc.ecs.nfsclient.nfs.io.NfsFileInputStream
 import com.emc.ecs.nfsclient.nfs.io.NfsFileOutputStream
+import groovy.transform.CompileStatic
 import groovy.util.logging.Commons
 
 /**
@@ -96,31 +97,34 @@ class NfsCloudFile extends CloudFile{
 		return baseFile.exists()
 	}
 
+
 	def save(acl = '') {
 		// Auto saves
 		if(sourceStream) {
 			if(!baseFile.parentFile.exists()) {
 				baseFile.parentFile.mkdirs()
 			}
-			def os
-			try {
-				os = getOutputStream()
-				byte[] buffer = new byte[8192*2];
-				int len;
-				OutputStream out = this.outputStream
-				while ((len = sourceStream.read(buffer)) != -1) {
-					os.write(buffer, 0, len);
-				}
-			} finally {
-				try {
-					os.flush()
-					os.close()
-				} catch(ex) {}
-				sourceStream.close()
-			}
+			copyStream(sourceStream, getOutputStream())
 			sourceStream = null
 		}
 		return
+	}
+
+	@CompileStatic
+	private copyStream(InputStream source, OutputStream out) {
+		try {
+			byte[] buffer = new byte[8192*2];
+			int len;
+			while ((len = source.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
+		} finally {
+			try {
+				out.flush()
+				out.close()
+			} catch(ex) {}
+			source.close()
+		}
 	}
 
 	@Override
