@@ -128,7 +128,7 @@ class NfsDirectory extends Directory {
 		new NfsCloudFile(
 			provider: provider,
 			parent: this,
-			name: file.name,
+			name: file.path,
 			baseFile: file
 		)
 	}
