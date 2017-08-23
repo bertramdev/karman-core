@@ -37,6 +37,28 @@ class AzureFileStorageProviderSpec extends Specification {
 		storageProvider.getProviderName() == 'azure'
 	}
 
+
+	def "can list files in a directory"() {
+		given:
+		def dir = storageProvider['qa-automation']
+		dir.save()
+		dir['test.txt'].text("Hello From Spock!").save()
+		dir['hello/test sub.txt'].text("Hello From Spock!").save()
+		dir['test2.txt'].text("Hello From Spock!").save()
+		when:
+		def files = dir.listFiles()
+		def subfiles = dir.listFiles(prefix:'hello/')
+		println files
+		then:
+		files.size() > 0
+		subfiles.size() == 1
+		dir['hello/test sub.txt'].getText('UTF-8') == "Hello From Spock!"
+		cleanup:
+		dir['test.txt'].delete()
+		dir['hello/test sub.txt'].delete()
+		dir['test2.txt'].delete()
+	}
+
 	def "storage provider with http"() {
 		setup:
 		storageProvider = AzureFileStorageProvider.create(

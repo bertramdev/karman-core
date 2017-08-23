@@ -127,7 +127,7 @@ class AzureFile extends CloudFile {
 			def opts = [
 				verb: 'GET',
 				queryParams: [],
-				path: getFullPath(false),
+				path: getFullPath(),
 				uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}"
 			]
 
@@ -269,7 +269,7 @@ class AzureFile extends CloudFile {
 				'Content-Length': contentLength,
 				'x-ms-write':'update'
 			],
-			path: getFullPath(false),
+			path: getFullPath(),
 			uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
 		]
 	
@@ -288,7 +288,7 @@ class AzureFile extends CloudFile {
 		def opts = [
 			verb: 'DELETE',
 			queryParams: [],
-			path: getFullPath(false),
+			path: getFullPath(),
 			uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}"
 		]
 
@@ -318,7 +318,7 @@ class AzureFile extends CloudFile {
 				verb: 'PUT',
 				queryParams: [:],
 				headers: ['x-ms-copy-source': srcURI],
-				path: getFullPath(false),
+				path: getFullPath(),
 				uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
 			]
 
@@ -373,7 +373,7 @@ class AzureFile extends CloudFile {
 				signParams << queryParams.sp
 				signParams << ""
 				signParams << queryParams.se
-				signParams << "/file/${azureProvider.storageAccount}/${getFullPath(false)}"
+				signParams << "/file/${azureProvider.storageAccount}/${getFullPath()}"
 				signParams << ""
 				signParams << ""
 				signParams << ""
@@ -417,7 +417,7 @@ class AzureFile extends CloudFile {
 			def opts = [
 				verb: 'HEAD',
 				queryParams: [],
-				path: getFullPath(false),
+				path: getFullPath(),
 				uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString() 
 			]
 
@@ -447,12 +447,7 @@ class AzureFile extends CloudFile {
 			def lastSlash = name.lastIndexOf('/')
 			def encodedFileName
 			def path = ''
-			if(lastSlash > -1) {
-				encodedFileName = java.net.URLEncoder.encode(name.substring(lastSlash + 1), "UTF-8").replaceAll('\\+', '%20')
-				path = name.substring(0, lastSlash) + '/'
-			} else {
-				encodedFileName = java.net.URLEncoder.encode(name, "UTF-8").replaceAll('\\+', '%20')
-			}
+			encodedFileName = java.net.URLEncoder.encode(name, "UTF-8").replaceAll('\\+', '%20').replaceAll('%2F','/')
 			return "${shareName}/${path}${encodedFileName}"
 		} else {
 			return "${shareName}/${name}"

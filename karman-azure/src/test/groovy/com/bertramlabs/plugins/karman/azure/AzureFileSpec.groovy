@@ -68,6 +68,17 @@ class AzureFileSpec extends Specification {
 		storageProvider[share.name]['subdir/getat-syntax'].exists()
 	}
 
+
+	def "create a file via getAt syntax... share/directory level with spaces"() {
+		setup:
+		AzureFile cloudFile = storageProvider[share.name]['sub dir/getat syntax']
+		setBytesAndSave(cloudFile)
+
+		expect:
+		cloudFile.name == 'sub dir/getat syntax'
+		storageProvider[share.name]['sub dir/getat syntax'].exists()
+	}
+
 	def "create a file via getAt syntax... share/directory/directory level"() {
 		setup:
 		AzureFile cloudFile = storageProvider[share.name]['subdir2/another/getat-syntax']

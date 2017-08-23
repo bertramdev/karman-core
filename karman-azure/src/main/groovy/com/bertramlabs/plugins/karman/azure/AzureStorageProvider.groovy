@@ -167,18 +167,19 @@ abstract class AzureStorageProvider extends StorageProvider {
 		}
 
 		def request
+		def uri = uriBuilder.build()
 		switch(opts.verb) {
 			case 'HEAD':
-				request = new HttpHead(uriBuilder.build())
+				request = new HttpHead(uri)
 				break
 			case 'PUT':
-				request = new HttpPut(uriBuilder.build())
+				request = new HttpPut(uri)
 				break
 			case 'GET':
-				request = new HttpGet(uriBuilder.build())
+				request = new HttpGet(uri)
 				break
 			case 'DELETE':
-				request = new HttpDelete(uriBuilder.build())
+				request = new HttpDelete(uri)
 				break
 			default:
 				throw new Exception('verb was not specified')
@@ -190,6 +191,8 @@ abstract class AzureStorageProvider extends StorageProvider {
 
 		opts.headers['x-ms-version'] = opts.headers['x-ms-version'] ?: '2015-04-05'
 		opts.headers['x-ms-date'] = getDateString()
+		def targetPath
+//		opts.path = uri.path ? (uri.path?.startsWith('/') ? uri.path.substring(1) :  uri.path) : ''
 
 		def signature = createSignedSignature(opts)
 		def authHeader = "SharedKey ${this.storageAccount}:${signature}"

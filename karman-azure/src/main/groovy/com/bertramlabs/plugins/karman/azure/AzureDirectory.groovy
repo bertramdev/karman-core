@@ -99,30 +99,33 @@ class AzureDirectory extends Directory {
 	 * Create directory
 	 */
 	def save() {
-		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
+		if(!this.exists()) {
+			AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
-		def opts = [
-			verb: 'PUT',
-			queryParams: [restype: type],
-			path: getFullPath(),
-			uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
-		]
+			def opts = [
+				verb: 'PUT',
+				queryParams: [restype: type],
+				path: getFullPath(),
+				uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
+			]
 
-		def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(opts) 
-		HttpResponse response = client.execute(request)
-		HttpEntity responseEntity = response.getEntity()
-		
-		def saveSuccessful = (response.statusLine.statusCode == 201)	
-		if(saveSuccessful) {
-			return true
-		} else {
-			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
-			EntityUtils.consume(response.entity)
+			def (HttpClient client, HttpPut request) = azureProvider.prepareRequest(opts)
+			HttpResponse response = client.execute(request)
+			HttpEntity responseEntity = response.getEntity()
 
-			def errMessage = "Error saving ${getFullPath()}: ${xmlDoc.Message}"
-			log.error errMessage
-			throw new Exception(errMessage)
+			def saveSuccessful = (response.statusLine.statusCode == 201)
+			if(saveSuccessful) {
+				return true
+			} else {
+				def xmlDoc = new XmlSlurper().parse(responseEntity.content)
+				EntityUtils.consume(response.entity)
+
+				def errMessage = "Error saving ${getFullPath()}: ${xmlDoc.Message}"
+				log.error errMessage
+				throw new Exception(errMessage)
+			}
 		}
+
 	}
 
 	/**
@@ -192,7 +195,16 @@ class AzureDirectory extends Directory {
 		return currentDirectory.listFiles()
 	}
 
-	protected String getFullPath() {
-		return "${shareName}/${name}"
+
+	protected String getFullPath(encodedName = true) {
+		if(encodedName) {
+			def lastSlash = name.lastIndexOf('/')
+			def encodedFileName
+			def path = ''
+			encodedFileName = java.net.URLEncoder.encode(name, "UTF-8").replaceAll('\\+', '%20').replaceAll('%2F','/')
+			return "${shareName}/${path}${encodedFileName}"
+		} else {
+			return "${shareName}/${name}"
+		}
 	}
 }
