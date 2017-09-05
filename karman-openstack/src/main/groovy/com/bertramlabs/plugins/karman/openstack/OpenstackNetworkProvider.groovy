@@ -156,10 +156,6 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				authPost.addHeader("Content-Type", "application/json");
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
 				HttpClient client = prepareHttpClient()
-
-				HttpParams params = client.getParams()
-				HttpConnectionParams.setConnectionTimeout(params, 30000)
-				HttpConnectionParams.setSoTimeout(params, 20000)
 				response = client.execute(authPost)
 				HttpEntity responseEntity = response.getEntity();
 				if(response.getStatusLine().statusCode != 200) {

@@ -11,7 +11,7 @@ Below is an example of how a @LocalStorageProvider@ might be initialized.
 
 {code}
 import com.bertramlabs.plugins.karman.StorageProvider
-def provider = StorageProvider(provider: 'local', basePath: "/path/to/storage/location")
+def provider = StorageProvider.create(provider: 'local', basePath: "/path/to/storage/location")
 
 //Shorthand
 provider['folder']['example.txt'] = "This is a string I am storing in example.txt"
