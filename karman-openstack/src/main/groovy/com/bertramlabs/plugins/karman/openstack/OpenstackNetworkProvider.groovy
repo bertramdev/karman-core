@@ -155,7 +155,8 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-				HttpClient client = new DefaultHttpClient()
+				HttpClient client = prepareHttpClient()
+
 				HttpParams params = client.getParams()
 				HttpConnectionParams.setConnectionTimeout(params, 30000)
 				HttpConnectionParams.setSoTimeout(params, 20000)
