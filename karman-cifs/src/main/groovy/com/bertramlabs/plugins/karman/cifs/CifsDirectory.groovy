@@ -59,13 +59,13 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			includes << fileSystem.getPathMatcher(include)
 		}
 		prefix = options.prefix
-
+		def baseFile = getCifsFile()
 		convertFilesToCloudFiles(baseFile, includes,excludes, prefix, rtn)
 
 		for(int counter=0;counter < rtn.size(); counter++) {
 			CifsCloudFile currentFile = rtn[counter]
 			if(currentFile.isDirectory()) {
-				convertFilesToCloudFiles(currentFile.baseFile, includes,excludes,prefix, rtn, counter+1)
+				convertFilesToCloudFiles(currentFile.getCifsFile(), includes,excludes,prefix, rtn, counter+1)
 			}
 		}
 		if(prefix) {
@@ -85,13 +85,14 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 
 	private void convertFilesToCloudFiles(SmbFile parentFile, includes, excludes,prefix, fileList, position=0) {
 		Collection<CifsCloudFile> files = [];
+		def baseFile = getCifsFile()
 		parentFile.listFiles()?.each { listFile ->
 			def path = listFile.path.substring(baseFile.path.length())
 			if(path.startsWith('/')) {
 				path = path.substring(1)
 			}
 			if(isMatchedFile(path,includes,excludes,prefix)) {
-				files << new CifsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
+				files << new CifsCloudFile(provider:provider, parent:this, name:path)
 			}
 		}
 		if(files) {
