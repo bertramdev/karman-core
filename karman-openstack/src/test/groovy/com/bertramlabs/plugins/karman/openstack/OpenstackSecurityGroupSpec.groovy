@@ -39,6 +39,9 @@ class OpenstackSecurityGroupSpec extends Specification {
 		then:
 		securityGroup.getId() == defaultId
 		securityGroup.getName() == 'test-name'
+		
+		cleanup:
+		securityGroup.delete()
 	}
 
 	def "create a security group"() {
@@ -94,11 +97,13 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "create a rule to a security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		
 		when:
 		securityGroup.save()
@@ -106,13 +111,14 @@ class OpenstackSecurityGroupSpec extends Specification {
 
 		then:
 		securityGroup.getName() == 'test1'
-		securityGroup.getRules().size() == 1
-		def refetchRule = securityGroup.getRules().first()
+		securityGroup.getRules().size() - initialRuleSize == 1
+		def refetchRule = securityGroup.getRules().find { it.getId() == rule.getId() }
 		refetchRule?.getId() != null
 		refetchRule?.getMinPort() == 23
 		refetchRule?.getIpRange().first() == "50.10.10.10/32"
 		refetchRule?.getMaxPort() == 24
 		refetchRule?.getIpProtocol() == "tcp"
+		refetchRule?.getDirection() == "ingress"
 
 		cleanup:
 		securityGroup.delete()
@@ -121,11 +127,13 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "add rule to an existing security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 		SecurityGroupRule anotherRule = securityGroup.createRule()
@@ -133,20 +141,22 @@ class OpenstackSecurityGroupSpec extends Specification {
 		anotherRule.setMinPort(1)
 		anotherRule.setMaxPort(65535)
 		anotherRule.setIpProtocol('tcp')
+		anotherRule.setDirection('ingress')
 		
 		when:
-		securityGroup.save()
+		anotherRule.save()
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 		
 		then:
-		securityGroup.getRules().size() == 2
-		def testRule = securityGroup.getRules().find { it.getMinPort() == 1 }
+		securityGroup.getRules().size() - initialRuleSize == 2
+		def testRule = securityGroup.getRules().find { it.getId() == anotherRule.getId() }
 		testRule != null
 		testRule?.getId() != null
 		testRule?.getMinPort() == 1
 		testRule?.getIpRange().first() == "50.10.10.11/32"
 		testRule?.getMaxPort() == 65535
 		testRule?.getIpProtocol() == "tcp"
+		testRule?.getDirection() == "ingress"
 
 		cleanup:
 		securityGroup.delete()
@@ -155,32 +165,35 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "update an existing rule in a security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
-		rule = securityGroup.getRules().first()
-		rule.addIpRange("50.10.10.11/32")
-		rule.setMinPort(24)
-		rule.setMaxPort(25)
-		rule.setIpProtocol('udp')
+		def ruleRedux = securityGroup.getRules().find { it.getId() == rule.getId() }
+		ruleRedux.addIpRange("50.10.10.11/32")
+		ruleRedux.setMinPort(24)
+		ruleRedux.setMaxPort(25)
+		ruleRedux.setIpProtocol('udp')
 
 		when:
-		securityGroup.save()
+		ruleRedux.save()
 		def refetchSecurityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 
 		then:
 		refetchSecurityGroup.getName() == 'test1'
-		refetchSecurityGroup.getRules().size() == 1
-		def refetchRule = refetchSecurityGroup.getRules().first()
+		refetchSecurityGroup.getRules().size() - initialRuleSize == 1
+		def refetchRule = refetchSecurityGroup.getRules().find { it.getId() == ruleRedux.getId() }
 		refetchRule?.getId() != null
 		refetchRule?.getMinPort() == 24
 		refetchRule?.getIpRange().first() == "50.10.10.11/32"
 		refetchRule?.getMaxPort() == 25
 		refetchRule?.getIpProtocol() == "udp"
+		refetchRule?.getDirection() == "ingress"
 
 		cleanup:
 		securityGroup.delete()
@@ -194,6 +207,7 @@ class OpenstackSecurityGroupSpec extends Specification {
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 		def oldId = securityGroup.getRules().first().getId()
 		
@@ -210,15 +224,17 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "delete an existing rule by using removeRule on a security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
-		rule = securityGroup.getRules().first()
+		rule = securityGroup.getRules().find { it.getId() == rule.getId() }
 
 		when:
 		securityGroup.removeRule(rule)
@@ -226,7 +242,7 @@ class OpenstackSecurityGroupSpec extends Specification {
 		def refetchSecurityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 
 		then:
-		refetchSecurityGroup.getRules().size() == 0
+		refetchSecurityGroup.getRules().size() - initialRuleSize == 0
 		
 		cleanup:
 		securityGroup.delete()
@@ -235,11 +251,13 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "delete all rules by using clearRules on a security group"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
@@ -250,7 +268,7 @@ class OpenstackSecurityGroupSpec extends Specification {
 		def refetchSecurityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 
 		then:
-		refetchSecurityGroup.getRules().size() == 0
+		refetchSecurityGroup.getRules().size() - initialRuleSize == 0
 		
 		cleanup:
 		securityGroup.delete()
@@ -259,23 +277,24 @@ class OpenstackSecurityGroupSpec extends Specification {
 	def "delete on SecurityGroup rule"() {
 		setup:
 		SecurityGroup securityGroup = networkProvider.createSecurityGroup('test1')
+		def initialRuleSize = 2 // default ip4/6 egress rules are created
 		SecurityGroupRule rule = securityGroup.createRule()
 		rule.addIpRange("50.10.10.10/32")
 		rule.setMinPort(23)
 		rule.setMaxPort(24)
 		rule.setIpProtocol('tcp')
+		rule.setDirection('ingress')
 		securityGroup.save()
 
 		securityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
-		rule = securityGroup.getRules().first()
+		rule = securityGroup.getRules().find { it.getId() == rule.getId() }
 
 		when:
 		rule.delete()
 		def refetchedSecurityGroup = networkProvider.getSecurityGroup(securityGroup.getId())
 		
 		then:
-		securityGroup.getRules().size() == 0
-		refetchedSecurityGroup.getRules().size() == 0
+		refetchedSecurityGroup.getRules().size() - initialRuleSize == 0
 		
 		cleanup:
 		securityGroup.delete()
