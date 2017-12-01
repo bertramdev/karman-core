@@ -17,6 +17,8 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	private Map options
 	private String id
 	private String previousId
+	private String direction
+	private String ethertype
 	
 	public OpenstackSecurityGroupRule(OpenstackNetworkProvider provider, SecurityGroupInterface securityGroup, Map options) {
 		super(securityGroup)
@@ -67,14 +69,14 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	public void save() {
 		this.previousId = this.getId() // Store off the existing Id as it gets replaced during save :(
 		def accessInfo = provider.getAccessInfo()
-		def opts = [body: createPayload()]
+		def opts = [body: createPayload(), query: [tenant_id: accessInfo.projectId]]
 
 		if(getId()) {
 			// There is no update.. so delete and add
-			provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-group-rules/${getId()}", [:], 'DELETE')
+			provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-group-rules/${getId()}", [:], 'DELETE')
 		}
 		
-		def	result = provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-group-rules", opts, 'POST')
+		def	result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-group-rules", opts, 'POST')
 		
 
 		if(!result.success) {
@@ -88,9 +90,25 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	public void delete() {
 		if(getId()) {
 			def accessInfo = provider.getAccessInfo()
-			provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-group-rules/${getId()}", [:], 'DELETE')
+			provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-group-rules/${getId()}", [:], 'DELETE')
 		}
 		securityGroup.removeRule(this)
+	}
+	
+	public void setDirection(String direction) {
+		this.direction = direction
+	}
+
+	public String getDirection() {
+		return direction
+	}
+	
+	public void setEthertype(String ethertype) {
+		this.ethertype = ethertype
+	}
+
+	public String getEthertype() {
+		return ethertype
 	}
 
 	private initializeFromOptions(options) {
@@ -98,15 +116,29 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		this.id = options?.id
 		if(options?.from_port) {
 			this.setMinPort(options?.from_port)
+		} else if(options?.port_range_min) {
+			this.setMinPort(options?.port_range_min)
 		}
 		if(options?.to_port) {
 			this.setMaxPort(options?.to_port)
+		} else if(options?.port_range_max) {
+			this.setMaxPort(options?.port_range_max)
 		}
 		if(options?.ip_protocol) {
 			this.setIpProtocol(options?.ip_protocol)
+		} else if(options?.protocol) {
+			this.setIpProtocol(options?.protocol)
 		}
 		if(options?.ip_range?.cidr) {
 			this.addIpRange(options.ip_range.cidr)
+		} else if(options?.remote_ip_prefix) {
+			this.addIpRange(options?.remote_ip_prefix)
+		}
+		if(options?.direction) {
+			this.setDirection(options.direction)
+		}
+		if(options?.ethertype) {
+			this.setEthertype(options.ethertype)
 		}
 	}
 
@@ -114,19 +146,25 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		def payload = [
 			tenant_id: provider.getAccessInfo().projectId,
 			security_group_rule: [
-				from_port: this.getMinPort(),
-				to_port: this.getMaxPort(),
-				ip_protocol: this.getIpProtocol(),
-				cidr: this.getIpRange()?.first()	
+				port_range_min: this.getMinPort(),
+				port_range_max: this.getMaxPort(),
+				protocol: this.getIpProtocol(),
+				remote_ip_prefix: (this.getIpRange().size() > 0 ? this.getIpRange().first() : null),
+				direction: this.getDirection()
 			]
 		]
+		
+		if(this.getEthertype()) {
+			// only include in payload if a value is set, null is not allowed.
+			payload.security_group_rule.ethertype = this.getEthertype()
+		}
 
 		if(this.getId()) {
 			payload.id = this.getId()
 		}
 
 		if(this.getSecurityGroup().getId()) {
-			payload.security_group_rule.parent_group_id = this.getSecurityGroup().getId()
+			payload.security_group_rule.security_group_id = this.getSecurityGroup().getId()
 		}
 
 		payload

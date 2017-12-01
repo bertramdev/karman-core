@@ -76,14 +76,14 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 
 	public void save() {
 		def accessInfo = provider.getAccessInfo()
-		def opts = [body: createPayload()]
+		def opts = [body: createPayload(), query: [tenant_id: accessInfo.projectId]]
 
 		def result
 		def desiredRules = new ArrayList<OpenstackSecurityGroupRule>(this.getRules())
 		if(getId()) {
-			result = provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-groups/${getId()}", opts, 'PUT')
+			result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups/${getId()}", opts, 'PUT')
 		} else {	
-			result = provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-groups", opts, 'POST')
+			result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", opts, 'POST')
 		}
 
 		if(!result.success) {
@@ -98,7 +98,7 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 			if(currentRule.getIpRange()?.size() > 0) {
 				def foundRule = desiredRules.find { it.getId() == currentRule.getId() }
 				if(!foundRule) {
-					def deleteResult = provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-group-rules/${currentRule.getId()}", [:], 'DELETE')
+					def deleteResult = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-group-rules/${currentRule.getId()}", [:], 'DELETE')
 					if(!result.success) {
 						log.error "Error deleting rule with id of ${currentRule.getId()}"
 					}					
@@ -117,7 +117,7 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 	public void delete() {
 		if(getId()) {
 			def accessInfo = provider.getAccessInfo()
-			def result = provider.callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-groups/${getId()}", [:], 'DELETE')
+			def result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups/${getId()}", [:], 'DELETE')
 			if(!result.success) {
 				throw new RuntimeException("Error in deleting security group: ${result.error}")
 			}
@@ -129,14 +129,15 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		rules = new ArrayList<OpenstackSecurityGroupRule>()
 
 		def securityGroup = this
-		options?.rules?.each { ruleMeta -> 
+		def securityGroupRules = options?.rules ?: options?.security_group_rules
+		securityGroupRules?.each { ruleMeta -> 
 			rules << new OpenstackSecurityGroupRule(provider, securityGroup, ruleMeta)
 		} 
 	}
 
 	private createPayload() {
 		[
-			tenant_id: provider.getAccessInfo().projectId,
+			tenant_id: provider.getAccessInfo()?.projectId,
 			security_group: [
 				name: this.getName(),
 				description: this.getDescription() ?: ''	

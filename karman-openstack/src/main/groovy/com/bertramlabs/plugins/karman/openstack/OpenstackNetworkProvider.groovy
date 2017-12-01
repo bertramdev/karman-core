@@ -112,7 +112,11 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			def identityVersion = parseEndpointVersion(identityUrl) ? "/${parseEndpointVersion(identityUrl)}" : '/v3'
 			HttpResponse response
 			if(identityVersion == '/v3') {
-				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion, "auth", "tokens"].join("/"))
+				def basePath = uriBuilder.getPath()
+				if(!basePath.contains(identityVersion)) {
+					basePath += identityVersion
+				}
+				uriBuilder.setPath([basePath.endsWith("/") ? basePath.substring(0, basePath.size() - 1) : basePath, "auth", "tokens"].join("/"))
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
@@ -165,7 +169,6 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				}
 
 				String responseText = responseEntity.content.text
-				println "responseText: ${responseText}"
 				accessInfo = new JsonSlurper().parseText(responseText)
 				accessInfo.identityApiVersion = '2.0'
 				accessInfo.projectId = accessInfo?.access?.token.tenant.id
@@ -205,7 +208,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-groups")
+		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
 		if(!result.success) {
 			throw new RuntimeException("Error in obtaining security groups: ${result.error}")
 		}
@@ -218,7 +221,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public SecurityGroupInterface getSecurityGroup(String uid) {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo.endpointInfo.computeApi, "/${accessInfo.endpointInfo.computeVersion}/${accessInfo.projectId}/os-security-groups/${uid}")
+		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
 		if(!result.success) {
 			throw new RuntimeException("Error in obtaining security group: ${result.error}")
 		}
@@ -236,7 +239,10 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			def token = getAccessInfo().authToken
 
 			URIBuilder uriBuilder = new URIBuilder(url)
-			uriBuilder.setPath(path)
+			uriBuilder.setPath(uriBuilder.getPath() + path)
+			if(opts.query) {
+				opts.query.each { k,v -> uriBuilder.addParameter(k, v)}
+			}
 			HttpRequestBase request
 			if(method == 'GET') {
 				request = new HttpGet(uriBuilder.build())
@@ -261,23 +267,25 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 
 
+
 			HttpClient client = prepareHttpClient();
 
 			log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
 
 			HttpResponse response = client.execute(request)
 			HttpEntity responseEntity = response.getEntity();
-			String responseText = responseEntity.content.text
+			String responseText = responseEntity?.content?.text
+			Integer responseCode = response.getStatusLine().statusCode
 			log.info "  Result: ${responseText}"
 
 			if(responseText) {
 				rtn.content = new JsonSlurper().parseText(responseText)
 			}
-			if(response.getStatusLine().statusCode >= 200 && response.getStatusLine().statusCode < 300) {
+			if(responseCode >= 200 && response.getStatusLine().statusCode < 300) {
 				rtn.success = true
 			} else {
-				log.error("Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud: ${responseEntity.content.text}")
-				EntityUtils.consume(response.entity)
+				log.error("Request Failed ${responseCode} when trying to connect to Openstack Cloud: ${responseText}")
+				EntityUtils.consume(responseEntity)
 				rtn.success = false
 			}
 		} catch(e) {
@@ -308,7 +316,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			def networkApiResults = tokenResults.token.catalog.find { it.type == 'network' }
 			match = findEndpointHost(networkApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match) : null
+			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match, false, 'v2.0') : null
 		} else {
 			def computeApiResults = tokenResults.access.serviceCatalog.find { it.type == 'compute' }
 			def match = findEndpointHost(computeApiResults?.endpoints, osHost)
@@ -325,7 +333,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			def networkApiResults = tokenResults.access.serviceCatalog.find { it.type == 'network' }
 			match = findEndpointHost(networkApiResults?.endpoints, osHost)
 			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match) : null
+			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match, false, 'v2.0') : null
 		}
 	}
 
@@ -438,24 +446,29 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	private parseEndpoint(osUrl) {
 		def rtn = osUrl
 		def hostStart = osUrl.toLowerCase().indexOf("://")
-		def firstSlash = osUrl.indexOf("/", hostStart + 3)
-		if(firstSlash > -1)
-			rtn = rtn.substring(0, firstSlash)
+		def hostStartStr = osUrl.substring(0, hostStart + 3)
+		def matchStartStr = osUrl.substring(hostStartStr.length() - 1)
+		def pathArgs = matchStartStr.tokenize('/')
+		def versionIdx = -1
+		if(pathArgs.size() > 0) {
+			versionIdx = pathArgs.findIndexOf { it =~ /^v\d(\.\d)*/ }
+		}
+		if(versionIdx >= 0) {
+			rtn = hostStartStr + pathArgs[0..<versionIdx].join("/")
+		}
 		return rtn
 	}
 
 	private parseEndpointVersion(osUrl, noDot = false, defaultValue = '') {
 		def rtn
-		def hostStart = osUrl.indexOf("://")
-		def firstSlash = osUrl.indexOf("/", hostStart + 3)
-		def secondSlash = firstSlash > -1 ? osUrl.indexOf("/", firstSlash + 1) : -1
-		log.debug("parse: ${osUrl} - ${hostStart} - ${firstSlash} - ${secondSlash}")
-		if(secondSlash > -1)
-			rtn = osUrl.substring(firstSlash + 1, secondSlash)
-		else if(firstSlash > -1)
-			rtn = osUrl.substring(firstSlash + 1)
-		else
+		def url = new URL(osUrl)
+		def pathArgs = url.path?.tokenize('/')?.findAll{it}
+		if(pathArgs.size() > 0) {
+			rtn = pathArgs.find { it =~ /^v\d(\.\d)*/ }
+		}
+		if(!rtn) {
 			rtn = defaultValue
+		}
 		if(rtn?.length() > 0 && noDot == true) {
 			def dotIndex = rtn.indexOf('.')
 			if(dotIndex > -1)
