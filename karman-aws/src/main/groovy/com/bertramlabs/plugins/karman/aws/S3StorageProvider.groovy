@@ -16,9 +16,12 @@
 
 package com.bertramlabs.plugins.karman.aws
 
+import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.auth.BasicSessionCredentials
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+import com.amazonaws.internal.StaticCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.RegionUtils
 import com.amazonaws.services.s3.AmazonS3Client
@@ -28,8 +31,10 @@ import com.amazonaws.services.s3.model.CryptoConfiguration
 import com.amazonaws.services.s3.model.CryptoStorageMode
 import com.amazonaws.ClientConfiguration
 import com.amazonaws.services.s3.model.EncryptionMaterials
+import com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
+
 import javax.crypto.spec.SecretKeySpec
 
 class S3StorageProvider extends StorageProvider {
@@ -101,55 +106,63 @@ class S3StorageProvider extends StorageProvider {
         AWSCredentials credentials = null
 
         if (accessKey && secretKey && token) {
-            credentials = new BasicSessionCredentials (accessKey, secretKey, token)       
+            credentials = new BasicSessionCredentials (accessKey, secretKey, token)
         }
         else if (accessKey && secretKey && !token) {
             credentials = new BasicAWSCredentials(accessKey, secretKey)
         }
 
-        if (credentials != null) {
-            ClientConfiguration configuration = new ClientConfiguration()
-            configuration.setUseTcpKeepAlive(keepAlive)
-            configuration.setMaxConnections(maxConnections)
-            configuration.setProtocol(protocol == 'https' ? com.amazonaws.Protocol.HTTPS : com.amazonaws.Protocol.HTTP)
-            if(proxyHost) {
-                configuration.setProxyHost(proxyHost)
-            }
-            if(proxyPort) {
-                configuration.setProxyPort(proxyPort)
-            }
-            if(proxyUser) {
-                configuration.setProxyUsername(proxyUser)
-            }
-            if(proxyPassword) {
-                configuration.setProxyPassword(proxyPassword)
-            }
-            if(proxyDomain) {
-                configuration.setProxyDomain(proxyDomain)
-            }
-            if(proxyWorkstation) {
-                configuration.setProxyWorkstation(proxyWorkstation)
-            }
-            configuration.setUseGzip(useGzip)
-            if(symmetricKey) {
-                EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
-                CryptoConfiguration cryptoConfig = new CryptoConfiguration().withStorageMode(CryptoStorageMode.ObjectMetadata)
+        final AWSCredentialsProvider credentialsProvider
 
-                client = new AmazonS3EncryptionClient(credentials,materials,configuration,cryptoConfig)
-            } else {
-                client = new AmazonS3Client(credentials,configuration)
-            }
-
-            if (region) {
-                Region region = RegionUtils.getRegion(region)
-                client.region = region
-            }
-            if (endpoint) {
-                client.endpoint = endpoint
-            }
+        if (credentials) {
+            credentialsProvider = new StaticCredentialsProvider(credentials)
         } else {
-            return null
+            credentialsProvider = new DefaultAWSCredentialsProviderChain()
         }
+
+        ClientConfiguration configuration = new ClientConfiguration()
+        configuration.setUseTcpKeepAlive(keepAlive)
+        configuration.setMaxConnections(maxConnections)
+        configuration.setProtocol(protocol == 'https' ? com.amazonaws.Protocol.HTTPS : com.amazonaws.Protocol.HTTP)
+        if(proxyHost) {
+            configuration.setProxyHost(proxyHost)
+        }
+        if(proxyPort) {
+            configuration.setProxyPort(proxyPort)
+        }
+        if(proxyUser) {
+            configuration.setProxyUsername(proxyUser)
+        }
+        if(proxyPassword) {
+            configuration.setProxyPassword(proxyPassword)
+        }
+        if(proxyDomain) {
+            configuration.setProxyDomain(proxyDomain)
+        }
+        if(proxyWorkstation) {
+            configuration.setProxyWorkstation(proxyWorkstation)
+        }
+        configuration.setUseGzip(useGzip)
+        if(symmetricKey) {
+            EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
+            CryptoConfiguration cryptoConfig = new CryptoConfiguration().withStorageMode(CryptoStorageMode.ObjectMetadata)
+
+            client = new AmazonS3EncryptionClient(credentialsProvider,
+                    new StaticEncryptionMaterialsProvider(materials),
+                    configuration,
+                    cryptoConfig)
+        } else {
+            client = new AmazonS3Client(credentialsProvider,configuration)
+        }
+
+        if (region) {
+            Region region = RegionUtils.getRegion(region)
+            client.region = region
+        }
+        if (endpoint) {
+            client.endpoint = endpoint
+        }
+
         client
     }
 
