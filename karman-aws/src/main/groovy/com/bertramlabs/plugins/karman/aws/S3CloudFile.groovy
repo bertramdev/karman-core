@@ -416,7 +416,7 @@ class S3CloudFile extends CloudFile {
 				this.setContentLength(tmpFile.size())
 				InputStream is = tmpFile.newInputStream()
 				try {
-					this.setInputStream(tmpFile.newInputStream())
+					this.setInputStream(is)
 					return this.save(acl)
 				} finally {
 					if(is) {

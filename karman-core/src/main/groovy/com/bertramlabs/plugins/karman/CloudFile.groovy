@@ -136,16 +136,17 @@ abstract class CloudFile implements CloudFileInterface {
 			 }
 
 		 } catch(ex) {
-			 if(out) {
-				 try { out.flush() ; out.close()}  catch(ex2) {}
-			 }
-			 if(tempFile) {
-				 tempFile.delete()
-			 }
-			 if(inputStream) {
-				 try { inputStream.close()} catch(ex3) {}
-			 }
 			 throw ex
+		 } finally {
+		 	if(out) {
+				 try { out.flush() ; out.close()}  catch(ex2) {}
+			}
+			if(tempFile) {
+				 tempFile.delete()
+			}
+			if(inputStream) {
+			 try { inputStream.close()} catch(ex3) {}
+			}
 		 }
 
 		return tempFile
