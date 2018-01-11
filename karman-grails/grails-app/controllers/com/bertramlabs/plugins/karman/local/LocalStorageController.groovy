@@ -21,9 +21,9 @@ class LocalStorageController {
         if(extension && !fileName.endsWith(".${extension}")) {
         	fileName = fileName + ".${extension}"
         }
-
+        // println "reverse traversal bug check: ${request.requestURI} - ${directoryName} - ${fileName}"
         // No reverse traversal!
-        if(request.requestURI.contains('../') || request.requestURI.contains('..\\')) {
+        if(request.requestURI.contains('../') || request.requestURI.contains('..\\') || directoryName == '..' || fileName?.contains('../') || fileName.contains('..\\')) {
         	render status: 402
         	return
         }

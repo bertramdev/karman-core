@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4c0d6dc-99ad-469a-8019-516cdfae0e9c" name="Default" comment="" />
+    <list default="true" id="c4c0d6dc-99ad-469a-8019-516cdfae0e9c" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_main.iml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_test.iml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core.iml" afterPath="$PROJECT_DIR$/karman-core.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core.ipr" afterPath="$PROJECT_DIR$/karman-core.ipr" />
+      <change beforePath="$PROJECT_DIR$/karman-core.iws" afterPath="$PROJECT_DIR$/karman-core.iws" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core_main.iml" afterPath="$PROJECT_DIR$/karman-core_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core_test.iml" afterPath="$PROJECT_DIR$/karman-core_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
+    </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
     <ignored path="$PROJECT_DIR$/karman-core/.gradle/" />
@@ -21,6 +59,15 @@
     <ignored path="$PROJECT_DIR$/karman-aws/build/" />
     <ignored path="$PROJECT_DIR$/karman-grails/.gradle/" />
     <ignored path="$PROJECT_DIR$/karman-grails/build/" />
+    <ignored path="$PROJECT_DIR$/karman-alibaba/out/" />
+    <ignored path="$PROJECT_DIR$/karman-aws/out/" />
+    <ignored path="$PROJECT_DIR$/karman-azure/out/" />
+    <ignored path="$PROJECT_DIR$/karman-cifs/out/" />
+    <ignored path="$PROJECT_DIR$/karman-core/out/" />
+    <ignored path="$PROJECT_DIR$/karman-grails/out/" />
+    <ignored path="$PROJECT_DIR$/karman-nfs/out/" />
+    <ignored path="$PROJECT_DIR$/karman-openstack/out/" />
+    <ignored path="$PROJECT_DIR$/karman-rackspace/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +115,6 @@
     <breakpoint_rules converted="true" />
     <ui_properties converted="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -77,35 +123,128 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
-        <projects_view />
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="karman-core" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="karman-core" type="f1a62948:ProjectNode" />
+                <item name=":karman-alibaba" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="karman-core" type="f1a62948:ProjectNode" />
+                <item name=":karman-aws" type="2d1252cf:ModuleNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
       </state>
     </system>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OpenstackNetworkProvider.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
+      <file leaf-file-name="AlibabaCloudFile.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5415">
-              <caret line="361" column="32" lean-forward="false" selection-start-line="361" selection-start-column="32" selection-end-line="361" selection-end-column="32" />
+            <state relative-caret-position="8265">
+              <caret line="551" column="13" lean-forward="true" selection-start-line="551" selection-start-column="13" selection-end-line="551" selection-end-column="13" />
               <folding>
-                <element signature="e#50#111#0" expanded="true" />
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="e#649#680#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="21" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+            <state relative-caret-position="376">
+              <caret line="50" column="27" lean-forward="false" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="S3CloudFile.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudFile.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="268">
+              <caret line="105" column="19" lean-forward="false" selection-start-line="105" selection-start-column="19" selection-end-line="105" selection-end-column="19" />
+              <folding>
+                <element signature="e#659#706#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AlibabaDirectory.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-81">
+              <caret line="23" column="39" lean-forward="true" selection-start-line="23" selection-start-column="39" selection-end-line="23" selection-end-column="39" />
+              <folding>
+                <element signature="e#48#79#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AlibabaStorageProvider.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="960">
+              <caret line="64" column="20" lean-forward="true" selection-start-line="64" selection-start-column="20" selection-end-line="64" selection-end-column="20" />
+              <folding>
+                <element signature="e#48#79#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="S3CloudPrefix.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="801">
+              <caret line="123" column="1" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="123" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AlibabaCloudPrefix.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="34" lean-forward="false" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>directoryFromS3</find>
+      <find>setMetaAttribute</find>
+      <find>Headers</find>
+      <find>setContentL</find>
+      <find>s3Client</find>
+      <find>object.</find>
+      <find>OSSObject getOSSObject</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>object</replace>
+      <replace>getOSSClient()</replace>
+      <replace>getOSSObject().</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -135,6 +274,10 @@
               <ExternalProjectPojo>
                 <option name="name" value="karman-core" />
                 <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+              <ExternalProjectPojo>
+                <option name="name" value=":karman-alibaba" />
+                <option name="path" value="$PROJECT_DIR$/karman-alibaba" />
               </ExternalProjectPojo>
               <ExternalProjectPojo>
                 <option name="name" value=":karman-aws" />
@@ -486,6 +629,189 @@
               <ExternalTaskPojo>
                 <option name="description" value="Displays the properties of root project 'karman-core'." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="properties" />
+              </ExternalTaskPojo>
+            </list>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/karman-alibaba">
+          <value>
+            <list>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the components produced by project ':karman-alibaba'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="components" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects that depend on it." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="buildDependents" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the sub-projects of project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="projects" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles main classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="classes" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the dependent components of components in project ':karman-alibaba'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="dependentComponents" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes artifacts to bintray.com." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="bintrayUpload" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays all buildscript dependencies declared in project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="buildEnvironment" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes Maven publication 'maven' to the local Maven repository." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="publishMavenPublicationToMavenLocal" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="sourcesJar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles test classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="testClasses" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates Javadoc API documentation for the main source code." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="javadoc" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles the test Groovy source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="compileTestGroovy" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles a jar archive containing the main classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="jar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the configuration model of project ':karman-alibaba'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="model" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles the main Groovy source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="compileGroovy" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes main resources." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="processResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the tasks runnable from project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="tasks" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates the Maven POM file for publication 'maven'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="generatePomFileForMavenPublication" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="console" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs the unit tests." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="test" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles main Java source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="compileJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates Groovydoc API documentation for the main source code." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="groovydoc" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="javadocJar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the insight into a specific dependency in project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="dependencyInsight" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs all checks." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="check" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles the outputs of this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="assemble" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Deletes the build directory." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="clean" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles test Java source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="compileTestJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays all dependencies declared in project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="dependencies" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes test resources." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="processTestResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays a help message." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="help" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="build" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects it depends on." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="buildNeeded" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes all publications produced by this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="publish" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes all Maven publications produced by this project to the local Maven cache." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
+                <option name="name" value="publishToMavenLocal" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the properties of project ':karman-alibaba'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/karman-alibaba" />
                 <option name="name" value="properties" />
               </ExternalTaskPojo>
             </list>
@@ -2091,7 +2417,20 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="17949730645000" />
+        <entry key="$USER_HOME$/.gradle/gradle.properties" value="565125010" />
+        <entry key="$PROJECT_DIR$" value="19507920929000" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="761147732" />
+        <entry key="$PROJECT_DIR$/karman-alibaba/build.gradle" value="2348939417" />
+        <entry key="$PROJECT_DIR$/karman-aws/build.gradle" value="3247549663" />
+        <entry key="$PROJECT_DIR$/karman-azure/build.gradle" value="1757789675" />
+        <entry key="$PROJECT_DIR$/karman-cifs/build.gradle" value="3419231695" />
+        <entry key="$PROJECT_DIR$/karman-core/build.gradle" value="1679845726" />
+        <entry key="$PROJECT_DIR$/karman-grails/build.gradle" value="3140439121" />
+        <entry key="$PROJECT_DIR$/karman-grails/settings.gradle" value="970923089" />
+        <entry key="$PROJECT_DIR$/karman-nfs/build.gradle" value="1535945831" />
+        <entry key="$PROJECT_DIR$/karman-openstack/build.gradle" value="2412809647" />
+        <entry key="$PROJECT_DIR$/karman-rackspace/build.gradle" value="286265702" />
+        <entry key="$PROJECT_DIR$/settings.gradle" value="986774349" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -2105,6 +2444,38 @@
                     <value>
                       <ExternalModuleBuildClasspathPojo>
                         <option name="path" value="$PROJECT_DIR$" />
+                      </ExternalModuleBuildClasspathPojo>
+                    </value>
+                  </entry>
+                  <entry key="$PROJECT_DIR$/karman-alibaba">
+                    <value>
+                      <ExternalModuleBuildClasspathPojo>
+                        <option name="entries">
+                          <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.4/37e7780aac43d6a2c643d315f8015c7244d34907/gradle-bintray-plugin-1.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.4/c9c2779b543eec72706349967debdeeefd0be46f/gradle-bintray-plugin-1.4.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy.modules.http-builder/http-builder/0.7.2/f1860181de06236f28f3f247aed57fa4631016d8/http-builder-0.7.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy.modules.http-builder/http-builder/0.7.2/323092cd786480311c1cf693770f9e6fc20a8bef/http-builder-0.7.2.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpclient/4.2.1/httpclient-4.2.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.json-lib/json-lib/2.3/f35340c0a0380141f62c72b76c8fb4bfa638d8c1/json-lib-2.3-jdk15.jar" />
+                            <option value="$USER_HOME$/.m2/repository/net/sourceforge/nekohtml/nekohtml/1.9.16/nekohtml-1.9.16.jar" />
+                            <option value="$USER_HOME$/.m2/repository/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/httpcomponents/httpcore/4.2.1/httpcore-4.2.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/61e9f9d11fe3e12ec62f633006e99d75fd7f19c8/commons-codec-1.6-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/2818502bbb50bbcbd3f57e92a2bfe4d496f37688/commons-beanutils-1.8.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/c651d5103c649c12b20d53731643e5fffceb536/commons-beanutils-1.8.0.jar" />
+                            <option value="$USER_HOME$/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.4/2b8c4b3035e45520ef42033e823c7d33e4b4402c/commons-lang-2.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.4/16313e02a793435009f1e458fa4af5d879f6fb11/commons-lang-2.4.jar" />
+                            <option value="$USER_HOME$/.m2/repository/net/sf/ezmorph/ezmorph/1.0.6/ezmorph-1.0.6.jar" />
+                            <option value="$USER_HOME$/.m2/repository/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.3.04/d89105ccbe3fd823865330fd964233baf2b53e88/xml-apis-1.3.04-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.3.04/90b215f48fe42776c8c7f6e3509ec54e84fd65ef/xml-apis-1.3.04.jar" />
+                          </list>
+                        </option>
+                        <option name="path" value="$PROJECT_DIR$/karman-alibaba" />
                       </ExternalModuleBuildClasspathPojo>
                     </value>
                   </entry>
@@ -2292,8 +2663,7 @@
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.spring.gradle/dependency-management-plugin/0.6.1.RELEASE/46cb985239502be3dcb94e0df45f797804e95fb8/dependency-management-plugin-0.6.1.RELEASE.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.6/cfb9663e11e4321d040d64038e93f86fa4105483/gradle-bintray-plugin-1.6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.6/1dfdf1464f019fe1316ecec354ff7f6d39309035/gradle-bintray-plugin-1.6.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy/2.4.7/8d7490c6cd820826789089d537aad569642a23d2/groovy-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy/2.4.7/10870e6511f544ce45152d0ad08d7514a00c8201/groovy-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy/2.4.7/groovy-2.4.7.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.10/4d2725efe68b9943ba0deaf334bb27116ca6b687/slf4j-api-1.7.10-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.10/5b338f206827d88acd890739f400a9b7664e5984/slf4j-api-1.7.10.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.10/6e04c28745fd98501a958d4e6daa40214f63b69f/jcl-over-slf4j-1.7.10-sources.jar" />
@@ -2308,19 +2678,15 @@
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-gradle-plugin/1.3.5.RELEASE/76797f836a3fbc1b8bc96f117253d107ee977c59/spring-boot-gradle-plugin-1.3.5.RELEASE.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.netflix.nebula/gradle-extra-configurations-plugin/2.2.0/ac3d8b0f87a38a3706974bb94855d4c5c81661f7/gradle-extra-configurations-plugin-2.2.0-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.netflix.nebula/gradle-extra-configurations-plugin/2.2.0/9fc509137e6b38f19c8d196aada610ece2c86d8e/gradle-extra-configurations-plugin-2.2.0.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-component-api/1.0-alpha-33/7d9560effcadf867937ac6885d0d1045ea98ab59/plexus-component-api-1.0-alpha-33.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-component-api/1.0-alpha-33/plexus-component-api-1.0-alpha-33.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant/1.9.4/ffa48418a72bff1cbd24a651861e003318129eb6/ant-1.9.4-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant/1.9.4/6d473e8653d952045f550f4ef225a9591b79094a/ant-1.9.4.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-ant/2.4.7/23628745b3579685b26073c0e288ab765245912c/groovy-ant-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-ant/2.4.7/c56eb616e1485df8df5493a09bf30cdf8c7c36b0/groovy-ant-2.4.7.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-json/2.4.7/67762aa4942516a50c831b18a114a6e89e46893b/groovy-json-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-json/2.4.7/c62bc909e3bb996cbc9509435a522f6fb8cf1461/groovy-json-2.4.7.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-jmx/2.4.7/abac4fdf8b1b07264eac44fdf828e8766b394940/groovy-jmx-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-jmx/2.4.7/c3dcb5c6a35f3df8d0c10558c4afcf7ea6ae09f3/groovy-jmx-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-ant/2.4.7/groovy-ant-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-json/2.4.7/groovy-json-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-jmx/2.4.7/groovy-jmx-2.4.7.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.11/2f0e4b53b6b0eec426dad7118bf54b3deb58000b/jansi-1.11-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.11/655c643309c2f45a56a747fda70e3fadf57e9f11/jansi-1.11.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jline/jline/2.12/acb005a73638f26f85504bbeba42e9861e8f9d9f/jline-2.12-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jline/jline/2.12/ce9062c6a125e0f9ad766032573c041ae8ecc986/jline-2.12.jar" />
+                            <option value="$USER_HOME$/.m2/repository/jline/jline/2.12/jline-2.12.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit/3.5.2.201411120430-r/6fd31c8adc5bb77d95fb385069ff16b30b4c57d8/org.eclipse.jgit-3.5.2.201411120430-r-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jgit/org.eclipse.jgit/3.5.2.201411120430-r/e134daf385a1688a84c645290956a51168920998/org.eclipse.jgit-3.5.2.201411120430-r.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.gradle/gradle-tooling-api/2.13/b2aa48af4e66da11f6c6cdea29bb6fa65b5fdc13/gradle-tooling-api-2.13-sources.jar" />
@@ -2333,12 +2699,10 @@
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy.modules.http-builder/http-builder/0.7.2/323092cd786480311c1cf693770f9e6fc20a8bef/http-builder-0.7.2.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-ant-tasks/2.1.3/49136cf7eb0e463e080ad2ebb0f65e91b19c8101/maven-ant-tasks-2.1.3-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-ant-tasks/2.1.3/b09be554228d66d208e5fef5266844aacf443abc/maven-ant-tasks-2.1.3.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-classworlds/1.2-alpha-10/59f31ddb59dfc83b20ef8c5a4c519eff729c38cb/plexus-classworlds-1.2-alpha-10-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-classworlds/1.2-alpha-10/fc41205635dab152bf794785be80a0a70fda686e/plexus-classworlds-1.2-alpha-10.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-classworlds/1.2-alpha-10/plexus-classworlds-1.2-alpha-10.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/3.8.1/525753763e53f6f76da052b316d0f2e3bfa4d73/junit-3.8.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/3.8.1/99129f16442844f6a4a11ae22fbbee40b14d774f/junit-3.8.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-xml/2.4.7/c4bb383c972794bf9bf2b4a602530260f5e71660/groovy-xml-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-xml/2.4.7/864b9dc44fb0e05f329fad473e8b4df172f1b48f/groovy-xml-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-xml/2.4.7/groovy-xml-2.4.7.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.14/4c6bcedc3efa772a5ae1c2fd01efee8e4d15edac/snakeyaml-1.14-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.14/c2df91929ed06a25001939929bff5120e0ea3fd4/snakeyaml-1.14.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.50/b6eca0935acca8dcd773df56f0fccec5d9877252/jsch-0.1.50-sources.jar" />
@@ -2347,80 +2711,58 @@
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.7.9/eceaf316a8faf0e794296ebe158ae110c7d72a5a/JavaEWAH-0.7.9.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.6/b4e00fa279b1d45af3cb6daebcc1fee3f5402392/httpclient-4.2.6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.6/e4ca30a6a3a075053a61c6fc850d2432dc012ba7/httpclient-4.2.6.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/4.6/9cd14a61d7aa7d554f251ef285a6f2c65caf7b65/jopt-simple-4.6-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/4.6/306816fb57cf94f108a43c95731b08934dcae15c/jopt-simple-4.6.jar" />
+                            <option value="$USER_HOME$/.m2/repository/net/sf/jopt-simple/jopt-simple/4.6/jopt-simple-4.6.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.2.6.RELEASE/41491c9e9c55fe0fcab766d905b9fb87463262ac/spring-core-4.2.6.RELEASE-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.2.6.RELEASE/a1c6ef01f18888f51fc5054c65ef4787b7cf0a1e/spring-core-4.2.6.RELEASE.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20140107/f53f91bc9c21fef71745450dea5200e423e38370/json-20140107-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20140107/d1ffca6e2482b002702c6a576166fd685e3370e3/json-20140107.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-aether-provider/3.2.1/4e36fbab9fb11e45ea5b99c7aa2423dd78b37c99/maven-aether-provider-3.2.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-aether-provider/3.2.1/ab57cafec4e9c2650df963d83cb173d311fcadf0/maven-aether-provider-3.2.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-settings-builder/3.1.1/c2a054b551696a6f4f6e228a36bbc75670e6aca0/maven-settings-builder-3.1.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-settings-builder/3.1.1/e2d5e96ea4bbd4fc463dbb76d07dd8aefac05e3c/maven-settings-builder-3.1.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-api/1.0.2.v20150114/9d65899ceac2f7041ba1e1d9b38d2ce5c6c67e39/aether-api-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-api/1.0.2.v20150114/839f93a5213fb3e233b09bfd6d6b95669f7043c0/aether-api-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-connector-basic/1.0.2.v20150114/584c1bc6f2187baa945bcc31dcc17f08916d602d/aether-connector-basic-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-connector-basic/1.0.2.v20150114/d55c03b16efc16f25e1fd9fe0f37878fddbeed68/aether-connector-basic-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-impl/1.0.2.v20150114/89833da3565840d06428f6c163ff2d7e315620b7/aether-impl-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-impl/1.0.2.v20150114/f147539e6e60dfbda9ef7f6d750066170f61b7a1/aether-impl-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-spi/1.0.2.v20150114/a638a1e6f05cde67db90c51547028d683e45e625/aether-spi-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-spi/1.0.2.v20150114/8428dfa330107984f3e3ac05cc3ebd50b2676866/aether-spi-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-transport-file/1.0.2.v20150114/21d67350fd53264934bfdf2d2ed1389890e02d91/aether-transport-file-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-transport-file/1.0.2.v20150114/79ffcce2aa9c525ad5a1d0fc3f9669133c3f9572/aether-transport-file-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-transport-http/1.0.2.v20150114/48b6aef960f0e821dc01fd00490835b9240a1e8e/aether-transport-http-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-transport-http/1.0.2.v20150114/262b7fb2e9872f470c059bc4053a3f2f7449932d/aether-transport-http-1.0.2.v20150114.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-util/1.0.2.v20150114/b1f9362ae6d66b88cf3e2d6f608cbee2ccc4e6ad/aether-util-1.0.2.v20150114-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-util/1.0.2.v20150114/d2d3c74a5210544b5cdce89a2c1d1c62835692d1/aether-util-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-aether-provider/3.2.1/maven-aether-provider-3.2.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-settings-builder/3.1.1/maven-settings-builder-3.1.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-connector-basic/1.0.2.v20150114/aether-connector-basic-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-transport-file/1.0.2.v20150114/aether-transport-file-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-transport-http/1.0.2.v20150114/aether-transport-http-1.0.2.v20150114.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.json-lib/json-lib/2.3/f35340c0a0380141f62c72b76c8fb4bfa638d8c1/json-lib-2.3-jdk15.jar" />
                             <option value="$USER_HOME$/.m2/repository/net/sourceforge/nekohtml/nekohtml/1.9.16/nekohtml-1.9.16.jar" />
                             <option value="$USER_HOME$/.m2/repository/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/classworlds/classworlds/1.1-alpha-2/5adf2e681c57d7f48038b602f3ca2254ee82d47/classworlds-1.1-alpha-2.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-container-default/1.0-alpha-9-stable-1/e9b8cdfbdca8f10c3d86f8c9ef16ab231bc379a7/plexus-container-default-1.0-alpha-9-stable-1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-container-default/1.0-alpha-9-stable-1/94aea3010e250a334d9dab7f591114cd6c767458/plexus-container-default-1.0-alpha-9-stable-1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/3.0.17/79cfd0962de410235e9315d38d6488123e9bb299/plexus-utils-3.0.17-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/3.0.17/7b86f7a4ceffc8eadbb1a84207134af776f7cb95/plexus-utils-3.0.17.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-interpolation/1.19/b98035bb61e65a49bf84396b0cab206abf0c9958/plexus-interpolation-1.19-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-interpolation/1.19/b260ca7a23bb0d209771db7aae35049899433fe3/plexus-interpolation-1.19.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-utils/3.0.17/plexus-utils-3.0.17.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.19/plexus-interpolation-1.19.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact/2.2.1/2254a7c4df37ee565bb557e46325f8483942a368/maven-artifact-2.2.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact/2.2.1/23600f790d4dab2cb965419eaa982e3e84c428f8/maven-artifact-2.2.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact-manager/2.2.1/4cbd2b82fd13793898272e3efde94553e0a34766/maven-artifact-manager-2.2.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact-manager/2.2.1/ec355b913c34d37080810f98e3f51abecbe1572b/maven-artifact-manager-2.2.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-model/3.2.1/352f39f23f3df5fcfcfb594c502f82f29492ccf4/maven-model-3.2.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-model/3.2.1/328a3c5cfaf9b2832e6e1d21c76fcefe01e01fde/maven-model-3.2.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-model/3.2.1/maven-model-3.2.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-project/2.2.1/48d00094f3534d54ac9103cc1e1ac0d19373f96d/maven-project-2.2.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-project/2.2.1/8239e98c16f641d55a4ad0e0bab0aee3aff8933f/maven-project-2.2.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-error-diagnostics/2.2.1/8a39928ed8627f01b9c36e0e2aea8915d5aef848/maven-error-diagnostics-2.2.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-error-diagnostics/2.2.1/e81bb342d7d172f23d108dc8fa979a1facdcde8e/maven-error-diagnostics-2.2.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-settings/3.1.1/d2de3bcaa4334f8c5ab787abf3c581ed54603981/maven-settings-3.1.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-settings/3.1.1/311d38cf15ec7f5c713985862632db91b7a827af/maven-settings-3.1.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-settings/3.1.1/maven-settings-3.1.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-file/1.0-beta-6/9615a8a9e38f6303e863624c1391868d622ecb8/wagon-file-1.0-beta-6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-file/1.0-beta-6/6c53633505460caf49d2660de1e24744d915afb9/wagon-file-1.0-beta-6.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-http-lightweight/1.0-beta-6/a7c0a4d1d9f226f4cff661117e2248fe93abc222/wagon-http-lightweight-1.0-beta-6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-http-lightweight/1.0-beta-6/b3815078570c3b1f0667e123d59717c6b726c6c2/wagon-http-lightweight-1.0-beta-6.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-provider-api/1.0-beta-6/2ed36dee4bd5ed91a9ab12a4378189d97dddd932/wagon-provider-api-1.0-beta-6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-provider-api/1.0-beta-6/3f952e0282ae77ae59851d96bb18015e520b6208/wagon-provider-api-1.0-beta-6.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-antlr/1.9.4/9e7f3397340319f7c37a8205b00744ea3587d75c/ant-antlr-1.9.4-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-antlr/1.9.4/4cf30025981dc2344324a0ef0e40063c3ef08f0a/ant-antlr-1.9.4.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/ant/ant-antlr/1.9.4/ant-antlr-1.9.4.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-launcher/1.9.4/b7ae945463dece0e58f3ebbf6d3d4c773277e1b2/ant-launcher-1.9.4-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-launcher/1.9.4/334b62cb4be0432769679e8b94e83f8fd5ed395c/ant-launcher-1.9.4.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-groovydoc/2.4.7/a645adadb92999778801d050e04267e3071ae7b5/groovy-groovydoc-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-groovydoc/2.4.7/6327c63b9f0820849dd73749c14c56a7449a97d9/groovy-groovydoc-2.4.7.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-junit/1.9.4/c896696079fc83acc88306dcbaff13a8227422e3/ant-junit-1.9.4-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-junit/1.9.4/b063757dacaa716b643c2f9270e469183636ff11/ant-junit-1.9.4.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-groovydoc/2.4.7/groovy-groovydoc-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/ant/ant-junit/1.9.4/ant-junit-1.9.4.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.5/4fd9ac94cd3c26551bc7aecd62fce8e49f076635/httpcore-4.2.5-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.5/472f0f5f8dba5d1962cb9d7739feed739a31c30d/httpcore-4.2.5.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/ecf26c7507d67782a3bbd148d170b31dfad001aa/commons-logging-1.2-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/4bfc12adfe4842bf07b657f0369c4cb522955686/commons-logging-1.2.jar" />
+                            <option value="$USER_HOME$/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/61e9f9d11fe3e12ec62f633006e99d75fd7f19c8/commons-codec-1.6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-model-builder/3.2.1/5ba2e61d2a9df3ea417572be43b5a96276951440/maven-model-builder-3.2.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-model-builder/3.2.1/48611e08f8d8e967e6df591c8eb9c9eba329b1fc/maven-model-builder-3.2.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-repository-metadata/3.2.1/e10765e93b834c21f285a012436caac54f7d5bb9/maven-repository-metadata-3.2.1-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-repository-metadata/3.2.1/e171898b9fa61449e1ca3eea45c071fd82c48789/maven-repository-metadata-3.2.1.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-component-annotations/1.5.5/b10462efcf1ac1915797958d479c724d1bd5008d/plexus-component-annotations-1.5.5-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-component-annotations/1.5.5/c72f2660d0cbed24246ddb55d7fdc4f7374d2078/plexus-component-annotations-1.5.5.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.sonatype.plexus/plexus-sec-dispatcher/1.3/4f1b3cd71ec7bbc5de8406fe560d3b34099d6a85/plexus-sec-dispatcher-1.3-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.sonatype.plexus/plexus-sec-dispatcher/1.3/dedc02034fb8fcd7615d66593228cb71709134b4/plexus-sec-dispatcher-1.3.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-model-builder/3.2.1/maven-model-builder-3.2.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/apache/maven/maven-repository-metadata/3.2.1/maven-repository-metadata-3.2.1.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/plexus/plexus-component-annotations/1.5.5/plexus-component-annotations-1.5.5.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/sonatype/plexus/plexus-sec-dispatcher/1.3/plexus-sec-dispatcher-1.3.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/2818502bbb50bbcbd3f57e92a2bfe4d496f37688/commons-beanutils-1.8.0-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/c651d5103c649c12b20d53731643e5fffceb536/commons-beanutils-1.8.0.jar" />
                             <option value="$USER_HOME$/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" />
@@ -2436,10 +2778,8 @@
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-plugin-registry/2.2.1/72a24b7775649af78f3986b5aa7eb354b9674cfd/maven-plugin-registry-2.2.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-http-shared/1.0-beta-6/18bd7878bf8ce32f353563190b2e88f1d45da470/wagon-http-shared-1.0-beta-6-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.maven.wagon/wagon-http-shared/1.0-beta-6/ccd70d7e0d8c085e648a83f072da06ca9a53be94/wagon-http-shared-1.0-beta-6.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-templates/2.4.7/a9aee5abfa7d66bf4cbe8bfb2fbd518b4c4eb83a/groovy-templates-2.4.7-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-templates/2.4.7/3153f11ab70d65526109d9bcbe4f7b11f60b6fb6/groovy-templates-2.4.7.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.sonatype.plexus/plexus-cipher/1.4/fd919edf211954e41e0e60bc8b042bd2e1e5cc1f/plexus-cipher-1.4-sources.jar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.sonatype.plexus/plexus-cipher/1.4/50ade46f23bb38cd984b4ec560c46223432aac38/plexus-cipher-1.4.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/codehaus/groovy/groovy-templates/2.4.7/groovy-templates-2.4.7.jar" />
+                            <option value="$USER_HOME$/.m2/repository/org/sonatype/plexus/plexus-cipher/1.4/plexus-cipher-1.4.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.3.04/d89105ccbe3fd823865330fd964233baf2b53e88/xml-apis-1.3.04-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.3.04/90b215f48fe42776c8c7f6e3509ec54e84fd65ef/xml-apis-1.3.04.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/nekohtml/xercesMinimal/1.9.6.2/d1c5e063683a0e6f77cd5f051a9d4af48346fa6/xercesMinimal-1.9.6.2.jar" />
@@ -2552,75 +2892,75 @@
               <option name="name" value="karman-core" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/ant-1.9.6.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/ant-launcher-1.9.6.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-base-services-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-logging-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-version-info-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-base-services-groovy-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-cli-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-core-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-docs-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-launcher-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-installation-beacon-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-jvm-services-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-launcher-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-logging-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-messaging-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-model-core-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-model-groovy-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-native-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-open-api-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-process-services-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-resources-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-script-kotlin-0.5.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-tooling-api-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-ui-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-version-info-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-docs-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/ant-1.9.6.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-wrapper-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-messaging-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-model-groovy-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-model-core-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-script-kotlin-0.5.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/ant-launcher-1.9.6.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-cli-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-open-api-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-resources-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-core-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/gradle-base-services-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/groovy-all-2.4.7.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-announce-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-antlr-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-cache-http-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-comparison-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-init-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-code-quality-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-composite-builds-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-dependency-management-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-diagnostics-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ear-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ide-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ide-native-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ide-play-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ivy-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-jacoco-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-composite-builds-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-javascript-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-jetty-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-groovy-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-java-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-jvm-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-native-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-scala-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-maven-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-osgi-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-base-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-jvm-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-native-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-play-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-plugin-development-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-announce-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-jvm-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-plugin-use-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-plugins-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-publish-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-reporting-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-resources-http-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-jacoco-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-workers-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-resources-s3-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-resources-sftp-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-scala-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ear-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ide-play-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-code-quality-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-maven-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-tooling-api-builders-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-native-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-play-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-comparison-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-publish-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-scala-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-plugins-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-signing-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-test-kit-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-testing-base-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-testing-jvm-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-osgi-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-dependency-management-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-antlr-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-groovy-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-plugin-development-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-diagnostics-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-scala-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-reporting-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-base-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-language-java-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-testing-native-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-tooling-api-builders-3.4.1.jar" />
-                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-workers-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-resources-sftp-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-jetty-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ide-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-platform-native-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-ivy-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-init-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-testing-jvm-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-resources-http-3.4.1.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-build-cache-http-3.4.1.jar" />
                   <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/ivy-2.2.0.jar" />
+                  <option value="$USER_HOME$/.sdkman/candidates/gradle/current/lib/plugins/gradle-testing-base-3.4.1.jar" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -2633,12 +2973,24 @@
     <option name="externalProjectsViewState">
       <projects_view />
     </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy" />
         <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/karman-alibaba/build.gradle" />
+        <option value="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3Directory.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/resources/META-INF/karman/providers.properties" />
       </list>
     </option>
   </component>
@@ -2653,9 +3005,10 @@
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="2574" />
+    <option name="y" value="296" />
     <option name="width" value="1680" />
-    <option name="height" value="1023" />
+    <option name="height" value="973" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -2681,23 +3034,124 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="karman-core" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="karman-core" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
+          <expand>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+              <item name="alibaba" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-alibaba" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="karman" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+              <item name="aws" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="karman" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Grails" />
     </panes>
   </component>
@@ -2723,7 +3177,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Grails.Grails: karman-grails">
+  <component name="RunManager">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module />
       <option name="HTML_USED" value="false" />
@@ -2731,7 +3185,6 @@
       <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" runner="idea" />
@@ -2746,7 +3199,16 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
-      <method />
+    </configuration>
+    <configuration name="Grails: karman-grails" type="GrailsRunConfigurationType" factoryName="Grails">
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="passParentEnv" value="true" />
+      <setting name="grailsApplicationRoot" value="$PROJECT_DIR$/karman-grails" />
+      <setting name="launchBrowser" value="true" />
+      <setting name="launchBrowserUrl" value="" />
+      <setting name="depsClasspath" value="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     </configuration>
     <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
       <setting name="vmparams" value="" />
@@ -2754,7 +3216,7 @@
       <setting name="passParentEnv" value="true" />
       <setting name="launchBrowser" value="true" />
       <setting name="launchBrowserUrl" value="" />
-      <method />
+      <setting name="depsClasspath" value="false" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" runner="idea" />
@@ -2775,7 +3237,6 @@
       </option>
       <envs />
       <patterns />
-      <method />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
@@ -2783,21 +3244,7 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
     </configuration>
-    <configuration default="false" name="Grails: karman-grails" type="GrailsRunConfigurationType" factoryName="Grails">
-      <setting name="vmparams" value="" />
-      <setting name="cmdLine" value="run-app" />
-      <setting name="passParentEnv" value="true" />
-      <setting name="grailsApplicationRoot" value="$PROJECT_DIR$/karman-grails" />
-      <setting name="launchBrowser" value="true" />
-      <setting name="launchBrowserUrl" value="" />
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <method />
-    </configuration>
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Grails.Grails: karman-grails" />
-    </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
       <Port>5050</Port>
@@ -2828,38 +3275,45 @@
       <option name="presentableId" value="Default" />
       <updated>1501591534181</updated>
       <workItem from="1501591535305" duration="487000" />
+      <workItem from="1515420919989" duration="3096000" />
+      <workItem from="1515685516681" duration="2670000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="487000" />
+    <option name="totallyTimeSpent" value="6253000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="1023" extended-state="6" />
+    <frame x="2574" y="296" width="1680" height="973" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cargo" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24969475" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25244498" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33007336" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette " active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32915717" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TraitInjectorService">
@@ -2870,24 +3324,24 @@
             <StateHolder>
               <option name="knownFactories">
                 <list>
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-taglib/3.1.9/7304de8181434516d84c5332bd23b25621954447/grails-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-async/3.1.9/68ac93f8c108f57fc8b5abfa45b43eb1e43faba8/grails-plugin-async-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-validation/3.1.9/e226b83f04901e2a68bf7797a0f6478c0f15c627/grails-validation-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
                 </list>
               </option>
               <option name="traits">
@@ -2897,10 +3351,10 @@
                       <entry key="Controller">
                         <value>
                           <list>
-                            <option value="grails.artefact.Controller" />
-                            <option value="grails.artefact.AsyncController" />
-                            <option value="grails.artefact.gsp.TagLibraryInvoker" />
                             <option value="grails.artefact.controller.RestResponder" />
+                            <option value="grails.artefact.gsp.TagLibraryInvoker" />
+                            <option value="grails.artefact.AsyncController" />
+                            <option value="grails.artefact.Controller" />
                           </list>
                         </value>
                       </entry>
@@ -2953,24 +3407,24 @@
             <StateHolder>
               <option name="knownFactories">
                 <list>
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-taglib/3.1.9/7304de8181434516d84c5332bd23b25621954447/grails-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-async/3.1.9/68ac93f8c108f57fc8b5abfa45b43eb1e43faba8/grails-plugin-async-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-validation/3.1.9/e226b83f04901e2a68bf7797a0f6478c0f15c627/grails-validation-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
                 </list>
               </option>
               <option name="traits">
@@ -2980,18 +3434,18 @@
                       <entry key="Controller">
                         <value>
                           <list>
-                            <option value="grails.artefact.Controller" />
-                            <option value="grails.artefact.AsyncController" />
                             <option value="grails.artefact.gsp.TagLibraryInvoker" />
                             <option value="grails.artefact.controller.RestResponder" />
+                            <option value="grails.artefact.AsyncController" />
+                            <option value="grails.artefact.Controller" />
                           </list>
                         </value>
                       </entry>
                       <entry key="Domain">
                         <value>
                           <list>
-                            <option value="grails.artefact.DomainClass" />
                             <option value="grails.web.databinding.WebDataBinding" />
+                            <option value="grails.artefact.DomainClass" />
                             <option value="grails.gorm.Entity" />
                           </list>
                         </value>
@@ -3036,25 +3490,25 @@
             <StateHolder>
               <option name="knownFactories">
                 <list>
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-taglib/3.1.9/7304de8181434516d84c5332bd23b25621954447/grails-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-testing/3.1.9/c7eb79396418f5d8e51aece24d00b4d6d43aa4c9/grails-plugin-testing-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-async/3.1.9/68ac93f8c108f57fc8b5abfa45b43eb1e43faba8/grails-plugin-async-3.1.9.jar!/META-INF/grails.factories" />
-                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-testing/3.1.9/c7eb79396418f5d8e51aece24d00b4d6d43aa4c9/grails-plugin-testing-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.1.9/50fab5fc659f09588d0d12ddeebdf824708bdab9/grails-web-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.1.9/5802da535ced3e077d9f012a770f42daebb91174/grails-web-taglib-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.1.9/b8aa36ca7c7caa02538be6818ece9489777270c5/grails-plugin-rest-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/services/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-services/3.1.9/f1b0d35b611c6943d5bf03081e6e44a32516c5d9/grails-plugin-services-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-databinding/3.1.9/6d2f16a59a7ed6f4cdd72c99182f3b18e266dd0c/grails-web-databinding-3.1.9.jar!/META-INF/grails.factories" />
                   <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-validation/3.1.9/e226b83f04901e2a68bf7797a0f6478c0f15c627/grails-validation-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-codecs/3.1.9/9e80fd9f5f5f26877b76280c57e46b5eb11313f3/grails-plugin-codecs-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-gsp/3.1.9/9556294f725c965208adf3b30bb8cb897ee46c68/grails-plugin-gsp-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-url-mappings/3.1.9/7be7c7059b1f0044003c3f4e7f6bfbec7411f4ec/grails-web-url-mappings-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-support/5.0.10.RELEASE/172e1bc12ad2a3e877446e1e0d8fb2fb94af8da4/grails-datastore-gorm-support-5.0.10.RELEASE.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-domain-class/3.1.9/ccbdc700101431dd82a753f81954a31423dfa5b9/grails-plugin-domain-class-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-common/3.1.9/dc0749044f8d15e1d54d45e1f4ad13f613685f2/grails-web-common-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-interceptors/3.1.9/deb0b604be80fb8ce0c1a598aa061a7a7a2fb3d5/grails-plugin-interceptors-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-core/3.1.9/3a08d42d7c2c3707c73730cf51d3bf0eb608ecc5/grails-core-3.1.9.jar!/META-INF/grails.factories" />
+                  <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-controllers/3.1.9/e1d16ef68d5cf33bf231d5ce602f32eee243041b/grails-plugin-controllers-3.1.9.jar!/META-INF/grails.factories" />
                 </list>
               </option>
               <option name="traits">
@@ -3074,8 +3528,8 @@
                       <entry key="Domain">
                         <value>
                           <list>
-                            <option value="grails.artefact.DomainClass" />
                             <option value="grails.web.databinding.WebDataBinding" />
+                            <option value="grails.artefact.DomainClass" />
                             <option value="grails.gorm.Entity" />
                           </list>
                         </value>
@@ -3119,7 +3573,7 @@
     </option>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="processedProjectFiles" value="true" />
+    <option name="version" value="1" />
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -3136,10 +3590,7 @@
     <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5415">
-          <caret line="361" column="32" lean-forward="false" selection-start-line="361" selection-start-column="32" selection-end-line="361" selection-end-column="32" />
-          <folding>
-            <element signature="e#50#111#0" expanded="true" />
-          </folding>
+          <caret line="361" column="0" lean-forward="true" selection-start-line="361" selection-start-column="0" selection-end-line="361" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3147,6 +3598,118 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="21" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3StorageProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="21" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="361" column="0" lean-forward="false" selection-start-line="361" selection-start-column="0" selection-end-line="361" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3Directory.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="117" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="801">
+          <caret line="123" column="1" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="123" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="34" lean-forward="false" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-s3/1.11.22/ab566b0b45c083135f7b7befba31aa22545e6850/aws-java-sdk-s3-1.11.22-sources.jar!/com/amazonaws/services/s3/Headers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudFile.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="105" column="19" lean-forward="false" selection-start-line="105" selection-start-column="19" selection-end-line="105" selection-end-column="19" />
+          <folding>
+            <element signature="e#659#706#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="64" column="20" lean-forward="true" selection-start-line="64" selection-start-column="20" selection-end-line="64" selection-end-column="20" />
+          <folding>
+            <element signature="e#48#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-81">
+          <caret line="23" column="39" lean-forward="true" selection-start-line="23" selection-start-column="39" selection-end-line="23" selection-end-column="39" />
+          <folding>
+            <element signature="e#48#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/resources/META-INF/karman/providers.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="24" lean-forward="false" selection-start-line="0" selection-start-column="24" selection-end-line="0" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8265">
+          <caret line="551" column="13" lean-forward="true" selection-start-line="551" selection-start-column="13" selection-end-line="551" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#649#680#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="376">
+          <caret line="50" column="27" lean-forward="false" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
           <folding />
         </state>
       </provider>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":karman-azure:test" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="com.bertramlabs.plugins" external.system.module.type="sourceSet" external.system.module.version="1.0.6" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":karman-alibaba:test" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="com.bertramlabs.plugins" external.system.module.type="sourceSet" external.system.module.version="1.0.6" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/out/test/classes" />
     <exclude-output />
@@ -10,18 +10,28 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="karman-azure_main" />
+    <orderEntry type="module" module-name="karman-alibaba_main" />
     <orderEntry type="module" module-name="karman-core-karman-core_main" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.aliyun:aliyun-java-sdk-core:3.5.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.aliyun:aliyun-java-sdk-ecs:4.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.aliyun.oss:aliyun-sdk-oss:2.8.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:0.7-groovy-2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.ant:ant:1.7.0" level="project" />
     <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20170516" level="project" />
+    <orderEntry type="library" name="Gradle: org.jdom:jdom:1.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.json-lib:json-lib:jdk15:2.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit-dep:4.10" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.0.5" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.ant:ant-launcher:1.7.0" level="project" />
+    <orderEntry type="library" name="Gradle: commons-lang:commons-lang:2.5" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
   </component>
-  <component name="TestModuleProperties" production-module="karman-azure_main" />
+  <component name="TestModuleProperties" production-module="karman-alibaba_main" />
 </module>
