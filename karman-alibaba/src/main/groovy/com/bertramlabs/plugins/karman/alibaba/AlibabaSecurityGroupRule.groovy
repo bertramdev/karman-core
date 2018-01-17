@@ -14,9 +14,7 @@ import com.bertramlabs.plugins.karman.network.SecurityGroupRule
 
 class AlibabaSecurityGroupRule extends SecurityGroupRule{
 
-	private OpenstackNetworkProvider provider
-	private Map options
-	private String previousId
+	private AlibabaNetworkProvider provider
 	private String direction
 	private String ethertype = 'internet'
 
@@ -34,7 +32,7 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 	private boolean modified = false
 	private boolean existing = false
 
-	public AlibabaSecurityGroupRule(AlibabaNetworkProvider provider, SecurityGroupInterface securityGroup, Map options) {
+	AlibabaSecurityGroupRule(AlibabaNetworkProvider provider, SecurityGroupInterface securityGroup, Map options) {
 		super(securityGroup)
 
 		this.provider = provider

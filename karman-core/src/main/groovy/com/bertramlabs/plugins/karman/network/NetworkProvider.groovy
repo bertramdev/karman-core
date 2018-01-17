@@ -7,7 +7,7 @@ import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
  * Created by davidestes on 3/1/16.
  */
 
-public class NetworkProvider implements NetworkProviderInterface {
+abstract class NetworkProvider implements NetworkProviderInterface {
 
 	/**
 	 * A Factory method for creating a new storage provider of a type. Typically the type is passed as a provider
