@@ -3,28 +3,47 @@ package com.bertramlabs.plugins.karman.network
 /**
  * Created by davidestes on 3/1/16.
  */
-public interface SecurityGroupRuleInterface {
-	public String getId()
-	
-	public SecurityGroupInterface getSecurityGroup()
+interface SecurityGroupRuleInterface {
+	String getId()
+	String getPolicy()
+	void setPolicy(String policy)
 
-	public void addIpRange(String ipRange)
-	public void addIpRange(List<String> ipRange)
+	String getDirection()
+	void setDirection(String direction)
 
-	public void removeIpRange(String ipRange)
-	public void removeIpRange(List<String> ipRange)
+	SecurityGroupInterface getSecurityGroup()
+	void addIpRange(String ipRange)
+	void addIpRange(List<String> ipRange)
 
-	public List<String> getIpRange()
+	void removeIpRange(String ipRange)
+	void removeIpRange(List<String> ipRange)
 
-	public void setMinPort(Integer port)
-	public Integer getMinPort()
+	List<String> getIpRange()
 
-	public void setMaxPort(Integer port)
-	public Integer getMaxPort()
+	void setMinPort(Integer port)
+	Integer getMinPort()
 
-	public void setIpProtocol(String protocol)
-	public String getIpProtocol()
+	void setMaxPort(Integer port)
+	Integer getMaxPort()
 
-	public void save()
+	void setIpProtocol(String protocol)
+	String getIpProtocol()
+
+
+	void setEthertype(String ethertype)
+	String getEthertype()
+
+	void setTargetGroupName(String targetGroupName)
+	void setTargetGroupId(String targetGroupId)
+	String getTargetGroupName()
+	String getTargetGroupId()
+
+
+	void save()
+
+	void delete()
+
+
+
 
 }

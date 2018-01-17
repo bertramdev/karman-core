@@ -27,28 +27,11 @@ public class NetworkProvider implements NetworkProviderInterface {
 		return providerClass.newInstance(options)
 	}
 
-	@Override
-	public String getProviderName() {
-		return null
-	}
-
-	@Override
-	public Collection<SecurityGroupInterface> getSecurityGroups(Map options) {
-		return null
-	}
 
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
-		return null
+		return getSecurityGroups([:])
 	}
 
-	@Override
-	public SecurityGroupInterface getSecurityGroup(String uid) {
-		return null
-	}
 
-	@Override
-	public SecurityGroupInterface createSecurityGroup(String name) {
-		return null
-	}
 }

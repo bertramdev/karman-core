@@ -17,7 +17,7 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 	private Map options
 	private String id
 	private String previousId
-	private String direction
+
 	private String ethertype
 	
 	public OpenstackSecurityGroupRule(OpenstackNetworkProvider provider, SecurityGroupInterface securityGroup, Map options) {
@@ -95,19 +95,13 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		securityGroup.removeRule(this)
 	}
 	
-	public void setDirection(String direction) {
-		this.direction = direction
-	}
 
-	public String getDirection() {
-		return direction
-	}
 	
-	public void setEthertype(String ethertype) {
+	void setEthertype(String ethertype) {
 		this.ethertype = ethertype
 	}
 
-	public String getEthertype() {
+	String getEthertype() {
 		return ethertype
 	}
 

@@ -4,10 +4,14 @@ package com.bertramlabs.plugins.karman.network
  * Created by davidestes on 3/1/16.
  */
 public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
-	private SecurityGroupInterface securityGroup
-	private Integer minPort
-	private Integer maxPort
-	private String ipProtocol
+	protected SecurityGroupInterface securityGroup
+	protected Integer minPort
+	protected Integer maxPort
+	protected String ipProtocol
+	protected String policy = 'ingress'
+	protected String targetGroupName
+	protected String targetGroupId
+	private String direction
 	private List<String> ipRange = new ArrayList<String>() 
 
 	public SecurityGroupRule(SecurityGroupInterface securityGroup) {
@@ -72,6 +76,43 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	@Override
 	public String getIpProtocol() {
 		return this.ipProtocol
+	}
+
+	@Override
+	String getPolicy() {
+		return this.policy
+	}
+
+	@Override
+	void setPolicy(String policy) {
+		this.policy = policy
+	}
+
+	@Override
+	void setTargetGroupName(String targetGroupName) {
+		this.targetGroupName = targetGroupName
+	}
+	@Override
+	void setTargetGroupId(String targetGroupId) {
+		this.targetGroupId = targetGroupId
+	}
+	@Override
+	String getTargetGroupName() {
+		return this.targetGroupName
+	}
+	@Override
+	String getTargetGroupId() {
+		return this.targetGroupId
+	}
+
+	@Override
+	void setDirection(String direction) {
+		this.direction = direction
+	}
+
+	@Override
+	String getDirection() {
+		return direction
 	}
 
 	@Override
