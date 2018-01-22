@@ -11,7 +11,9 @@ import com.aliyuncs.ecs.model.v20140526.RevokeSecurityGroupRequest
 import com.aliyuncs.ecs.model.v20140526.RevokeSecurityGroupResponse
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import com.bertramlabs.plugins.karman.network.SecurityGroupRule
+import groovy.util.logging.Commons
 
+@Commons
 class AlibabaSecurityGroupRule extends SecurityGroupRule{
 
 	private AlibabaNetworkProvider provider
@@ -28,6 +30,7 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 	private String targetGroupOwnerId
 	private String originalIpProtocol
 	private String originalCidr
+	private String description
 
 	private boolean modified = false
 	private boolean existing = false
@@ -42,22 +45,25 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 	}
 
 	private void initializeFromOptions(Map options) {
-		this.ethertype = options?.ethertype ?: 'internet'
-		this.direction = options?.direction
-		this.minPort = options?.minPort
-		this.maxPort = options?.maxPort
-		this.targetGroupName = options?.targetGroupName
-		this.targetGroupId = options?.targetGroupId
-		this.ipProtocol = options?.ipProtocol
-		this.policy = options?.policy
-		this.targetGroupOwnerId = options?.targetGroupOwnerId
-		this.existing = options?.existing
+		println "initializes from options"
+		ethertype = options?.ethertype ?: 'internet'
+		direction = options?.direction
+		description = options?.description
+		minPort = options?.minPort
+		maxPort = options?.maxPort
+		targetGroupName = options?.targetGroupName
+		targetGroupId = options?.targetGroupId
+		ipProtocol = options?.ipProtocol
+		policy = options?.policy
+		targetGroupOwnerId = options?.targetGroupOwnerId
+		existing = options?.existing
+		println "setting cidr"
 		if(options?.cidr) {
-			this.ipRange << options.cidr
+			ipRange << options.cidr
 			originalCidr = options.cidr
 
 		}
-
+		println "original vals"
 		originalMinPort = minPort
 		originalMaxPort = maxPort
 		originalEtherType = ethertype
@@ -66,37 +72,40 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 		originalPolicy = policy
 		originalGroupId = targetGroupId
 		originalGroupOwnerId = targetGroupOwnerId
+		if(existing) {
+			modified = false
+		}
 	}
 
 
 	@Override
 	public void addIpRange(String ipRange) {
 		// OpenStack only supports a single cidr
-		this.ipRange.clear()
-		this.ipRange << ipRange
+		ipRange.clear()
+		ipRange << ipRange
 		modified = true
 	}
 
 	@Override
 	public void addIpRange(List<String> ipRange) {
 		// OpenStack only supports a single cidr
-		this.ipRange.clear()
+		ipRange.clear()
 		if(ipRange.size()) {
-			this.ipRange << ipRange.first()
+			ipRange << ipRange.first()
 		}
 		modified = true
 	}
 
 	@Override
 	public void removeIpRange(String ipRange) {
-		this.ipRange.remove(ipRange)
+		ipRange.remove(ipRange)
 		modified = true
 	}
 
 	@Override
 	public void removeIpRange(List<String> ipRange) {
 		ipRange.each { it ->
-			this.ipRange.remove(it)
+			ipRange.remove(it)
 		}
 		modified = true
 	}
@@ -108,82 +117,61 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 	}
 
 	String getEthertype() {
-		return this.ethertype
+		return ethertype
 	}
 
 	@Override
 	public void setMinPort(Integer port) {
-		this.minPort = port
+		super.setMinPort(port)
 		modified = true
 	}
 
-	@Override
-	public Integer getMinPort() {
-		return minPort
-	}
+
 
 	@Override
 	public void setMaxPort(Integer port) {
-		this.maxPort = port
+		super.setMaxPort(port)
 		modified = true
 	}
 
-	@Override
-	public Integer getMaxPort() {
-		return maxPort
-	}
+
 
 	@Override
 	public void setIpProtocol(String protocol) {
-		this.ipProtocol = protocol?.toLowerCase()
+		super.setIpProtocol(protocol)
 		modified = true
-	}
-
-	@Override
-	public String getIpProtocol() {
-		return this.ipProtocol
-	}
-
-	@Override
-	String getPolicy() {
-		return this.policy
 	}
 
 	@Override
 	void setPolicy(String policy) {
-		this.policy = policy
+		super.setPolicy(policy)
 		modified = true
 	}
 
 	@Override
-	void setTargetGroupName(String targetGroupName) {
-		this.targetGroupName = targetGroupName
+	void setTargetGroupName(String groupName) {
+		super.setTargetGroupName(targetGroupName)
 		modified = true
 	}
 	@Override
-	void setTargetGroupId(String targetGroupId) {
-		this.targetGroupId = targetGroupId
+	void setTargetGroupId(String groupId) {
+		super.setTargetGroupId(groupId)
 		modified = true
-	}
-	@Override
-	String getTargetGroupName() {
-		return this.targetGroupName
-	}
-	@Override
-	String getTargetGroupId() {
-		return this.targetGroupId
 	}
 
+
 	@Override
-	void setDirection(String direction) {
-		this.direction = direction
+	void setDirection(String targetDirection) {
+		super.setDirection(targetDirection)
 		modified = true
 	}
 
 	@Override
-	String getDirection() {
-		return direction
+	void setDescription(String targetDescription) {
+		super.setDescription(targetDescription)
+		modified = true
 	}
+
 
 	@Override
 	String getId() {
@@ -208,6 +196,7 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 			request.setDestGroupOwnerId(this.targetGroupOwnerId)
 			request.setNicType(this.ethertype)
 			request.setPolicy(this.policy)
+			request.setDescription(description)
 			request.setIpProtocol(this.ipProtocol)
 			request.setSecurityGroupId(this.securityGroup.id)
 			AuthorizeSecurityGroupEgressResponse response = client.getAcsResponse(request)
@@ -222,6 +211,7 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 			request.setSourceGroupOwnerId(this.targetGroupOwnerId)
 			request.setNicType(this.ethertype)
 			request.setPolicy(this.policy)
+			request.setDescription(description)
 			request.setIpProtocol(this.ipProtocol)
 			request.setSecurityGroupId(this.securityGroup.id)
 			AuthorizeSecurityGroupResponse response = client.getAcsResponse(request)

@@ -28,6 +28,7 @@ import com.aliyun.oss.model.PutObjectRequest
 import com.aliyun.oss.model.UploadPartRequest
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
+import groovy.util.logging.Commons
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpHost
@@ -92,6 +93,7 @@ import java.net.URLEncoder
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
+@Commons
 class AlibabaCloudFile extends CloudFile{
 		AlibabaDirectory parent
 		OSSObject object

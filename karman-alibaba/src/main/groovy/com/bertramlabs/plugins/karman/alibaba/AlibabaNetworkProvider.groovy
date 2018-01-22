@@ -9,7 +9,9 @@ import com.aliyuncs.ecs.model.v20140526.DescribeSecurityGroupsResponse
 import com.aliyuncs.profile.DefaultProfile
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
+import groovy.util.logging.Commons
 
+@Commons
 class AlibabaNetworkProvider extends NetworkProvider {
 	static String providerName = "alibaba"
 

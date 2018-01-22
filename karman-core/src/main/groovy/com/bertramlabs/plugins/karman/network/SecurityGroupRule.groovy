@@ -11,6 +11,7 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	protected String policy = 'ingress'
 	protected String targetGroupName
 	protected String targetGroupId
+	protected String description
 	private String direction
 	private List<String> ipRange = new ArrayList<String>() 
 
@@ -89,12 +90,12 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	}
 
 	@Override
-	void setTargetGroupName(String targetGroupName) {
-		this.targetGroupName = targetGroupName
+	void setTargetGroupName(String groupName) {
+		this.targetGroupName = groupName
 	}
 	@Override
-	void setTargetGroupId(String targetGroupId) {
-		this.targetGroupId = targetGroupId
+	void setTargetGroupId(String groupId) {
+		this.targetGroupId = groupId
 	}
 	@Override
 	String getTargetGroupName() {
@@ -106,13 +107,24 @@ public abstract class SecurityGroupRule implements SecurityGroupRuleInterface{
 	}
 
 	@Override
-	void setDirection(String direction) {
-		this.direction = direction
+	void setDirection(String targetDirection) {
+		this.direction = targetDirection
 	}
 
 	@Override
 	String getDirection() {
 		return direction
+	}
+
+
+	@Override
+	void setDescription(String targetDescription) {
+		this.description = targetDescription
+	}
+
+	@Override
+	String getDescription() {
+		return description
 	}
 
 	@Override

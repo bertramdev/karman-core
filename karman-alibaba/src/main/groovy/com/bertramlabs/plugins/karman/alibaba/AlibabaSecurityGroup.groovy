@@ -13,7 +13,9 @@ import com.aliyuncs.ecs.model.v20140526.ModifySecurityGroupAttributeResponse
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroup
 import com.bertramlabs.plugins.karman.network.SecurityGroupRuleInterface
+import groovy.util.logging.Commons
 
+@Commons
 class AlibabaSecurityGroup extends SecurityGroup{
 
 	String id
@@ -23,7 +25,7 @@ class AlibabaSecurityGroup extends SecurityGroup{
 	Boolean loaded = false
 	private Boolean metadataLoaded = false
 	AlibabaNetworkProvider provider
-	private List<AlibabaSecurityGroupRule> rules = new ArrayList<AlibabaSecurityGroupRule>()
+	private List<AlibabaSecurityGroupRule> rulesList = new ArrayList<AlibabaSecurityGroupRule>()
 	private List<AlibabaSecurityGroupRule> rulesToRemove = new ArrayList<AlibabaSecurityGroupRule>()
 
 	@Override
@@ -65,7 +67,7 @@ class AlibabaSecurityGroup extends SecurityGroup{
 		if(!metadataLoaded && id) {
 			loadAttributes()
 		}
-		return null
+		return rulesList
 	}
 
 
@@ -79,7 +81,7 @@ class AlibabaSecurityGroup extends SecurityGroup{
 		description = response.description
 		name = response.getSecurityGroupName()
 
-		rules.clear()
+		rulesList.clear()
 
 		response.permissions?.each { DescribeSecurityGroupAttributeResponse.Permission permission ->
 			def portArgs = permission.getPortRange()?.tokenize('/')
@@ -105,8 +107,9 @@ class AlibabaSecurityGroup extends SecurityGroup{
 				options.targetGroupOwnerId = permission.sourceGroupOwnerAccount
 				options.direction = 'ingress'
 			}
+			println "Creating Rule from options ${options}"
 			AlibabaSecurityGroupRule rule = new AlibabaSecurityGroupRule(provider,this,options)
-			rules << rule
+			this.rulesList.add(rule)
 		}
 		metadataLoaded = true
 
@@ -122,14 +125,14 @@ class AlibabaSecurityGroup extends SecurityGroup{
 	void removeRule(SecurityGroupRuleInterface rule) {
 		rulesToRemove.add(rule)
 		rulesToRemove.unique()
-		rules.remove(rule)
+		rulesList.remove(rule)
 	}
 
 	@Override
 	void clearRules() {
 		rulesToRemove += rules
 		rulesToRemove.unique()
-		rules.clear()
+		rulesList.clear()
 	}
 
 	@Override
@@ -158,7 +161,7 @@ class AlibabaSecurityGroup extends SecurityGroup{
 			rule.delete()
 		}
 		rulesToRemove.clear()
-		rules?.each { SecurityGroupRuleInterface rule ->
+		rulesList?.each { SecurityGroupRuleInterface rule ->
 			rule.save()
 		}
 

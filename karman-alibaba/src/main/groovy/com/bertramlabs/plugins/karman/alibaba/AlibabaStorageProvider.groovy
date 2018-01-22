@@ -4,7 +4,9 @@ import com.aliyun.oss.OSSClient
 import com.aliyun.oss.model.Bucket
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
+import groovy.util.logging.Commons
 
+@Commons
 class AlibabaStorageProvider extends StorageProvider {
 
 	static String providerName = "alibaba"

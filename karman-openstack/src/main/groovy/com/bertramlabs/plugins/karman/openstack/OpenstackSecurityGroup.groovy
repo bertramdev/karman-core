@@ -1,5 +1,6 @@
 package com.bertramlabs.plugins.karman.openstack
 
+import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroup
 import com.bertramlabs.plugins.karman.network.SecurityGroupRuleInterface
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
@@ -34,6 +35,11 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 	public OpenstackSecurityGroup(OpenstackNetworkProvider provider, Map options) {
 		this.provider = provider
 		initializeFromOptions(options)
+	}
+
+	@Override
+	NetworkProvider getProvider() {
+		return this.provider
 	}
 
 	public String getId() {

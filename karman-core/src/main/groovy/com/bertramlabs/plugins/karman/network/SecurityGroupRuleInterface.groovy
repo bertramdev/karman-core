@@ -9,7 +9,10 @@ interface SecurityGroupRuleInterface {
 	void setPolicy(String policy)
 
 	String getDirection()
-	void setDirection(String direction)
+	void setDirection(String targetDirection)
+
+	String getDescription()
+	void setDescription(String targetDescription)
 
 	SecurityGroupInterface getSecurityGroup()
 	void addIpRange(String ipRange)
@@ -33,8 +36,8 @@ interface SecurityGroupRuleInterface {
 	void setEthertype(String ethertype)
 	String getEthertype()
 
-	void setTargetGroupName(String targetGroupName)
-	void setTargetGroupId(String targetGroupId)
+	void setTargetGroupName(String groupName)
+	void setTargetGroupId(String groupId)
 	String getTargetGroupName()
 	String getTargetGroupId()
 

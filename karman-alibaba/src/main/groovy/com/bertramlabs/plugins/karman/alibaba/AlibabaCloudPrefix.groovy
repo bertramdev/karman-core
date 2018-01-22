@@ -1,7 +1,9 @@
 package com.bertramlabs.plugins.karman.alibaba
 
 import com.bertramlabs.plugins.karman.CloudFile
+import groovy.util.logging.Commons
 
+@Commons
 class AlibabaCloudPrefix extends CloudFile {
 
 	AlibabaDirectory parent
