@@ -25,7 +25,7 @@ class Mimetypes {
     }
 
     private loadMimetype() {
-        getClass().getResourceAsStream('/mime.types').eachLine {
+        getClass().getResourceAsStream('/META-INF/karman/mime.types').eachLine {
             String line = it.trim()
             if (line && !line.startsWith('#')) { // Ignore comments and empty lines.
                 StringTokenizer st = new StringTokenizer(line, " \t")
