@@ -97,6 +97,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String password
 	String tenantName
 	String domainId = 'default'
+	String projectName
 	Map accessInfo
 	String proxyHost
 	Integer proxyPort
@@ -120,12 +121,29 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				log.info("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
+
 				authMap = [auth: [identity: [methods: ['password'], password: [user: [name: this.username, password: this.password, domain: [id: this.domainId ?: 'default']]]]]]
+				if(this.tenantName) {
+					authMap.auth.scope = [project: [name: this.tenantName, domain: [id:this.domainId ?: 'default']]]
+				}
+
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
 				HttpClient client = prepareHttpClient()
-
 				response = client.execute(authPost)
 				HttpEntity responseEntity = response.getEntity();
+				
+				if(response.getStatusLine().statusCode == 400) {
+					// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
+					authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
+					authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
+					authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
+					
+					client = prepareHttpClient()
+					response = client.execute(authPost)
+					responseEntity = response.getEntity();
+				} 
+				
+				
 				if(response.getStatusLine().statusCode != 201) {
 					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
 					EntityUtils.consume(response.entity)
@@ -208,7 +226,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
+		def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
 		if(!result.success) {
 			throw new RuntimeException("Error in obtaining security groups: ${result.error}")
 		}
