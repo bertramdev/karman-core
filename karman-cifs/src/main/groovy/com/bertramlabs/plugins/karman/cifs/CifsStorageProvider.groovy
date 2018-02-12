@@ -56,6 +56,7 @@ class CifsStorageProvider extends StorageProvider {
 	}
 
 	Directory getDirectory(String name) {
+		name = name.replace('\\','/')
 		new CifsDirectory(name:name, provider:this)
 	}
 

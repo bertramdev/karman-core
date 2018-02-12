@@ -136,6 +136,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 	}
 
 	CloudFile getFile(String name) {
+		name = name.replace('\\','/')
 		new CifsCloudFile(provider:provider, parent:this, name:name)
 	}
 

@@ -17,6 +17,7 @@
 package com.bertramlabs.plugins.karman.alibaba
 
 import com.aliyun.oss.OSSClient
+import com.aliyun.oss.model.CannedAccessControlList
 import com.aliyun.oss.model.CompleteMultipartUploadRequest
 import com.aliyun.oss.model.InitiateMultipartUploadRequest
 import com.aliyun.oss.model.InitiateMultipartUploadResult
@@ -27,6 +28,7 @@ import com.aliyun.oss.model.PartETag
 import com.aliyun.oss.model.PutObjectRequest
 import com.aliyun.oss.model.UploadPartRequest
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 import groovy.util.logging.Commons
 import org.apache.http.Header
@@ -133,11 +135,26 @@ class AlibabaCloudFile extends CloudFile{
 					getOSSObject().objectMetadata.setExpirationTime(value)
 					break
 				case 'Object-Acl':
-					getOSSObject().objectMetadata.setObjectAcl(value)
+					getOSSObject().objectMetadata.setObjectAcl(alibabaConvertedACLRule(value))
 					break
 				default:
 					// User specific meta
 					getOSSObject().objectMetadata.userMetadata[key] = value
+			}
+		}
+
+		private CannedAccessControlList alibabaConvertedACLRule(CloudFileACL acl) {
+			switch(acl) {
+				case CloudFileACL.Private:
+					return CannedAccessControlList.Private
+				case CloudFileACL.PublicRead:
+					return CannedAccessControlList.PublicRead
+				case CloudFileACL.PublicReadWrite:
+					return CannedAccessControlList.PublicReadWrite
+				case CloudFileACL.AuthenticatedRead:
+					return CannedAccessControlList.Default
+				default:
+					return CannedAccessControlList.Default
 			}
 		}
 

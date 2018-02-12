@@ -2,17 +2,43 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4c0d6dc-99ad-469a-8019-516cdfae0e9c" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba.iml" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_main.iml" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_test.iml" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_test.iml" />
       <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaNetworkProvider.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaNetworkProvider.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsDirectory.groovy" afterPath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsDirectory.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsStorageProvider.groovy" afterPath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsStorageProvider.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-core.ipr" afterPath="$PROJECT_DIR$/karman-core.ipr" />
       <change beforePath="$PROJECT_DIR$/karman-core.iws" afterPath="$PROJECT_DIR$/karman-core.iws" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRule.groovy" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRule.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy" />
-      <change beforePath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackSecurityGroup.groovy" afterPath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackSecurityGroup.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy" />
+      <change beforePath="$PROJECT_DIR$/karman-core_main.iml" afterPath="$PROJECT_DIR$/karman-core_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" />
+      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -126,8 +152,8 @@
       <file leaf-file-name="OpenstackNetworkProvider.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="100" column="20" lean-forward="false" selection-start-line="100" selection-start-column="20" selection-end-line="100" selection-end-column="20" />
+            <state relative-caret-position="600">
+              <caret line="101" column="20" lean-forward="false" selection-start-line="101" selection-start-column="20" selection-end-line="101" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -143,53 +169,61 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NetworkProvider.groovy" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/NetworkProvider.groovy">
+      <file leaf-file-name="AlibabaCloudFile.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state relative-caret-position="542">
+              <caret line="155" column="24" lean-forward="false" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AlibabaSecurityGroupRule.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy">
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-              <folding>
-                <element signature="e#48#78#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AlibabaDirectory.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="10" column="8" lean-forward="false" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+            <state relative-caret-position="150">
+              <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SecurityGroup.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy">
+      <file leaf-file-name="CifsCloudFile.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsCloudFile.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="40" lean-forward="false" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+            <state relative-caret-position="105">
+              <caret line="26" column="6" lean-forward="false" selection-start-line="26" selection-start-column="6" selection-end-line="26" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AlibabaSecurityGroup.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy">
+      <file leaf-file-name="CifsDirectory.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsDirectory.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="160" column="17" lean-forward="false" selection-start-line="160" selection-start-column="17" selection-end-line="160" selection-end-column="17" />
+            <state relative-caret-position="930">
+              <caret line="139" column="52" lean-forward="false" selection-start-line="139" selection-start-column="52" selection-end-line="139" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CifsStorageProvider.groovy" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsStorageProvider.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="532">
+              <caret line="69" column="25" lean-forward="true" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SecurityGroupInterface.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="450">
+              <caret line="30" column="4" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -198,18 +232,8 @@
       <file leaf-file-name="SecurityGroupRuleInterface.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Directory.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/Directory.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1959">
-              <caret line="42" column="15" lean-forward="false" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
+            <state relative-caret-position="345">
+              <caret line="23" column="27" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -2428,8 +2452,8 @@
     <option name="modificationStamps">
       <map>
         <entry key="$USER_HOME$/.gradle/gradle.properties" value="565125010" />
-        <entry key="$PROJECT_DIR$" value="19511023673000" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="2062150460" />
+        <entry key="$PROJECT_DIR$" value="19513272379000" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="2304382385" />
         <entry key="$PROJECT_DIR$/karman-alibaba/build.gradle" value="2348939417" />
         <entry key="$PROJECT_DIR$/karman-aws/build.gradle" value="3247549663" />
         <entry key="$PROJECT_DIR$/karman-azure/build.gradle" value="1757789675" />
@@ -2996,21 +3020,24 @@
         <option value="$PROJECT_DIR$/karman-alibaba/build.gradle" />
         <option value="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3Directory.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/resources/META-INF/karman/providers.properties" />
-        <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy" />
         <option value="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackSecurityGroupRule.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/resources/META-INF/karman/networkProviders.properties" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/NetworkProvider.groovy" />
         <option value="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackSecurityGroup.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaNetworkProvider.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
-        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" />
         <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy" />
         <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRule.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy" />
+        <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy" />
+        <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsDirectory.groovy" />
+        <option value="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsStorageProvider.groovy" />
       </list>
     </option>
   </component>
@@ -3025,7 +3052,6 @@
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="40" />
     <option name="y" value="22" />
     <option name="width" value="1680" />
     <option name="height" value="973" />
@@ -3054,6 +3080,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -3117,6 +3145,65 @@
               <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
               <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+              <item name="cifs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
+              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="karman-cifs" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="groovy" type="462c0819:PsiDirectoryNode" />
+              <item name="cifs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
@@ -3248,8 +3335,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="Grails" />
     </panes>
@@ -3380,14 +3465,17 @@
       <workItem from="1516111259847" duration="2524000" />
       <workItem from="1516126467835" duration="1475000" />
       <workItem from="1516198455925" duration="10265000" />
+      <workItem from="1516985939892" duration="569000" />
+      <workItem from="1517500970608" duration="61000" />
+      <workItem from="1518451178613" duration="655000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20846000" />
+    <option name="totallyTimeSpent" value="22131000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="40" y="22" width="1680" height="973" extended-state="0" />
+    <frame x="0" y="22" width="1680" height="973" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -3400,7 +3488,7 @@
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26434678" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2735043" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -3692,42 +3780,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/CloudFileInterface.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="36" column="23" lean-forward="false" selection-start-line="36" selection-start-column="14" selection-end-line="36" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="19" column="19" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding>
-            <element signature="e#48#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackStorageProvider.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="47" column="13" lean-forward="false" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/NetworkProviderInterface.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="16" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
@@ -3915,14 +3967,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="43" lean-forward="true" selection-start-line="38" selection-start-column="43" selection-end-line="38" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-alibaba/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="518">
@@ -3935,7 +3979,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="75" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3943,7 +3986,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="24" lean-forward="false" selection-start-line="0" selection-start-column="24" selection-end-line="0" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3983,22 +4025,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="95" column="8" lean-forward="false" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -4015,52 +4041,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/Directory.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1959">
+        <state relative-caret-position="420">
           <caret line="42" column="15" lean-forward="false" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="40" lean-forward="false" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
+        <state relative-caret-position="2205">
           <caret line="160" column="17" lean-forward="false" selection-start-line="160" selection-start-column="17" selection-end-line="160" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="e#48#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="10" column="8" lean-forward="false" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -4075,8 +4067,65 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackNetworkProvider.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="100" column="20" lean-forward="false" selection-start-line="100" selection-start-column="20" selection-end-line="100" selection-end-column="20" />
+        <state relative-caret-position="600">
+          <caret line="101" column="20" lean-forward="false" selection-start-line="101" selection-start-column="20" selection-end-line="101" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="e#48#78#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="8" lean-forward="false" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroup.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupInterface.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="4" lean-forward="false" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="27" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-grails/grails-app/init/karman/Application.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/NetworkProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="18" column="49" lean-forward="false" selection-start-line="18" selection-start-column="49" selection-end-line="18" selection-end-column="49" />
           <folding />
         </state>
       </provider>
@@ -4089,10 +4138,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/NetworkProvider.groovy">
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state relative-caret-position="542">
+          <caret line="155" column="24" lean-forward="false" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsCloudFile.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="26" column="6" lean-forward="false" selection-start-line="26" selection-start-column="6" selection-end-line="26" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsDirectory.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="930">
+          <caret line="139" column="52" lean-forward="false" selection-start-line="139" selection-start-column="52" selection-end-line="139" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsStorageProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="69" column="25" lean-forward="true" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
           <folding />
         </state>
       </provider>

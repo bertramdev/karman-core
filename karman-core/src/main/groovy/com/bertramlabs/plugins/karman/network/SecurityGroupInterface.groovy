@@ -28,4 +28,6 @@ public interface SecurityGroupInterface {
 
 	public void delete()
 
+	public String getMd5Hash()
+
 }
