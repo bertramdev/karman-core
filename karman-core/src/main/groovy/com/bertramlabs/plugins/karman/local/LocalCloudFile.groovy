@@ -143,8 +143,8 @@ class LocalCloudFile extends CloudFile {
 
 	private cleanUpTree() {
 		def parentDir = fsFile.parentFile
-		while(parentDir.canonicalPath != parent.fsFile.canonicalPath) {
-			if(parentDir.list().size() == 0) {
+		while(parentDir.exists() && parentDir.canonicalPath != parent.fsFile.canonicalPath) {
+			if(parentDir.list()?.size() == 0) {
 				parentDir.delete()
 				parentDir = parentDir.parentFile
 			} else {

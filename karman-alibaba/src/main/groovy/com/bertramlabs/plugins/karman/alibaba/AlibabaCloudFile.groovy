@@ -433,11 +433,7 @@ class AlibabaCloudFile extends CloudFile{
 
 				Long contentLength = (internalContentLengthSet || !exists()) ? internalContentLength : getOSSObject().objectMetadata.contentLength
 				if(contentLength != null && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
-					PutObjectRequest putObjectRequest = new PutObjectRequest()
-					putObjectRequest.setBucketName(parent.name)
-					putObjectRequest.setInputStream(writeableStream)
-					putObjectRequest.setMetadata(getOSSObject().objectMetadata)
-					putObjectRequest.setKey(name)
+					PutObjectRequest putObjectRequest = new PutObjectRequest(parent.name,name,writeableStream,getOSSObject().objectMetadata)
 					getOSSClient().putObject(putObjectRequest)
 				} else if(contentLength != null) {
 					saveChunked()
