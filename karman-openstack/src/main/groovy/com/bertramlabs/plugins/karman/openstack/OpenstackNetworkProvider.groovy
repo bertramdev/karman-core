@@ -85,6 +85,7 @@ import javax.net.ssl.SSLContext
  *
  * @author David Estes
  * @author Bob Whiton
+ * @author Dustin DeYoung
  */
 @Commons
 public class OpenstackNetworkProvider extends NetworkProvider {
@@ -201,8 +202,8 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			}
 
 			setEndpoints(accessInfo)
-
 			EntityUtils.consume(response.entity)
+			
 			return true
 		} catch(ex) {
 			log.error("Error occurred during the authentication phase - ${ex.message}", ex)
@@ -211,13 +212,11 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	}
 
 	public Map getAccessInfo() {
-		if(!accessInfo) {
-			if(!authenticate()) {
-				return null
-			}
+		if(!accessInfo && !authenticate()) {
+			return null
 		}
 
-		accessInfo
+		return accessInfo
 	}
 
 	@Override
@@ -289,14 +288,8 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			request.addHeader("Accept", "application/json")
 			request.addHeader(new BasicHeader('X-Auth-Token', token))
 
-
-
-
-
-			
 			withHttpClient() { HttpClient client ->
 				log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
-
 				HttpResponse response = client.execute(request)
 				HttpEntity responseEntity = response.getEntity();
 				String responseText = responseEntity?.content?.text
@@ -323,90 +316,118 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	}
 
 	private setEndpoints(tokenResults) {
+		def rtn = [success: false, errors: []]
 		def identityUri = new java.net.URI(this.identityUrl)
 		def osHost = identityUri.getHost()
-		accessInfo.endpointInfo = [:]
-
-		if(accessInfo.identityApiVersion == 'v3') {
-			def computeApiResults = tokenResults.token.catalog.find { it.type == 'compute' }
-			def match = findEndpointHost(computeApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.computeApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.computeVersion = match ? parseEndpointVersion(match) : null
-			def imageApiResults = tokenResults.token.catalog.find { it.type == 'image' }
-			match = findEndpointHost(imageApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.imageApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.imageVersion = match ? parseEndpointVersion(match, true, 'v2') : null
-			def storageApiResults = tokenResults.token.catalog.find { it.type == 'volume' }
-			match = findEndpointHost(storageApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.storageApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.storageVersion = match ? parseEndpointVersion(match) : null
-			def networkApiResults = tokenResults.token.catalog.find { it.type == 'network' }
-			match = findEndpointHost(networkApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match, false, 'v2.0') : null
-		} else {
-			def computeApiResults = tokenResults.access.serviceCatalog.find { it.type == 'compute' }
-			def match = findEndpointHost(computeApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.computeApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.computeVersion = match ? parseEndpointVersion(match) : null
-			def imageApiResults = tokenResults.access.serviceCatalog.find { it.type == 'image' }
-			match = findEndpointHost(imageApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.imageApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.imageVersion = match ? parseEndpointVersion(match, true, 'v2') : null
-			def storageApiResults = tokenResults.access.serviceCatalog.find { it.type == 'volume' }
-			match = findEndpointHost(storageApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.storageApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.storageVersion = match ? parseEndpointVersion(match) : null
-			def networkApiResults = tokenResults.access.serviceCatalog.find { it.type == 'network' }
-			match = findEndpointHost(networkApiResults?.endpoints, osHost)
-			accessInfo.endpointInfo.networkApi = match ? parseEndpoint(match) : null
-			accessInfo.endpointInfo.networkVersion = match ? parseEndpointVersion(match, false, 'v2.0') : null
+		def serviceCatalog = accessInfo?.identityApiVersion == 'v3' ? tokenResults?.token?.catalog : tokenResults?.access?.serviceCatalog
+		def endpointTypes = [
+			[name: 'compute', accessLabel: 'compute', version: [noDot: false, defaultValue: null]],
+			[name: 'image', accessLabel: 'image', version: [noDot: true, defaultValue: 'v2']],
+			[name: 'volume', accessLabel: 'storage', version: [noDot: false, defaultValue: null]],
+			[name: 'network', accessLabel: 'network', version: [noDot: false, defaultValue: 'v2.0']]
+		]
+		if(!this.accessInfo) {
+			this.accessInfo = [:]
 		}
+		this.accessInfo.endpointInfo = [:]
+		endpointTypes.each { endpointType ->
+			def apiResults = findLatestEndpointInSet(findEndpointsForType(serviceCatalog, endpointType.name))
+			def match = findEndpointHost(apiResults?.endpoints, osHost)
+			if(!match) {
+				log.error("Openstack: Failed to set endpoint for ${endpointType.name} API")
+				rtn.errors << [(endpointType.name): "Failed to find endpoint."]
+			}
+			this.accessInfo.endpointInfo["${endpointType.accessLabel}Api"] = match ? parseEndpoint(match) : null
+			this.accessInfo.endpointInfo["${endpointType.accessLabel}Version"] = match ? parseEndpointVersion(match, endpointType.version.noDot, endpointType.version.defaultValue) : null
+		}
+		
+		if(rtn.errors.size() == 0) {
+			rtn.success = true
+		}
+		
+		return rtn
+	}
+	
+	private findEndpointsForType(ArrayList serviceCatalog, String type) {
+		return serviceCatalog?.findAll { it.type.startsWith(type) }
+	}
+	
+	private findLatestEndpointInSet(ArrayList endpoints) {
+		return endpoints?.sort {a,b -> b.type <=> a.type }?.getAt(0)
 	}
 
 	private findEndpointHost(endpoints, osHost) {
 		def rtn
-		def endpoint = endpoints?.find {
-			it.publicURL?.indexOf(osHost) > -1 || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1
-		}
-		if(!endpoint) {
-			osHost = osHost.substring(osHost.indexOf('.') + 1)
-			endpoint = endpoints?.find {
-				it.publicURL?.indexOf(osHost) > -1 || it.adminURL?.indexOf(osHost) > -1 || it.internalURL?.indexOf(osHost) > -1 || it.url?.indexOf(osHost) > -1
+		try {
+			if(endpoints && endpoints.size() > 0) {
+				def endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
+				if(!endpoint) {
+					osHost = osHost.substring(osHost.indexOf('.') + 1)
+					endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
+				}
+				endpoint = endpoint ?: endpoints?.first()
+				if(endpoint) {
+					rtn = [endpoint.publicURL, endpoint.url, endpoint.adminURL].find { it && it.indexOf(osHost) > -1 }
+				}
 			}
+		} catch(e) {
+			log.error("Openstack, Error parsing endpoint host: ${e}", e)
 		}
-		if(!endpoint)
-			endpoint = endpoints.first()
-		if(endpoint) {
-			rtn = (endpoint.publicURL && endpoint.publicURL.indexOf(osHost) > -1) ? endpoint.publicURL : null
-			if(!rtn)
-				rtn = (endpoint.url && endpoint.url.indexOf(osHost) > -1) ? endpoint.url : null
-			if(!rtn)
-				rtn = (endpoint.adminURL && endpoint.adminURL.indexOf(osHost) > -1) ? endpoint.adminURL : null
+		return rtn
+	}
+	
+	private Boolean doesEndpointContainHost(endpoint, osHost) {
+		return endpoint.publicURL?.indexOf(osHost) > -1 || endpoint.adminURL?.indexOf(osHost) > -1 || endpoint.internalURL?.indexOf(osHost) > -1 || endpoint.url?.indexOf(osHost) > -1
+	}
+	
+	
+	private parseEndpoint(osUrl) {
+		def rtn = osUrl
+		def hostStart = osUrl.toLowerCase().indexOf("://")
+		def hostStartStr = osUrl.substring(0, hostStart + 3)
+		def matchStartStr = osUrl.substring(hostStartStr.length() - 1)
+		def pathArgs = matchStartStr.tokenize('/')
+		def versionIdx = -1
+		if(pathArgs.size() > 0) {
+			versionIdx = pathArgs.findIndexOf { it =~ /^v\d(\.\d)*/ }
+		}
+		if(versionIdx >= 0) {
+			rtn = hostStartStr + pathArgs[0..<versionIdx].join("/")
 		}
 		return rtn
 	}
 
-
+	private parseEndpointVersion(osUrl, noDot = false, defaultValue = '') {
+		def rtn
+		def url = new URL(osUrl)
+		def pathArgs = url.path?.tokenize('/')?.findAll{it}
+		if(pathArgs.size() > 0) {
+			rtn = pathArgs.find { it =~ /^v\d(\.\d)*/ }
+		}
+		if(!rtn) {
+			rtn = defaultValue
+		}
+		if(rtn?.length() > 0 && noDot == true) {
+			def dotIndex = rtn.indexOf('.')
+			if(dotIndex > -1)
+				rtn = rtn.substring(0, dotIndex)
+		}
+		return rtn
+	}
+	
 	private HttpClient withHttpClient(Closure cl) {
 		HttpClientBuilder clientBuilder = HttpClients.custom()
+		
 		clientBuilder.setHostnameVerifier(new X509HostnameVerifier() {
 			public boolean verify(String host, SSLSession sess) {
 				return true
 			}
 
-			public void verify(String host, SSLSocket ssl) {
+			public void verify(String host, SSLSocket ssl) {}
 
-			}
+			public void verify(String host, String[] cns, String[] subjectAlts) {}
 
-			public void verify(String host, String[] cns, String[] subjectAlts) {
-
-			}
-
-			public void verify(String host, X509Certificate cert) {
-
-			}
-
+			public void verify(String host, X509Certificate cert) {}
 		})
 
 		//We want to ignore certificate errors for this
@@ -416,22 +437,20 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				return true
 			}
 		}).build()
+		
 		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
 			@Override
 			public Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
 				if(socket instanceof SSLSocket) {
 					try {
 						socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
-						log.debug "hostname: ${host?.getHostName()}"
+						log.debug("hostname: ${host?.getHostName()}")
 						PropertyUtils.setProperty(socket, "host", host.getHostName());
 					} catch(NoSuchMethodException ex) {
-					}
-					catch(IllegalAccessException ex) {
-					}
-					catch(InvocationTargetException ex) {
-					}
-					catch(Exception ex) {
-						log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
+					} catch(IllegalAccessException ex) {
+					} catch(InvocationTargetException ex) {
+					} catch(Exception ex) {
+						log.error("We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex)
 					}
 				}
 				return super.connectSocket(20 * 1000, socket, host, remoteAddress, localAddress, context)
@@ -466,6 +485,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 		RequestConfig config = RequestConfig.custom()
 			.setConnectTimeout(30000)
 			.setSocketTimeout(20000).build()
+			
 		clientBuilder.setDefaultRequestConfig(config)
 		try {
 			cl.call(clientBuilder.build())
@@ -473,40 +493,5 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			connectionManager.shutdown()
 		}
 	}
-
-	private parseEndpoint(osUrl) {
-		def rtn = osUrl
-		def hostStart = osUrl.toLowerCase().indexOf("://")
-		def hostStartStr = osUrl.substring(0, hostStart + 3)
-		def matchStartStr = osUrl.substring(hostStartStr.length() - 1)
-		def pathArgs = matchStartStr.tokenize('/')
-		def versionIdx = -1
-		if(pathArgs.size() > 0) {
-			versionIdx = pathArgs.findIndexOf { it =~ /^v\d(\.\d)*/ }
-		}
-		if(versionIdx >= 0) {
-			rtn = hostStartStr + pathArgs[0..<versionIdx].join("/")
-		}
-		return rtn
-	}
-
-	private parseEndpointVersion(osUrl, noDot = false, defaultValue = '') {
-		def rtn
-		def url = new URL(osUrl)
-		def pathArgs = url.path?.tokenize('/')?.findAll{it}
-		if(pathArgs.size() > 0) {
-			rtn = pathArgs.find { it =~ /^v\d(\.\d)*/ }
-		}
-		if(!rtn) {
-			rtn = defaultValue
-		}
-		if(rtn?.length() > 0 && noDot == true) {
-			def dotIndex = rtn.indexOf('.')
-			if(dotIndex > -1)
-				rtn = rtn.substring(0, dotIndex)
-		}
-		return rtn
-	}
-
 
 }
