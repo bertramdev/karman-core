@@ -128,33 +128,36 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				}
 
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-				HttpClient client = prepareHttpClient()
-				response = client.execute(authPost)
-				HttpEntity responseEntity = response.getEntity();
-				
-				if(response.getStatusLine().statusCode == 400) {
-					// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
-					authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
-					authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
-					authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-					
-					client = prepareHttpClient()
-					response = client.execute(authPost)
-					responseEntity = response.getEntity();
-				} 
-				
-				
-				if(response.getStatusLine().statusCode != 201) {
-					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
-					EntityUtils.consume(response.entity)
-					return false
-				}
 
-				String responseText = responseEntity.content.text
-				accessInfo = new JsonSlurper().parseText(responseText)
-				accessInfo.projectId = accessInfo.token.project.id
-				accessInfo.identityApiVersion = 'v3'
-				accessInfo.authToken = response.getHeaders('X-Subject-Token')[0].value
+				withHttpClient() { HttpClient client ->
+					response = client.execute(authPost)
+					HttpEntity responseEntity = response.getEntity();
+					
+					if(response.getStatusLine().statusCode == 400) {
+						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
+						authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
+						authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
+						authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
+						
+						response = client.execute(authPost)
+						responseEntity = response.getEntity();
+					} 
+					
+					
+					if(response.getStatusLine().statusCode != 201) {
+						log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
+						EntityUtils.consume(response.entity)
+						return false
+					}
+
+					String responseText = responseEntity.content.text
+					accessInfo = new JsonSlurper().parseText(responseText)
+					accessInfo.projectId = accessInfo.token.project.id
+					accessInfo.identityApiVersion = 'v3'
+					accessInfo.authToken = response.getHeaders('X-Subject-Token')[0].value
+				}
+				
+				
 			} else {
 				if(apiKey) {
 					authMap = [
@@ -177,20 +180,24 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-				HttpClient client = prepareHttpClient()
-				response = client.execute(authPost)
-				HttpEntity responseEntity = response.getEntity();
-				if(response.getStatusLine().statusCode != 200) {
-					log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
-					EntityUtils.consume(response.entity)
-					return false
-				}
 
-				String responseText = responseEntity.content.text
-				accessInfo = new JsonSlurper().parseText(responseText)
-				accessInfo.identityApiVersion = '2.0'
-				accessInfo.projectId = accessInfo?.access?.token.tenant.id
-				accessInfo.authToken = accessInfo?.access?.token?.id?.toString()
+				withHttpClient() { HttpClient client ->
+					response = client.execute(authPost)
+					HttpEntity responseEntity = response.getEntity();
+					if(response.getStatusLine().statusCode != 200) {
+						log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
+						EntityUtils.consume(response.entity)
+						return false
+					}
+
+					String responseText = responseEntity.content.text
+					accessInfo = new JsonSlurper().parseText(responseText)
+					accessInfo.identityApiVersion = '2.0'
+					accessInfo.projectId = accessInfo?.access?.token.tenant.id
+					accessInfo.authToken = accessInfo?.access?.token?.id?.toString()
+				}
+				
+				
 			}
 
 			setEndpoints(accessInfo)
@@ -286,26 +293,28 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 
 
-			HttpClient client = prepareHttpClient();
+			
+			withHttpClient() { HttpClient client ->
+				log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
 
-			log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
+				HttpResponse response = client.execute(request)
+				HttpEntity responseEntity = response.getEntity();
+				String responseText = responseEntity?.content?.text
+				Integer responseCode = response.getStatusLine().statusCode
+				log.info "  Result: ${responseText}"
 
-			HttpResponse response = client.execute(request)
-			HttpEntity responseEntity = response.getEntity();
-			String responseText = responseEntity?.content?.text
-			Integer responseCode = response.getStatusLine().statusCode
-			log.info "  Result: ${responseText}"
-
-			if(responseText) {
-				rtn.content = new JsonSlurper().parseText(responseText)
+				if(responseText) {
+					rtn.content = new JsonSlurper().parseText(responseText)
+				}
+				if(responseCode >= 200 && response.getStatusLine().statusCode < 300) {
+					rtn.success = true
+				} else {
+					log.error("Request Failed ${responseCode} when trying to connect to Openstack Cloud: ${responseText}")
+					EntityUtils.consume(responseEntity)
+					rtn.success = false
+				}
 			}
-			if(responseCode >= 200 && response.getStatusLine().statusCode < 300) {
-				rtn.success = true
-			} else {
-				log.error("Request Failed ${responseCode} when trying to connect to Openstack Cloud: ${responseText}")
-				EntityUtils.consume(responseEntity)
-				rtn.success = false
-			}
+			
 		} catch(e) {
 			log.error "Error in calling api: ${e}", e
 			rtn.error = e.message
@@ -379,7 +388,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	}
 
 
-	private HttpClient prepareHttpClient() {
+	private HttpClient withHttpClient(Closure cl) {
 		HttpClientBuilder clientBuilder = HttpClients.custom()
 		clientBuilder.setHostnameVerifier(new X509HostnameVerifier() {
 			public boolean verify(String host, SSLSession sess) {
@@ -458,7 +467,11 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			.setConnectTimeout(30000)
 			.setSocketTimeout(20000).build()
 		clientBuilder.setDefaultRequestConfig(config)
-		return clientBuilder.build()
+		try {
+			cl.call(clientBuilder.build())
+		} finally {
+			connectionManager.shutdown()
+		}
 	}
 
 	private parseEndpoint(osUrl) {
