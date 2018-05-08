@@ -463,9 +463,7 @@ class AlibabaCloudFile extends CloudFile{
 			InitiateMultipartUploadRequest initRequest = new
 				InitiateMultipartUploadRequest(parent.name, name);
 			initRequest.setObjectMetadata(getOSSObject().objectMetadata)
-			getOSSClient().initiateMultipartUpload(initRequest)
-			InitiateMultipartUploadResult initResponse =
-				s3Client.initiateMultipartUpload(initRequest);
+			InitiateMultipartUploadResult initResponse = getOSSClient().initiateMultipartUpload(initRequest)
 			long partSize = parent.provider.chunkSize; // Set part size to 5 MB.
 
 			if(contentLength && contentLength / 1000l > partSize) {
