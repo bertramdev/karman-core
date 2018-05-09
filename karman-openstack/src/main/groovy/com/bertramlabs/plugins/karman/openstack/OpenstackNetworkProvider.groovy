@@ -232,7 +232,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
+		def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
 		if(!result.success) {
 			throw new RuntimeException("Error in obtaining security groups: ${result.error}")
 		}
@@ -245,7 +245,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public SecurityGroupInterface getSecurityGroup(String uid) {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
+		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
 		if(!result.success) {
 			throw new RuntimeException("Error in obtaining security group: ${result.error}")
 		}
@@ -487,10 +487,12 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			.setSocketTimeout(20000).build()
 			
 		clientBuilder.setDefaultRequestConfig(config)
+		def client = clientBuilder.build()
 		try {
-			cl.call(clientBuilder.build())
+			cl.call(client)
 		} finally {
 			connectionManager.shutdown()
+			return client
 		}
 	}
 
