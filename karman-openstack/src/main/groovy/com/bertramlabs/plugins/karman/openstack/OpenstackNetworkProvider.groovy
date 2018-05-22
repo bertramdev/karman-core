@@ -110,55 +110,20 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	protected Boolean authenticate() {
 		try {
 			def authMap
-			URIBuilder uriBuilder = new URIBuilder(identityUrl)
+			def basePath = identityUrl
+			String path
 			def identityVersion = parseEndpointVersion(identityUrl) ? "/${parseEndpointVersion(identityUrl)}" : '/v3'
-			HttpResponse response
+			
+			if(!basePath.contains(identityVersion)) {
+				basePath += identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion
+			}
 			if(identityVersion == '/v3') {
-				def basePath = uriBuilder.getPath()
-				if(!basePath.contains(identityVersion)) {
-					basePath += identityVersion
-				}
-				uriBuilder.setPath([basePath.endsWith("/") ? basePath.substring(0, basePath.size() - 1) : basePath, "auth", "tokens"].join("/"))
-				log.info("Auth url: ${uriBuilder.build()}")
-				HttpPost authPost = new HttpPost(uriBuilder.build())
-				authPost.addHeader("Content-Type", "application/json");
-
 				authMap = [auth: [identity: [methods: ['password'], password: [user: [name: this.username, password: this.password, domain: [id: this.domainId ?: 'default']]]]]]
 				if(this.tenantName) {
 					authMap.auth.scope = [project: [name: this.tenantName, domain: [id:this.domainId ?: 'default']]]
 				}
 
-				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-
-				withHttpClient() { HttpClient client ->
-					response = client.execute(authPost)
-					HttpEntity responseEntity = response.getEntity();
-					
-					if(response.getStatusLine().statusCode == 400) {
-						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
-						authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
-						authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
-						authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-						
-						response = client.execute(authPost)
-						responseEntity = response.getEntity();
-					} 
-					
-					
-					if(response.getStatusLine().statusCode != 201) {
-						log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
-						EntityUtils.consume(response.entity)
-						return false
-					}
-
-					String responseText = responseEntity.content.text
-					accessInfo = new JsonSlurper().parseText(responseText)
-					accessInfo.projectId = accessInfo.token.project.id
-					accessInfo.identityApiVersion = 'v3'
-					accessInfo.authToken = response.getHeaders('X-Subject-Token')[0].value
-				}
-				
-				
+				path = "/auth/tokens"
 			} else {
 				if(apiKey) {
 					authMap = [
@@ -175,35 +140,46 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 						authMap.auth.tenantName = tenantName
 					}
 				}
-
-				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion, "tokens"].join("/"))
-				log.info("Auth url: ${uriBuilder.build()}")
-				HttpPost authPost = new HttpPost(uriBuilder.build())
-				authPost.addHeader("Content-Type", "application/json");
-				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-
-				withHttpClient() { HttpClient client ->
-					response = client.execute(authPost)
-					HttpEntity responseEntity = response.getEntity();
-					if(response.getStatusLine().statusCode != 200) {
-						log.error("Authentication Request Failed ${response.getStatusLine().statusCode} when trying to connect to Openstack Cloud")
-						EntityUtils.consume(response.entity)
-						return false
+				path = "/tokens"
+			}
+			
+			log.info("Auth url: ${basePath}${path}")
+			def result = callApi(basePath, path, [body: authMap, authRequest: true], 'POST')
+								
+			if(identityVersion == '/v3') {
+				if(result.responseCode == 400) {
+					// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
+					authMap.auth.identity.password.user.domain = [name:this.domainId ?: 'default']
+					if(authMap.auth.scope) {
+						authMap.auth.scope.project.domain = [name:this.domainId ?: 'default']
 					}
+					result = callApi(basePath, path, [body: authMap, authRequest: true], 'POST')
+				} 
+				
+				if(result.responseCode != 201) {
+					log.error("Authentication Request Failed ${result.responseCode} when trying to connect to Openstack Cloud")
+					return false
+				}
 
-					String responseText = responseEntity.content.text
-					accessInfo = new JsonSlurper().parseText(responseText)
-					accessInfo.identityApiVersion = '2.0'
-					accessInfo.projectId = accessInfo?.access?.token.tenant.id
-					accessInfo.authToken = accessInfo?.access?.token?.id?.toString()
+				accessInfo = result.content
+				accessInfo.projectId = accessInfo.token.project.id
+				accessInfo.identityApiVersion = 'v3'
+				accessInfo.authToken = result.headers['X-Subject-Token']
+				accessInfo.authTokenExpiresAt = Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", accessInfo.token.expires_at).format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+			} else {
+				if(result.responseCode != 200) {
+					log.error("Authentication Request Failed ${result.responseCode} when trying to connect to Openstack Cloud")
+					return false
 				}
 				
-				
+				accessInfo = result.content
+				accessInfo.identityApiVersion = '2.0'
+				accessInfo.projectId = accessInfo?.access?.token.tenant.id
+				accessInfo.authToken = accessInfo?.access?.token?.id?.toString()
+				accessInfo.authTokenExpiresAt = Date.parse("yyyy-MM-dd'T'HH:mm:ss'Z'", accessInfo.access.token.expires).format("yyyy-MM-dd'T'HH:mm:ss'Z'")
 			}
 
 			setEndpoints(accessInfo)
-			EntityUtils.consume(response.entity)
-			
 			return true
 		} catch(ex) {
 			log.error("Error occurred during the authentication phase - ${ex.message}", ex)
@@ -258,9 +234,12 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	}
 
 	public callApi(url, path, opts = [:], method = 'GET') {
-		def rtn = [success: false, headers: [:]]
+		def rtn = [success: false, headers: [:], error:false, errors: []]
 		try {
-			def token = getAccessInfo().authToken
+			def token
+			if(!opts.authRequest) {
+				token = getAccessInfo()?.authToken
+			}
 
 			URIBuilder uriBuilder = new URIBuilder(url)
 			uriBuilder.setPath(uriBuilder.getPath() + path)
@@ -270,6 +249,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			HttpRequestBase request
 			if(method == 'GET') {
 				request = new HttpGet(uriBuilder.build())
+				request.addHeader("Content-Type", "application/json");
 			} else if(method == 'POST') {
 				request = new HttpPost(uriBuilder.build())
 				if(opts.body) {
@@ -277,7 +257,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					request.setEntity(new StringEntity(new JsonBuilder(opts.body).toString()))
 				}
 			} else if(method == 'PUT') {
-				request = new HttpPut(uriBuilder.build())
+				request = new HttpPut(uriBuilder.build())	
 				if(opts.body) {
 					request.addHeader("Content-Type", "application/json");
 					request.setEntity(new StringEntity(new JsonBuilder(opts.body).toString()))
@@ -286,33 +266,52 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				request = new HttpDelete(uriBuilder.build())
 			}
 			request.addHeader("Accept", "application/json")
-			request.addHeader(new BasicHeader('X-Auth-Token', token))
+			if(token) {
+				request.addHeader(new BasicHeader('X-Auth-Token', token))
+			}
+			if(opts.headers) {
+				opts.headers.each { k,v -> request.addHeader(k, v) }
+			}
 
 			withHttpClient() { HttpClient client ->
-				log.info "Calling: ${uriBuilder.build()} : ${method} with ${opts.body}"
+				log.debug("Calling: ${uriBuilder.build()} : ${method} with ${opts.body}")
 				HttpResponse response = client.execute(request)
-				HttpEntity responseEntity = response.getEntity();
+				HttpEntity responseEntity = response.getEntity()
+				String responseContentType = response.getHeaders('Content-Type')?.value
 				String responseText = responseEntity?.content?.text
 				Integer responseCode = response.getStatusLine().statusCode
-				log.info "  Result: ${responseText}"
 
-				if(responseText) {
+				rtn.responseCode = responseCode
+				rtn.responseText = responseText
+				if(responseContentType.indexOf('text/html') > -1) {
+					rtn.content = responseText
+				} else if(responseText) {
 					rtn.content = new JsonSlurper().parseText(responseText)
 				}
-				if(responseCode >= 200 && response.getStatusLine().statusCode < 300) {
+				
+				if(responseCode >= 200 && responseCode < 300) {
 					rtn.success = true
+					response.getAllHeaders().each { header ->
+						rtn.headers["${header.getName()}"] = header.getValue()
+					}
+				} else if(responseCode == 401) {
+					rtn.error = 'Unauthorized'
+					rtn.success = false
+					rtn.errorCode = 401
 				} else {
 					log.error("Request Failed ${responseCode} when trying to connect to Openstack Cloud: ${responseText}")
 					EntityUtils.consume(responseEntity)
 					rtn.success = false
+					rtn.errorCode = responseCode
 				}
 			}
 			
 		} catch(e) {
-			log.error "Error in calling api: ${e}", e
+			log.error("Error in calling api: ${e}", e)
 			rtn.error = e.message
 		}
-		rtn
+		
+		return rtn
 	}
 
 	private setEndpoints(tokenResults) {
@@ -415,7 +414,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 		return rtn
 	}
 	
-	private HttpClient withHttpClient(Closure cl) {
+	private withHttpClient(Closure cl) {
 		HttpClientBuilder clientBuilder = HttpClients.custom()
 		
 		clientBuilder.setHostnameVerifier(new X509HostnameVerifier() {
