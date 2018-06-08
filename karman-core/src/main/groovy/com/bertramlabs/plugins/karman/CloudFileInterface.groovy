@@ -33,6 +33,7 @@ interface CloudFileInterface {
 	OutputStream getOutputStream()
 
 	String getText(String encoding)
+	String getText()
 
 	Directory getParent()
 

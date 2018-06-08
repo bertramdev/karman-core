@@ -43,7 +43,7 @@ class NfsCloudFile extends CloudFile{
 	}
 
 	@Override
-	String getText(String encoding) {
+	String getText(String encoding=null) {
 		getInputStream()?.text
 	}
 
