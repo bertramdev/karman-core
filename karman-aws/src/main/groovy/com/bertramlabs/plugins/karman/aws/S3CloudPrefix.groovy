@@ -43,7 +43,7 @@ class S3CloudPrefix extends CloudFile {
 	}
 
 	@Override
-	String getText(String encoding) {
+	String getText(String encoding=null) {
 		return null
 	}
 

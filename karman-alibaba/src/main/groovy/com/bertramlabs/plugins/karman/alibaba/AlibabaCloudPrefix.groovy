@@ -24,7 +24,7 @@ class AlibabaCloudPrefix extends CloudFile {
 	}
 
 	@Override
-	String getText(String encoding) {
+	String getText(String encoding = null) {
 		return null
 	}
 
