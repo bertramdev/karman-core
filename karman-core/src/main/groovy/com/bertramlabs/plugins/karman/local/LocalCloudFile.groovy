@@ -19,6 +19,7 @@ package com.bertramlabs.plugins.karman.local
 import com.bertramlabs.plugins.karman.*
 import groovy.util.logging.Commons
 import java.io.ByteArrayInputStream;
+import java.io.BufferedOutputStream;
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
 
@@ -45,9 +46,9 @@ class LocalCloudFile extends CloudFile {
 
 	@CompileStatic
 	void setInputStream(InputStream inputS) {
-		byte[] buffer = new byte[8192*2];
+		byte[] buffer = new byte[8192];
 		int len;
-		OutputStream out = this.outputStream
+		OutputStream out = new BufferedOutputStream(this.outputStream,1024*256)
 		while ((len = inputS.read(buffer)) != -1) {
 			out.write(buffer, 0, len);
 		}

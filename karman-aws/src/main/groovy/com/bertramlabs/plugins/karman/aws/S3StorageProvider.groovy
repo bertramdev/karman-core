@@ -33,6 +33,7 @@ import com.amazonaws.ClientConfiguration
 import com.amazonaws.services.s3.model.EncryptionMaterials
 import com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider
 import com.bertramlabs.plugins.karman.Directory
+import com.amazonaws.auth.AnonymousAWSCredentials
 import com.bertramlabs.plugins.karman.StorageProvider
 
 import javax.crypto.spec.SecretKeySpec
@@ -59,6 +60,7 @@ class S3StorageProvider extends StorageProvider {
     Integer maxConnections = 50
     Boolean keepAlive = false
     Boolean useGzip = false
+    Boolean anonymous = false
     Boolean forceMultipart = false
     AmazonS3Client client = null
     Long chunkSize = 100l*1024l*1024l
@@ -75,6 +77,8 @@ class S3StorageProvider extends StorageProvider {
         defaultFileACL = options.defaultFileACL ?: defaultFileACL
         useGzip        = options.useGzip        ?: useGzip
         forceMultipart = options.forceMultipart ?: forceMultipart
+
+        anonymous = options.anonymous ?: anonymous
 
         baseUrl = options.baseUrl ?: baseUrl
         baseUrls = options.baseUrls ?: baseUrls
@@ -110,6 +114,8 @@ class S3StorageProvider extends StorageProvider {
         }
         else if (accessKey && secretKey && !token) {
             credentials = new BasicAWSCredentials(accessKey, secretKey)
+        } else if(anonymous){
+            credentials = new AnonymousAWSCredentials()
         }
 
         final AWSCredentialsProvider credentialsProvider
