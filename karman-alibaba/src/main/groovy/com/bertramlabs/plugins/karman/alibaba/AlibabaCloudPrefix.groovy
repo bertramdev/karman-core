@@ -55,6 +55,11 @@ class AlibabaCloudPrefix extends CloudFile {
 	}
 
 	@Override
+	Date getDateModified() {
+		return null
+	}
+
+	@Override
 	void setContentType(String contentType) {
 
 	}

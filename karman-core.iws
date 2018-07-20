@@ -2,52 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4c0d6dc-99ad-469a-8019-516cdfae0e9c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/karman-alibaba_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroupRule.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/karman-aws.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/karman-aws_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3Directory.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3Directory.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-azure/karman-azure.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-azure/karman-azure_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-azure/src/main/groovy/com/bertramlabs/plugins/karman/azure/AzureFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-azure/src/main/groovy/com/bertramlabs/plugins/karman/azure/AzureFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-azure/src/main/groovy/com/bertramlabs/plugins/karman/azure/AzurePageBlobFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-azure/src/main/groovy/com/bertramlabs/plugins/karman/azure/AzurePageBlobFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-cifs/karman-cifs_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsCloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-cifs/src/main/groovy/com/bertramlabs/plugins/karman/cifs/CifsCloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core.ipr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core.iws" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/karman-core-karman-core_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/CloudFileInterface.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/CloudFileInterface.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/Directory.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/Directory.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/DirectoryInterface.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/DirectoryInterface.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/local/LocalCloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/local/LocalCloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-core_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-core_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-grails/karman-grails.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_ast.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-grails/karman-grails_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-nfs/karman-nfs_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-nfs/src/main/groovy/com/bertramlabs/plugins/karman/nfs/NfsCloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-nfs/src/main/groovy/com/bertramlabs/plugins/karman/nfs/NfsCloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-openstack/karman-openstack_test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackCloudFile.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackCloudFile.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/karman-rackspace/karman-rackspace_test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -148,7 +104,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AlibabaCloudFile.groovy" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AlibabaCloudFile.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="488">
@@ -160,14 +116,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DirectoryInterface.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/DirectoryInterface.groovy">
+      <file leaf-file-name="AlibabaCloudPrefix.groovy" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="20" lean-forward="true" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state relative-caret-position="754">
+              <caret line="58" column="8" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -238,20 +191,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CloudFileInterface.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/CloudFileInterface.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="51" column="4" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setContentL</find>
       <find>s3Client</find>
       <find>object.</find>
       <find>OSSObject getOSSObject</find>
@@ -281,6 +224,7 @@
       <find>Looking for resource:</find>
       <find>getContentType</find>
       <find>getContent</find>
+      <find>getCOntent</find>
     </findStrings>
     <replaceStrings>
       <replace>object</replace>
@@ -3036,7 +2980,6 @@
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaNetworkProvider.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaStorageProvider.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaDirectory.groovy" />
-        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaSecurityGroup.groovy" />
         <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRuleInterface.groovy" />
         <option value="$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRule.groovy" />
@@ -3057,6 +3000,8 @@
         <option value="$PROJECT_DIR$/karman-openstack/src/main/groovy/com/bertramlabs/plugins/karman/openstack/OpenstackCloudFile.groovy" />
         <option value="$PROJECT_DIR$/karman-azure/src/main/groovy/com/bertramlabs/plugins/karman/azure/AzurePageBlobFile.groovy" />
         <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudFile.groovy" />
+        <option value="$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy" />
+        <option value="$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy" />
       </list>
     </option>
   </component>
@@ -3154,11 +3099,6 @@
             <path>
               <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
               <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="karman-aws" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="karman-core" type="b2602c69:ProjectViewProjectNode" />
-              <item name="karman-core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="karman-openstack" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
             <path>
@@ -3216,12 +3156,12 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
-    <property name="MemberChooser.sorted" value="false" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/karman-core.ipr" />
   </component>
@@ -3322,12 +3262,12 @@
       <workItem from="1517500970608" duration="61000" />
       <workItem from="1518451178613" duration="2039000" />
       <workItem from="1525806804044" duration="310000" />
-      <workItem from="1532115649003" duration="1054000" />
+      <workItem from="1532115649003" duration="1201000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24879000" />
+    <option name="totallyTimeSpent" value="25026000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1910" y="307" width="1680" height="973" extended-state="0" />
@@ -3794,13 +3734,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/network/SecurityGroupRule.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="441">
@@ -3902,13 +3835,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="25" column="37" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karman-core/src/main/groovy/com/bertramlabs/plugins/karman/local/LocalDirectory.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
@@ -4002,6 +3928,20 @@
           <folding>
             <element signature="e#649#680#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-aws/src/main/groovy/com/bertramlabs/plugins/karman/aws/S3CloudPrefix.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="640">
+          <caret line="75" lean-forward="true" selection-start-line="75" selection-end-line="78" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/karman-alibaba/src/main/groovy/com/bertramlabs/plugins/karman/alibaba/AlibabaCloudPrefix.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="754">
+          <caret line="58" column="8" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="19" />
         </state>
       </provider>
     </entry>
