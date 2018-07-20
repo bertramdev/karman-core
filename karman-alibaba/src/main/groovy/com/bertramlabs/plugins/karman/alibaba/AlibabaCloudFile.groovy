@@ -201,6 +201,16 @@ class AlibabaCloudFile extends CloudFile{
 			getOSSObject().objectMetadata.contentLength
 		}
 
+		Date getDateModified() {
+			if(!metaDataLoaded) {
+				loadObjectMetaData()
+			}
+			if(!exists()) {
+				return null
+			}
+			return getOSSObject().objectMetadata.lastModified
+		}
+
 		void setContentLength(Long length) {
 			setMetaAttribute('Content-Length', length)
 			internalContentLength = length

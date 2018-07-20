@@ -176,6 +176,14 @@ class S3CloudFile extends CloudFile {
 		s3Object.objectMetadata.contentLength
 	}
 
+	Date getDateModified() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		if(!exists()) {return null}
+		return s3Object.objectMetadata.lastModified
+	}
+
 	void setContentLength(Long length) {
 		setMetaAttribute(Headers.CONTENT_LENGTH, length)
 		internalContentLength = length

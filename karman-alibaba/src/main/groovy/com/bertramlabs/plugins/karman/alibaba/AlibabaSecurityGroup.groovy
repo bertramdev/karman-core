@@ -107,7 +107,6 @@ class AlibabaSecurityGroup extends SecurityGroup{
 				options.targetGroupOwnerId = permission.sourceGroupOwnerAccount
 				options.direction = 'ingress'
 			}
-			println "Creating Rule from options ${options}"
 			AlibabaSecurityGroupRule rule = new AlibabaSecurityGroupRule(provider,this,options)
 			this.rulesList.add(rule)
 		}

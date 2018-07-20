@@ -92,6 +92,10 @@ class LocalCloudFile extends CloudFile {
 		fsFile.size()
 	}
 
+	Date getDateModified() {
+		new Date(fsFile.lastModified())
+	}
+
 	String getContentType() {
 		return Mimetypes.instance.getMimetype(name)
 	}

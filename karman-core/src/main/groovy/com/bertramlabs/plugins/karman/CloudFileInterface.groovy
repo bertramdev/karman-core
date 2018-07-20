@@ -49,6 +49,8 @@ interface CloudFileInterface {
 
 	String getContentType()
 
+	Date getDateModified()
+
 	void setContentType(String contentType)
 
 	Boolean exists()

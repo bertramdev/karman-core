@@ -45,7 +45,6 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 	}
 
 	private void initializeFromOptions(Map options) {
-		println "initializes from options"
 		ethertype = options?.ethertype ?: 'internet'
 		direction = options?.direction
 		description = options?.description
@@ -57,13 +56,11 @@ class AlibabaSecurityGroupRule extends SecurityGroupRule{
 		policy = options?.policy
 		targetGroupOwnerId = options?.targetGroupOwnerId
 		existing = options?.existing
-		println "setting cidr"
 		if(options?.cidr) {
 			ipRange << options.cidr
 			originalCidr = options.cidr
 
 		}
-		println "original vals"
 		originalMinPort = minPort
 		originalMaxPort = maxPort
 		originalEtherType = ethertype

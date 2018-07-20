@@ -101,6 +101,11 @@ class CifsCloudFile extends CloudFile {
 		return cifsFile.length()
 	}
 
+	Date getDateModified() {
+		return new Date(cifsFile.lastModified())
+	}
+
+
 	String getContentType() {
 		return Mimetypes.instance.getMimetype(name)
 	}

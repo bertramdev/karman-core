@@ -66,6 +66,10 @@ class NfsCloudFile extends CloudFile{
 		baseFile.length()
 	}
 
+	Date getDateModified() {
+		return new Date(baseFile.lastModified())
+	}
+
 	Boolean isDirectory() {
 		if(!baseFile.exists()) {
 			return false

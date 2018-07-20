@@ -26,6 +26,8 @@ import groovy.time.TimeCategory;
 import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Azure Cloud File implementation for Azure File
@@ -85,6 +87,18 @@ class AzureFile extends CloudFile {
 			loadObjectMetaData()
 		}
 		azureMeta['Content-Length']?.toLong()
+	}
+
+	Date getDateModified() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		if(azureMeta['Last-Modified']) {
+			//java 8 only code here, awell
+			return Date.from(LocalDate.parse(azureMeta['Last-Modified'], DateTimeFormatter.RFC_1123_DATE_TIME))
+		}
+		return null
+
 	}
 	
 	void setContentLength(Long length) {

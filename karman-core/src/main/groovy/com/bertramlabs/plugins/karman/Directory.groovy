@@ -212,6 +212,14 @@ abstract class Directory implements DirectoryInterface {
 	}
 
 	/**
+	 * Scaffold for checking content type... For a directory this is typically null
+	 * @return null
+	 */
+	String getContentType() {
+		return null
+	}
+
+	/**
 	* Displays the name of the directory when cast to a String.
 	* @return name of the directory
 	*/

@@ -24,6 +24,8 @@ import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Openstack Cloud File implementation for the Openstack Cloud Files API v1
@@ -67,6 +69,17 @@ class OpenstackCloudFile extends CloudFile {
 			loadObjectMetaData()
 		}
 		return openstackMeta
+	}
+
+	Date getDateModified() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+
+		if(openstackMeta['Last-Modified']) {
+			//java 8 only code here, awell
+			return Date.from(LocalDate.parse(openstackMeta['Last-Modified'], DateTimeFormatter.RFC_1123_DATE_TIME))
+		}
 	}
 
 	void removeMetaAttribute(key) {

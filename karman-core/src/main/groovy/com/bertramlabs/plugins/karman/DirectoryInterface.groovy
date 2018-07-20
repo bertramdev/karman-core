@@ -31,6 +31,11 @@ interface DirectoryInterface {
 
 	Boolean isDirectory()
 
+	/**
+	 * Scaffold for checking content type... For a directory this is typically null
+	 */
+	String getContentType()
+
 	List listFiles(options)
 
 	CloudFile getFile(String name)
