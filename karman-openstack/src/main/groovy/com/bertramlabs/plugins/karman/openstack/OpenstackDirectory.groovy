@@ -57,7 +57,7 @@ class OpenstackDirectory extends Directory {
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 
 		options?.each { entry ->
-			uriBuilder.addParameter(entry.key,entry.value)
+			uriBuilder.addParameter(entry.key,entry.value?.toString())
 		}
 
 		listUri = uriBuilder.build()
