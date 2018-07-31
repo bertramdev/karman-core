@@ -114,11 +114,20 @@ class OpenstackDirectory extends Directory {
 
 	// PRIVATE
 
-	private OpenstackCloudFile cloudFileFromOpenstackMeta(Map meta) {
-		new OpenstackCloudFile(
-			provider: provider,
-			parent: this,
-			name: meta.name
-		)
+	private CloudFile cloudFileFromOpenstackMeta(Map meta) {
+		if(meta.subdir) {
+			return new OpenstackSubDir(
+				provider: provider,
+				parent: this,
+				name: meta.subdir
+			)
+		} else {
+			return new OpenstackCloudFile(
+				provider: provider,
+				parent: this,
+				name: meta.name
+			)
+		}
+
 	}
 }

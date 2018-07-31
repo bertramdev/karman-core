@@ -37,6 +37,7 @@ class CifsStorageProvider extends StorageProvider {
 	NtlmPasswordAuthentication cifsAuthentication
 
 	public CifsStorageProvider(Map options) {
+		jcifs.Config.setProperty("resolveOrder", "DNS");
 		host = options.host
 		baseUrl  = options.baseUrl  ?: baseUrl
 		username = options.username ?: username

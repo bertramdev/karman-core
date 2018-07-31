@@ -225,6 +225,27 @@ abstract class Directory implements DirectoryInterface {
 	*/
 	String toString() {
 		return name
-  }
+  	}
+
+	static String normalizePath(String path) {
+		String[] pathArgs = path.split("/")
+		List newPath = []
+		for (int counter = 0; counter < pathArgs.length; counter++) {
+			String pathElement = pathArgs[counter]
+			if (pathElement == '..') {
+				if (newPath.size() > 0) {
+					newPath.pop()
+				} else if (counter < pathArgs.length - 1) {
+					counter++
+					continue;
+				}
+			} else if (pathElement == '.') {
+				// do nothing
+			} else {
+				newPath << pathElement
+			}
+		}
+		return newPath.join("/")
+	}
 
 }

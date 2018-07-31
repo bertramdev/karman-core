@@ -503,8 +503,7 @@ class S3CloudFile extends CloudFile {
 			chunkedStream.nextChunk()
 		}
 		// Step 3: Complete.
-		CompleteMultipartUploadRequest compRequest = new
-			CompleteMultipartUploadRequest(
+		CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(
 			parent.name,
 			name,
 			initResponse.getUploadId(),

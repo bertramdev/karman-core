@@ -143,6 +143,34 @@ class AzureShareSpec extends Specification {
 		share.delete()
 	}
 
+	def "listFiles for share subdirectory with prefix"() {
+		setup:
+		def shareName = getTestDirectoryName()
+		AzureShare share = new AzureShare(name: shareName, provider: storageProvider, shareName: shareName)
+		share.save()
+
+		byte[] bytes = new byte[1024];
+		Arrays.fill( bytes, (byte) 3 );
+		AzureFile cloudFile1 = share.getFile('test2/file1')
+		cloudFile1.setBytes(bytes)
+		cloudFile1.save()
+
+		AzureFile cloudFile2 = share.getFile('test2/file2')
+		cloudFile2.setBytes(bytes)
+		cloudFile2.save()
+
+		when:
+		def files = share.listFiles(prefix:'test2',delimiter:'/')
+
+		then:
+		files.size() == 2
+		files[0].name == 'file1'
+		files[1].name == 'file2'
+
+		cleanup:
+		share.delete()
+	}
+
 	// TODO : Handle delimiter and prefix
 
 	private getTestDirectoryName() {

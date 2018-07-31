@@ -104,7 +104,35 @@ class S3CloudPrefix extends CloudFile {
 
 	@Override
 	def delete() {
-		return null
+		def dirName = name
+		if(!name.endsWith('/')) {
+			dirName = name + '/'
+		}
+
+		def maxKeys = 100
+		def marker = 0
+		ListObjectsRequest request = new ListObjectsRequest(parent.name, dirName, marker, null, maxKeys)
+
+		ObjectListing objectListing = s3Client.listObjects(request)
+		def keys = objectListing.objectSummaries?.collect { summary -> summary.key}
+		if(keys) {
+			DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(parent.name)
+			deleteRequest.setKeys(keys)
+			s3Client.deleteObjects(deleteRequest)
+		}
+		while(keys?.size() == maxKeys) {
+			marker+=maxKeys
+			request = new ListObjectsRequest(parent.name, dirName, marker, null, maxKeys)
+
+			objectListing = s3Client.listObjects(request)
+			keys = objectListing.objectSummaries?.collect { summary -> summary.key}
+			if(keys) {
+				DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(parent.name)
+				deleteRequest.setKeys(keys)
+				s3Client.deleteObjects(deleteRequest)
+			}
+		}
+		return true
 	}
 
 	@Override
@@ -125,5 +153,9 @@ class S3CloudPrefix extends CloudFile {
 	@Override
 	void removeMetaAttribute(Object key) {
 
+	}
+
+	private AmazonS3Client getS3Client() {
+		parent.provider.s3Client
 	}
 }

@@ -36,11 +36,16 @@ class AlibabaDirectory extends Directory {
 		ObjectListing objectListing = getOSSClient().listObjects(request)
 
 		def files = []
-		if(options.prefix && options.delimiter) {
+		if(options.delimiter) {
 			def prefixes = []
 			objectListing.commonPrefixes?.each { String prefix ->
 				if(prefix != options.prefix) {
-					prefixes << options.prefix + prefix.substring(options.prefix.length()).split(options.delimiter)[0]
+					if(options.prefix) {
+						prefixes << options.prefix + prefix.substring(options.prefix.length()).split(options.delimiter)[0]
+					} else {
+						prefixes << prefix.split(options.delimiter)[0]
+					}
+
 				}
 			}
 			prefixes.unique()

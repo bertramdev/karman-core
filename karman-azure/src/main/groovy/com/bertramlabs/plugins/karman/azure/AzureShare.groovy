@@ -39,9 +39,9 @@ class AzureShare extends AzureDirectory {
 
 		// If 'prefix' is specified, then the request is relative to this directory
 		// Construct the directory and return its listFiles
-		if(options.prefix) {
-			return processPrefixListFiles(options)
-		} 
+//		if(options.prefix) {
+//			return processPrefixListFiles(options)
+//		}
 
 		def opts = [
 			verb: 'GET',
@@ -50,7 +50,18 @@ class AzureShare extends AzureDirectory {
 			uri: "${azureProvider.getEndpointUrl()}/${name}".toString()
 		]
 
-		def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts) 
+		if(options.prefix) {
+			if(options.prefix.endsWith('/')) {
+				opts.path += "/" + options.prefix.substring(0,options.prefix.length()-1)
+				opts.uri += "/" + options.prefix.substring(0,options.prefix.length()-1)
+			} else {
+				opts.path += "/" + options.prefix
+				opts.uri += "/" + options.prefix
+			}
+		}
+
+		opts.path = java.net.URLEncoder.encode(opts.path, "UTF-8").replaceAll('\\+', '%20').replaceAll('%2F','/')
+		def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts)
 		HttpResponse response = client.execute(request)
 		HttpEntity responseEntity = response.getEntity()
 		def xmlDoc = new XmlSlurper().parse(responseEntity.content)
@@ -62,7 +73,7 @@ class AzureShare extends AzureDirectory {
 				items << new AzureFile(name: file.Name, provider: provider, shareName: this.shareName)
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
-				items << new AzureDirectory(name: directory.Name, provider: provider, shareName: this.shareName)
+				items << new AzurePrefix(name: directory.Name, provider: provider, shareName: this.shareName)
 			}
 		} else {
 			def errMessage = "Error getting items from directory with name ${name}: ${xmlDoc.Message}"

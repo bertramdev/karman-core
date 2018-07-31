@@ -158,4 +158,7 @@ abstract class CloudFile implements CloudFileInterface {
 			file.delete()
 		}
 	}
+
+
+
 }

@@ -25,6 +25,9 @@ import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 /**
@@ -78,7 +81,7 @@ class OpenstackCloudFile extends CloudFile {
 
 		if(openstackMeta['Last-Modified']) {
 			//java 8 only code here, awell
-			return Date.from(LocalDate.parse(openstackMeta['Last-Modified'], DateTimeFormatter.RFC_1123_DATE_TIME))
+			return Date.from(LocalDateTime.parse(openstackMeta['Last-Modified'].toString(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant(ZoneOffset.UTC))
 		}
 	}
 

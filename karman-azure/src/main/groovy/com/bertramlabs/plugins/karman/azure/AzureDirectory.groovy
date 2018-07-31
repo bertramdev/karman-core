@@ -62,9 +62,9 @@ class AzureDirectory extends Directory {
 
 		// If 'prefix' is specified, then the request is relative to this directory
 		// Construct the directory and return its listFiles
-		if(options.prefix) {
-			return processPrefixListFiles(options)
-		} 
+//		if(options.prefix) {
+//			return processPrefixListFiles(options)
+//		}
 
 		def opts = [
 			verb: 'GET',
@@ -72,6 +72,15 @@ class AzureDirectory extends Directory {
 			path: getFullPath(),
 			uri: "${azureProvider.getEndpointUrl()}/${getFullPath()}".toString()
 		]
+		if(options.prefix) {
+			if(options.prefix.endsWith('/')) {
+				opts.path += "/" + options.prefix.substring(0,options.prefix.length()-1)
+				opts.uri += "/" + options.prefix.substring(0,options.prefix.length()-1)
+			} else {
+				opts.path += "/" + options.prefix
+				opts.uri += "/" + options.prefix
+			}
+		}
 
 		def (HttpClient client, HttpGet request) = azureProvider.prepareRequest(opts) 
 		HttpResponse response = client.execute(request)
@@ -85,7 +94,7 @@ class AzureDirectory extends Directory {
 				items << new AzureFile(name: "${name}/${file.Name}", provider: provider, shareName: shareName)
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
-				items << new AzureDirectory(name: "${name}/${directory.Name}", provider: provider, shareName: shareName)
+				items << new AzurePrefix(name: "${name}/${directory.Name}", provider: provider, shareName: shareName)
 			}
 		} else {
 			def errMessage = "Error getting items from ${getFullPath()}: ${xmlDoc.Message}"
@@ -170,9 +179,9 @@ class AzureDirectory extends Directory {
 		)				
 	}
 
-	Directory getDirectory(String fullDirectoryName) {
+	AzurePrefix getDirectory(String fullDirectoryName) {
 		def directoryName = (getType() == 'share' ? fullDirectoryName : "${name}/${fullDirectoryName}") 
-		new AzureDirectory(
+		new AzurePrefix(
 			provider: provider,
 			name: directoryName,
 			shareName: shareName

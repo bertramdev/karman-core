@@ -27,6 +27,9 @@ import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 /**
@@ -95,7 +98,8 @@ class AzureFile extends CloudFile {
 		}
 		if(azureMeta['Last-Modified']) {
 			//java 8 only code here, awell
-			return Date.from(LocalDate.parse(azureMeta['Last-Modified'], DateTimeFormatter.RFC_1123_DATE_TIME))
+
+			return Date.from(LocalDateTime.parse(azureMeta['Last-Modified'].toString(), DateTimeFormatter.RFC_1123_DATE_TIME).toInstant(ZoneOffset.UTC))
 		}
 		return null
 

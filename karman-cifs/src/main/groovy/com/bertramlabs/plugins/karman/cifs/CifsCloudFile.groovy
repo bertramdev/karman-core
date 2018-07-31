@@ -29,8 +29,11 @@ class CifsCloudFile extends CloudFile {
 	CifsDirectory parent
 	CifsStorageProvider provider
 	InputStream sourceStream
-
+	SmbFile baseFile
 	SmbFile getCifsFile() {
+		if(baseFile) {
+			return baseFile
+		}
 		def rtn
 		def cifsAuth = provider.getCifsAuthentication()
 		def parentFile = parent.getCifsFile()
@@ -39,6 +42,7 @@ class CifsCloudFile extends CloudFile {
 			rtn = new SmbFile(parentFile.path, name, cifsAuth)
 		else
 			rtn = new SmbFile(parentFile.path, name)
+		baseFile = rtn
 		return rtn
 	}
 
