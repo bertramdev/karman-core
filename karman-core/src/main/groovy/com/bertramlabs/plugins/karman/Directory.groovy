@@ -228,6 +228,10 @@ abstract class Directory implements DirectoryInterface {
   	}
 
 	static String normalizePath(String path) {
+		boolean addSuffixDelimiter = false
+		if(path.endsWith('/')) {
+			addSuffixDelimiter = true
+		}
 		String[] pathArgs = path.split("/")
 		List newPath = []
 		for (int counter = 0; counter < pathArgs.length; counter++) {
@@ -245,7 +249,7 @@ abstract class Directory implements DirectoryInterface {
 				newPath << pathElement
 			}
 		}
-		return newPath.join("/")
+		return newPath.join("/") + (addSuffixDelimiter ? '/' : '')
 	}
 
 }

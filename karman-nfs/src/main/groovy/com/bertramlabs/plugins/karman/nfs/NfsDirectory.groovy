@@ -39,6 +39,7 @@ class NfsDirectory extends Directory {
 		}
 		Nfs3File rootFolder = baseFile
 		prefix = options.prefix as String
+
 		if(delimiter == '/' && prefix) {
 			prefix = normalizePath(prefix)
 		}
