@@ -82,7 +82,7 @@ class NfsDirectory extends Directory {
 		}
 		rtn = rtn?.findAll {
 			isMatchedFile(it.name,includes,excludes)
-		}?.sort{ a, b ->  a.isFile() <=> b.isFile() ?: a.name ?: b.name}
+		}?.sort{ a, b ->  a.isFile() <=> b.isFile() ?: a.name <=> b.name}
 
 		return rtn
 	}

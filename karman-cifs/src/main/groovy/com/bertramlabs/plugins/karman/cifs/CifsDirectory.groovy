@@ -67,7 +67,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			excludes << fileSystem.getPathMatcher("glob:*")
 			excludes << fileSystem.getPathMatcher("glob:**/*")
 			if(prefix.endsWith("/")) {
-				baseFile = getCifsFile(prefix)
+				baseFile = getCifsFile(prefix.substring(0,prefix.length() - 1))
 				if(delimiter == '/') {
 					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				} else {
@@ -76,7 +76,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			} else {
 				if(delimiter == '/') {
 					if(prefix.lastIndexOf('/') > 0) {
-						baseFile = getCifsFile(prefix.substring(0,prefix.lastIndexOf('/') + 1))
+						baseFile = getCifsFile(prefix.substring(0,prefix.lastIndexOf('/')))
 					}
 					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 					includes << fileSystem.getPathMatcher("glob:${prefix}*/**/*")
@@ -128,6 +128,9 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 			def path = listFile.path.substring(baseFile.path.length() - 1)
 			if(path.startsWith('/')) {
 				path = path.substring(1)
+			}
+			if(path.endsWith('/')) {
+				path = path.substring(0,path.length() - 1)
 			}
 			if(isMatchedFile(path,includes,excludes)) {
 				files << new CifsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
