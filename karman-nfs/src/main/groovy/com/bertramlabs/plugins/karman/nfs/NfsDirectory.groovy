@@ -48,11 +48,7 @@ class NfsDirectory extends Directory {
 			excludes << fileSystem.getPathMatcher("glob:*")
 			excludes << fileSystem.getPathMatcher("glob:**/*")
 			if(prefix.endsWith("/")) {
-				println "searching directory ${prefix.substring(0,prefix.length() - 1)}"
-
-
 				rootFolder = new Nfs3File(baseFile.nfs,baseFile.path + prefix.substring(0,prefix.length() - 1))
-				println "RootFolder: ${rootFolder}"
 				if(delimiter == '/') {
 					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				} else {
@@ -86,7 +82,7 @@ class NfsDirectory extends Directory {
 		}
 		rtn = rtn?.findAll {
 			isMatchedFile(it.name,includes,excludes)
-		}
+		}?.sort{ a, b ->  a.isFile() <=> b.isFile() ?: a.name ?: b.name}
 
 		return rtn
 	}
