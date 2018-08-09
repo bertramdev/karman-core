@@ -72,6 +72,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				} else {
 					includes << fileSystem.getPathMatcher("glob:${prefix}**/*")
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				}
 			} else {
 				if(delimiter == '/') {
