@@ -52,6 +52,7 @@ class NfsDirectory extends Directory {
 				if(delimiter == '/') {
 					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				} else {
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 					includes << fileSystem.getPathMatcher("glob:${prefix}**/*")
 				}
 			} else {

@@ -119,7 +119,7 @@ class OpenstackDirectory extends Directory {
 			return new OpenstackSubDir(
 				provider: provider,
 				parent: this,
-				name: meta.subdir
+				name: meta.subdir[0..-2]
 			)
 		} else {
 			return new OpenstackCloudFile(
