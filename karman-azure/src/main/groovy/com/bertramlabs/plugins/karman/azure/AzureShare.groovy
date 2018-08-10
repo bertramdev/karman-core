@@ -37,12 +37,6 @@ class AzureShare extends AzureDirectory {
 	List listFiles(options = [:]) {
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
-		// If 'prefix' is specified, then the request is relative to this directory
-		// Construct the directory and return its listFiles
-//		if(options.prefix) {
-//			return processPrefixListFiles(options)
-//		}
-
 		def opts = [
 			verb: 'GET',
 			queryParams: [restype:'directory', comp: 'list'],
@@ -68,12 +62,17 @@ class AzureShare extends AzureDirectory {
 		EntityUtils.consume(response.entity)	
 
 		def items = []
+		String filePrefix;
+		if(options.prefix && options.prefix.lastIndexOf('/') > -1) {
+			filePrefix = options.prefix.substring(0,options.prefix.lastIndexOf('/') + 1)
+		}
+
 		if(response.statusLine.statusCode == 200) {
 			xmlDoc.Entries?.File?.each { file ->
-				items << new AzureFile(name: file.Name, provider: provider, shareName: this.shareName)
+				items << new AzureFile(name: filePrefix ? (filePrefix + file.Name) : file.Name, provider: provider, shareName: this.shareName)
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
-				items << new AzurePrefix(name: directory.Name, provider: provider, shareName: this.shareName)
+				items << new AzurePrefix(name: filePrefix ? (filePrefix + directory.Name) : directory.Name, provider: provider, shareName: this.shareName)
 			}
 		} else {
 			def errMessage = "Error getting items from directory with name ${name}: ${xmlDoc.Message}"

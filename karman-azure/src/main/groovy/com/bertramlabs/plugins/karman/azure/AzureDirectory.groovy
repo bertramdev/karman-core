@@ -95,6 +95,9 @@ class AzureDirectory extends Directory {
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
 				items << new AzurePrefix(name: "${name}/${directory.Name}", provider: provider, shareName: shareName)
+				if(!options.delimiter) {
+
+				}
 			}
 		} else {
 			def errMessage = "Error getting items from ${getFullPath()}: ${xmlDoc.Message}"
