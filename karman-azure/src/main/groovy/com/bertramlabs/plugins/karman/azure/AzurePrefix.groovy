@@ -208,7 +208,9 @@ class AzurePrefix extends CloudFile {
 		if(options.prefix) {
 			if(options.prefix.endsWith('/')) {
 				opts.uri += "/" + options.prefix.substring(0,options.prefix.length()-1)
+				opts.path += "/" + options.prefix.substring(0,options.prefix.length()-1)
 			} else {
+				opts.path += "/" + options.prefix
 				opts.uri += "/" + options.prefix
 			}
 		}
@@ -225,7 +227,11 @@ class AzurePrefix extends CloudFile {
 				items << new AzureFile(name: "${name}/${file.Name}", provider: provider, shareName: shareName)
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
-				items << new AzurePrefix(name: "${name}/${directory.Name}", provider: provider, shareName: shareName)
+				AzurePrefix azurePrefix = new AzurePrefix(name: "${name}/${directory.Name}", provider: provider, shareName: shareName)
+				items << azurePrefix
+				if(options?.delimiter != '/') {
+					items += azurePrefix.listFiles(options)
+				}
 			}
 		} else {
 			def errMessage = "Error getting items from ${getFullPath()}: ${xmlDoc.Message}"

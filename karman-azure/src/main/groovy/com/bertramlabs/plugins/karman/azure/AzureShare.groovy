@@ -72,7 +72,12 @@ class AzureShare extends AzureDirectory {
 				items << new AzureFile(name: filePrefix ? (filePrefix + file.Name) : file.Name, provider: provider, shareName: this.shareName)
 			}
 			xmlDoc.Entries?.Directory?.each { directory ->
-				items << new AzurePrefix(name: filePrefix ? (filePrefix + directory.Name) : directory.Name, provider: provider, shareName: this.shareName)
+
+				AzurePrefix azurePrefix = new AzurePrefix(name: filePrefix ? (filePrefix + directory.Name) : directory.Name, provider: provider, shareName: this.shareName)
+				items << azurePrefix
+				if(options?.delimiter != '/') {
+					items += azurePrefix.listFiles()
+				}
 			}
 		} else {
 			def errMessage = "Error getting items from directory with name ${name}: ${xmlDoc.Message}"

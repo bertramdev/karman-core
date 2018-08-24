@@ -32,7 +32,10 @@ class AlibabaDirectory extends Directory {
 		request.setPrefix(options?.prefix)
 		request.setDelimiter(options?.delimiter)
 		request.setMarker(options?.marker)
-		request.setMaxKeys(options.maxKeys)
+		if(options?.maxKeys) {
+			request.setMaxKeys(options?.maxKeys)
+		}
+
 		ObjectListing objectListing = getOSSClient().listObjects(request)
 
 		def files = []
