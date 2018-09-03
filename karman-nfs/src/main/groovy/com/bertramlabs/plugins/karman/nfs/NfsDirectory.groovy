@@ -25,7 +25,7 @@ class NfsDirectory extends Directory {
 	List listFiles(options = [:]) {
 		Collection<NfsCloudFile> rtn = []
 
-		def delimiter = options.delimiter ?: '/'
+		def delimiter = options.delimiter
 		FileSystem fileSystem = FileSystems.getDefault()
 		String prefix
 		def excludes = []
