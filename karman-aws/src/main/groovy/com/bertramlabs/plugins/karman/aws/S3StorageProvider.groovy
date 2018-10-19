@@ -35,8 +35,21 @@ import com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider
 import com.bertramlabs.plugins.karman.Directory
 import com.amazonaws.auth.AnonymousAWSCredentials
 import com.bertramlabs.plugins.karman.StorageProvider
+import org.apache.commons.beanutils.PropertyUtils
+import org.apache.http.HttpHost
+import org.apache.http.conn.ConnectTimeoutException
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
+import org.apache.http.conn.ssl.SSLContextBuilder
+import org.apache.http.conn.ssl.TrustStrategy
+import org.apache.http.protocol.HttpContext
 
 import javax.crypto.spec.SecretKeySpec
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocket
+
+import java.lang.reflect.InvocationTargetException
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 
 class S3StorageProvider extends StorageProvider {
 
@@ -149,6 +162,33 @@ class S3StorageProvider extends StorageProvider {
             configuration.setProxyWorkstation(proxyWorkstation)
         }
         configuration.setUseGzip(useGzip)
+		if (endpoint) {
+			SSLContext sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				@Override
+				boolean isTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+					return true
+				}
+			}).build()
+
+			SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
+				@Override
+				Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
+					if(socket instanceof SSLSocket) {
+						try {
+							socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
+							PropertyUtils.setProperty(socket, "host", host.getHostName())
+						} catch (NoSuchMethodException ex) {}
+						catch (IllegalAccessException ex) {}
+						catch (InvocationTargetException ex) {}
+						catch (Exception ex) {
+							log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
+						}
+					}
+					return super.connectSocket(30000, socket, host, remoteAddress, localAddress, context)
+				}
+			}
+			configuration.getApacheHttpClientConfig().setSslSocketFactory(sslConnectionFactory)
+		}
         if(symmetricKey) {
             EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
             CryptoConfiguration cryptoConfig = new CryptoConfiguration().withStorageMode(CryptoStorageMode.ObjectMetadata)
