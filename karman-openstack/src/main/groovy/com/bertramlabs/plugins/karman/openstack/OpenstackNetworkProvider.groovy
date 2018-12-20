@@ -106,6 +106,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String proxyPassword
 	String proxyWorkstation
 	String proxyDomain
+	String domainScopeType = 'id'
 
 	protected Boolean authenticate() {
 		try {
@@ -126,6 +127,12 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				authMap = [auth: [identity: [methods: ['password'], password: [user: [name: this.username, password: this.password, domain: [id: this.domainId ?: 'default']]]]]]
 				if(this.tenantName) {
 					authMap.auth.scope = [project: [name: this.tenantName, domain: [id:this.domainId ?: 'default']]]
+					if(this.domainScopeType == 'name') {
+						authMap.auth.identity.password.user.domain.remove('id')
+						authMap.auth.identity.password.user.domain.name = this.domainId ?: 'default'
+						authMap.auth.scope.project.domain.remove('id')
+						authMap.auth.scope.project.domain.name = this.domainId ?: 'default'
+					}
 				}
 
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
@@ -358,9 +365,10 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 	private findEndpointHost(endpoints, osHost) {
 		def rtn
+		def endpoint
 		try {
 			if(endpoints && endpoints.size() > 0) {
-				def endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
+				endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
 				if(!endpoint) {
 					osHost = osHost.substring(osHost.indexOf('.') + 1)
 					endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
@@ -369,6 +377,12 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				if(endpoint) {
 					rtn = [endpoint.publicURL, endpoint.url, endpoint.adminURL].find { it && it.indexOf(osHost) > -1 }
 				}
+			}
+
+			if(!rtn) {
+				/// Endpoint doesn't match osHost
+				endpoint = endpoints.find { it.interface == "public" }
+				rtn = endpoint?.url
 			}
 		} catch(e) {
 			log.error("Openstack, Error parsing endpoint host: ${e}", e)
