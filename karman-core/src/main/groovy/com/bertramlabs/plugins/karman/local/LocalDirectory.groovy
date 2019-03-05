@@ -17,7 +17,11 @@
 package com.bertramlabs.plugins.karman.local
 
 import com.bertramlabs.plugins.karman.*
-import org.apache.tools.ant.DirectoryScanner
+
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.FileSystem
 
 class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 
@@ -31,44 +35,119 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 		fsFile.exists()
 	}
 
-	List listFiles(options=[:]) {
-		DirectoryScanner scanner = new DirectoryScanner()
-		if(options.excludes) {
-			scanner.setExcludes(options.excludes as String[])
+	List listFiles(options = [:]) {
+		Collection<LocalCloudFile> rtn = []
+
+		def delimiter = options.delimiter
+		FileSystem fileSystem = FileSystems.getDefault()
+		String prefix
+		def excludes = []
+		def includes = []
+		//setup options
+		options.excludes?.each { exclude ->
+			excludes << fileSystem.getPathMatcher(exclude)
 		}
-		if(options.includes) {
-			scanner.setIncludes(options.includes as String[])	
+		options.includes?.each { include ->
+			includes << fileSystem.getPathMatcher(include)
 		}
+		File rootFolder = getFsFile()
+		prefix = options.prefix as String
+
+		if(delimiter == '/' && prefix) {
+			prefix = normalizePath(prefix)
+		}
+
 		if(options.prefix) {
-			def delimiter = options.delimiter
-			def prefix = options.prefix
+			excludes << fileSystem.getPathMatcher("glob:*")
+			excludes << fileSystem.getPathMatcher("glob:**/*")
 			if(prefix.endsWith("/")) {
+				rootFolder = new File(fsFile, prefix.substring(0,prefix.length() - 1))
 				if(delimiter == '/') {
-					scanner.setIncludes([prefix + '*'] as String[])		
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				} else {
-					scanner.setIncludes([prefix + '**/*'] as String[])		
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
+					includes << fileSystem.getPathMatcher("glob:${prefix}**/*")
 				}
 			} else {
 				if(delimiter == '/') {
-					scanner.setIncludes([prefix+'*',prefix + '*/**/*'] as String[])		
+					if(prefix.lastIndexOf('/') > 0) {
+						rootFolder = new File(fsFile, prefix.substring(0,prefix.lastIndexOf('/')))
+					}
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
+					includes << fileSystem.getPathMatcher("glob:${prefix}*/**/*")
 				} else {
-					scanner.setIncludes([prefix+'*'] as String[])		
+					includes << fileSystem.getPathMatcher("glob:${prefix}*")
 				}
 			}
 		} else if (options.delimiter) {
-			scanner.setIncludes(['*'] as String[])		
+			excludes << fileSystem.getPathMatcher("glob:*")
+			excludes << fileSystem.getPathMatcher("glob:**/*")
+			includes << fileSystem.getPathMatcher("glob:*")
 		}
-		scanner.setBasedir(fsFile.canonicalPath)
-		scanner.setCaseSensitive(false)
-		scanner.scan()
-		def results = scanner.getIncludedDirectories().flatten() + scanner.getIncludedFiles().flatten()
-		results.collect {
-			new LocalCloudFile(provider: provider, parent: this, name: it)
+		convertFilesToCloudFiles(rootFolder, includes,excludes, rtn)
+
+		if(delimiter != '/') {
+			for(int counter = 0; counter < rtn.size(); counter++) {
+				LocalCloudFile currentFile = rtn[counter]
+				if(currentFile.isDirectory()) {
+					convertFilesToCloudFiles(currentFile.fsFile, includes, excludes, rtn, counter + 1)
+				}
+			}
 		}
+		rtn = rtn?.findAll {
+			isMatchedFile(it.name,includes,excludes)
+		}?.sort{ a, b ->  a.isFile() <=> b.isFile() ?: a.name <=> b.name}
+
+		return rtn
+	}
+
+	private void convertFilesToCloudFiles(File parentFile, includes, excludes, fileList, position=0) {
+		Collection<LocalCloudFile> files = [];
+		parentFile.listFiles()?.each { listFile ->
+			def path = listFile.path.substring(fsFile.path.length())
+			if(path.startsWith('/')) {
+				path = path.substring(1)
+			}
+			if(isMatchedFile(path,includes,excludes)) {
+				files << new LocalCloudFile(provider: provider, parent: this, name: path)
+			}
+		}
+		if(files) {
+			fileList.addAll(position, files)
+		}
+	}
+
+
+	private Boolean isMatchedFile(String stringPath, includes,excludes) {
+		Path path = Paths.get(stringPath)
+		Boolean rtn = true
+		if(excludes?.size() > 0) {
+			excludes?.each { exclude ->
+				if(exclude.matches(path)) {
+					rtn = false
+				}
+
+			}
+		}
+		if(includes?.size() > 0) {
+			includes?.each { include ->
+				if(include.matches(path)) {
+					rtn = true
+				}
+			}
+		}
+
+		return rtn
 	}
 
 	def save() {
 		fsFile.mkdirs()
+	}
+
+	def delete() {
+		if(fsFile.exists()) {
+			fsFile.deleteDir()
+		}
 	}
 
 	CloudFile getFile(String name) {

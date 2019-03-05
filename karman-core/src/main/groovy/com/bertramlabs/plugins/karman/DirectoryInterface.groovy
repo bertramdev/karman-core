@@ -44,4 +44,6 @@ interface DirectoryInterface {
 
 	def save()
 
+	def delete()
+
 }

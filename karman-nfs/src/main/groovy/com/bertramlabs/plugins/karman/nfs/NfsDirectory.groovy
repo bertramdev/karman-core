@@ -144,6 +144,13 @@ class NfsDirectory extends Directory {
 	}
 
 
+	def delete() {
+		if(baseFile.exists()) {
+			baseFile.delete()
+		}
+	}
+
+
 	// PRIVATE
 
 	private NfsCloudFile cloudFileFromNfs3File(Nfs3File file) {

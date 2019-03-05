@@ -17,7 +17,6 @@
 package com.bertramlabs.plugins.karman.cifs
 
 import com.bertramlabs.plugins.karman.*
-import org.apache.tools.ant.DirectoryScanner
 import java.nio.file.*
 import jcifs.smb.NtlmPasswordAuthentication
 import jcifs.smb.SmbFile
@@ -168,6 +167,13 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 	def save() {
 		def baseDir = getCifsFile()
 		baseDir.mkdirs()
+	}
+
+	def delete() {
+		def baseDir = getCifsFile()
+		if(baseDir.exists()) {
+			baseDir.delete()
+		}
 	}
 
 	CloudFile getFile(String name) {

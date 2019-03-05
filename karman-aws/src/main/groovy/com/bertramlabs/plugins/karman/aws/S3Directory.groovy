@@ -17,14 +17,20 @@
 package com.bertramlabs.plugins.karman.aws
 
 import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.Bucket
+import com.amazonaws.services.s3.model.DeleteBucketRequest
 import com.amazonaws.services.s3.model.ListObjectsRequest
+import com.amazonaws.services.s3.model.ListVersionsRequest
 import com.amazonaws.services.s3.model.ObjectListing
 import com.amazonaws.services.s3.model.S3ObjectSummary
+import com.amazonaws.services.s3.model.S3VersionSummary
+import com.amazonaws.services.s3.model.VersionListing
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
 
 class S3Directory extends Directory {
 
+	Bucket bucket
     String region = ''
 
     /**
@@ -84,6 +90,43 @@ class S3Directory extends Directory {
         } else {
             s3Client.createBucket(name)
         }
+	}
+
+	def delete() {
+		ObjectListing objectListing = s3Client.listObjects(name);
+		while (true) {
+			Iterator<S3ObjectSummary> objIter = objectListing.getObjectSummaries().iterator();
+			while (objIter.hasNext()) {
+				s3Client.deleteObject(name, objIter.next().getKey());
+			}
+
+			// If the bucket contains many objects, the listObjects() call
+			// might not return all of the objects in the first listing. Check to
+			// see whether the listing was truncated. If so, retrieve the next page of objects
+			// and delete them.
+			if (objectListing.isTruncated()) {
+				objectListing = s3Client.listNextBatchOfObjects(objectListing);
+			} else {
+				break;
+			}
+		}
+
+		// Delete all object versions (required for versioned buckets).
+		VersionListing versionList = s3Client.listVersions(new ListVersionsRequest().withBucketName(name));
+		while (true) {
+			Iterator<S3VersionSummary> versionIter = versionList.getVersionSummaries().iterator();
+			while (versionIter.hasNext()) {
+				S3VersionSummary vs = versionIter.next();
+				s3Client.deleteVersion(name, vs.getKey(), vs.getVersionId());
+			}
+
+			if (versionList.isTruncated()) {
+				versionList = s3Client.listNextBatchOfVersions(versionList);
+			} else {
+				break;
+			}
+		}
+		s3Client.deleteBucket(name)
 	}
 
 	CloudFile getFile(String name) {

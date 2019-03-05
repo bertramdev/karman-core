@@ -80,6 +80,10 @@ class AlibabaDirectory extends Directory {
 		}
 	}
 
+	def delete() {
+		getOSSClient().deleteBucket(name)
+	}
+
 	CloudFile getFile(String name) {
 		new AlibabaCloudFile(
 			provider: provider,

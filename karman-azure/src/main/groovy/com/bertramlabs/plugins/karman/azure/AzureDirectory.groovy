@@ -137,7 +137,6 @@ class AzureDirectory extends Directory {
 				throw new Exception(errMessage)
 			}
 		}
-
 	}
 
 	/**

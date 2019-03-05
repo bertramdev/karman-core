@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPut
+import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.impl.client.DefaultHttpClient
@@ -84,7 +85,8 @@ class OpenstackDirectory extends Directory {
 	 * Create bucket for a given region (default to region in config if not defined)
 	 * @return Bucket
 	 */
-	def save() {OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+	def save() {
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 		HttpPut request = new HttpPut(uriBuilder.build())
 		request.addHeader("Accept", "application/json")
@@ -98,6 +100,26 @@ class OpenstackDirectory extends Directory {
 		EntityUtils.consume(response.entity)
 		if(response.statusLine.statusCode == 200) {
 
+			return true
+		} else {
+			return false
+		}
+	}
+
+	def delete() {
+		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
+		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
+		HttpDelete request = new HttpDelete(uriBuilder.build())
+		request.addHeader("Accept", "application/json")
+		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
+
+		HttpClient client = new DefaultHttpClient()
+		HttpParams params = client.getParams()
+		HttpConnectionParams.setConnectionTimeout(params, 30000)
+		HttpConnectionParams.setSoTimeout(params, 20000)
+		HttpResponse response = client.execute(request)
+		EntityUtils.consume(response.entity)
+		if(response.statusLine.statusCode == 200) {
 			return true
 		} else {
 			return false

@@ -216,6 +216,7 @@ class S3StorageProvider extends StorageProvider {
 
     private S3Directory directoryFromS3Bucket(bucket) {
         new S3Directory(
+				bucket: bucket,
                 name: bucket.name,
                 provider: this
         )
