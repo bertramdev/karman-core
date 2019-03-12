@@ -16,6 +16,9 @@ public interface SecurityGroupInterface {
 	public String getDescription()
 	public void setDescription(String description)
 
+	public String getVpcId()
+	public void setVpcId(String vpcId)
+
 	public Collection<SecurityGroupRuleInterface> getRules()
 
 	public SecurityGroupRuleInterface createRule()

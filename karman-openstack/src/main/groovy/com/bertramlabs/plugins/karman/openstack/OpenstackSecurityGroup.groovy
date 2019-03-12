@@ -62,6 +62,16 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		options.description = description
 	}
 
+	@Override
+	String getVpcId() {
+		return null
+	}
+
+	@Override
+	void setVpcId(String vpcId) {
+
+	}
+
 	public Collection<SecurityGroupRuleInterface> getRules() {
 		return rules
 	}
