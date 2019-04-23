@@ -26,6 +26,7 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.RegionUtils
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.AmazonS3EncryptionClient
+import com.amazonaws.services.s3.S3ClientOptions
 import com.amazonaws.services.s3.model.Bucket
 import com.amazonaws.services.s3.model.CryptoConfiguration
 import com.amazonaws.services.s3.model.CryptoStorageMode
@@ -75,6 +76,7 @@ class S3StorageProvider extends StorageProvider {
     Boolean useGzip = false
     Boolean anonymous = false
     Boolean forceMultipart = false
+	Boolean disableChunkedEncoding = false
     AmazonS3Client client = null
     Long chunkSize = 100l*1024l*1024l
     public S3StorageProvider(Map options) {
@@ -90,6 +92,7 @@ class S3StorageProvider extends StorageProvider {
         defaultFileACL = options.defaultFileACL ?: defaultFileACL
         useGzip        = options.useGzip        ?: useGzip
         forceMultipart = options.forceMultipart ?: forceMultipart
+		disableChunkedEncoding = options.disableChunkedEncoding ?: disableChunkedEncoding
 
         anonymous = options.anonymous ?: anonymous
 
@@ -161,6 +164,7 @@ class S3StorageProvider extends StorageProvider {
         if(proxyWorkstation) {
             configuration.setProxyWorkstation(proxyWorkstation)
         }
+
         configuration.setUseGzip(useGzip)
 		if (endpoint) {
 			SSLContext sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
@@ -189,6 +193,11 @@ class S3StorageProvider extends StorageProvider {
 			}
 			configuration.getApacheHttpClientConfig().setSslSocketFactory(sslConnectionFactory)
 		}
+		S3ClientOptions clientOptions = new S3ClientOptions()
+		if(disableChunkedEncoding) {
+			clientOptions.disableChunkedEncoding()
+		}
+
         if(symmetricKey) {
             EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
             CryptoConfiguration cryptoConfig = new CryptoConfiguration().withStorageMode(CryptoStorageMode.ObjectMetadata)
@@ -199,7 +208,9 @@ class S3StorageProvider extends StorageProvider {
                     cryptoConfig)
         } else {
             client = new AmazonS3Client(credentialsProvider,configuration)
+
         }
+		client.setS3ClientOptions(clientOptions)
 
         if (region) {
             Region region = RegionUtils.getRegion(region)
