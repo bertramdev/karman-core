@@ -76,7 +76,7 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 
 	@Override
 	public void addIpRange(String ipRange) {
-		ipRange << ipRange
+		this.ipRange << ipRange
 		modified = true
 	}
 
@@ -84,21 +84,21 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 	public void addIpRange(List<String> ipRange) {
 		// OpenStack only supports a single cidr
 		if(ipRange.size()) {
-			ipRange << ipRange.first()
+			this.ipRange << ipRange.first()
 		}
 		modified = true
 	}
 
 	@Override
 	public void removeIpRange(String ipRange) {
-		ipRange.remove(ipRange)
+		this.ipRange.remove(ipRange)
 		modified = true
 	}
 
 	@Override
 	public void removeIpRange(List<String> ipRange) {
 		ipRange.each { it ->
-			ipRange.remove(it)
+			this.ipRange.remove(it)
 		}
 		modified = true
 	}
@@ -160,6 +160,11 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 	}
 
 	@Override
+	String getDirection() {
+		return this.direction
+	}
+
+	@Override
 	void setDescription(String targetDescription) {
 		super.setDescription(targetDescription)
 		modified = true
@@ -177,11 +182,21 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 		if(modified && existing) {
 			delete()
 		}
+
+		if(this.ipRange?.size()) {
+			originalCidr = ipRange[0]
+		}
+
 		ipPermission = new IpPermission()
 		ipPermission.withIpProtocol(ipProtocol)
 		ipPermission.withFromPort(minPort)
 		ipPermission.withToPort(maxPort)
-		ipPermission.withIpv4Ranges(new IpRange().withCidrIp(originalCidr).withDescription(this.description))
+
+		if(!this.ipRange?.size()) {
+			throw new Exception('Must specify an ipRange / cidr')
+		}
+
+		ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]).withDescription(this.description))
 
 		if(direction == 'egress') {
 			AuthorizeSecurityGroupEgressRequest request = new AuthorizeSecurityGroupEgressRequest()
@@ -216,17 +231,21 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 
 	@Override
 	void delete() {
+		def cidr = ipRange[0]
+		ipPermission = new IpPermission()
+		ipPermission.withIpProtocol(ipProtocol)
+		ipPermission.withFromPort(minPort)
+		ipPermission.withToPort(maxPort)
+		ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]))
+
 		if(originalDirection == 'egress') {
-
 			RevokeSecurityGroupEgressRequest egressRequest = new RevokeSecurityGroupEgressRequest()
-			egressRequest.setIpPermissions(ipPermission)
+			egressRequest.withIpPermissions(ipPermission)
 			egressRequest.setGroupId(this.securityGroup.id)
-
 			RevokeSecurityGroupEgressResult response = client.revokeSecurityGroupEgress(egressRequest)
 		} else {
-
 			RevokeSecurityGroupIngressRequest ingressRequest = new RevokeSecurityGroupIngressRequest()
-			ingressRequest.setIpPermissions(ipPermission)
+			ingressRequest.withIpPermissions(ipPermission)
 			ingressRequest.setGroupId(this.securityGroup.id)
 			RevokeSecurityGroupIngressResult response = client.revokeSecurityGroupIngress(ingressRequest)
 		}
