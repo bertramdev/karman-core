@@ -152,12 +152,15 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 	}
 
 	private createPayload() {
-		[
-			tenant_id: provider.getAccessInfo()?.projectId,
+		def payLoad = [
 			security_group: [
 				name: this.getName(),
 				description: this.getDescription() ?: ''	
 			]
 		]
+		if(this.provider.cloudType != 'opentelekom' && this.provider.cloudType != 'huawei') {
+			payLoad.tenant_id = provider.getAccessInfo()?.projectId
+		}
+		payLoad
 	}
 }

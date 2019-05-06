@@ -107,6 +107,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String proxyWorkstation
 	String proxyDomain
 	String domainScopeType = 'id'
+	String cloudType
 
 	protected Boolean authenticate() {
 		try {
