@@ -91,10 +91,15 @@ class AmazonSecurityGroup extends SecurityGroup{
 
 				def options = [direction: 'ingress', ipProtocol: permission.getIpProtocol(), minPort: minPort, maxPort: maxPort, existing: true]
 				def ranges = permission.getIpv4Ranges()
-				AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)
-				this.rulesList.add(rule)
-				ranges?.each { range ->
-					rule.addIpRange(range.getCidrIp())
+				if(ranges) {
+					ranges.each { range ->
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, options)
+						rule.addIpRange(range.getCidrIp())
+						this.rulesList.add(rule)
+					}
+				} else {
+					AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, options)
+					this.rulesList.add(rule)
 				}
 			}
 
@@ -105,11 +110,18 @@ class AmazonSecurityGroup extends SecurityGroup{
 
 				def options = [direction: 'egress', ipProtocol: permission.getIpProtocol(), minPort: minPort, maxPort: maxPort, existing: true]
 				def ranges = permission.getIpv4Ranges()
-				AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)
-				this.rulesList.add(rule)
-				ranges?.each { range ->
-					rule.addIpRange(range.getCidrIp())
+				if(ranges) {
+					ranges?.each { range ->
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)
+						rule.addIpRange(range.getCidrIp())
+						this.rulesList.add(rule)
+
+					}
+				} else {
+					AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)
+					this.rulesList.add(rule)
 				}
+
 			}
 			metadataLoaded = true
 		}
