@@ -1,16 +1,5 @@
 package com.bertramlabs.plugins.karman.azure
 
-import com.amazonaws.services.ec2.AmazonEC2Client
-import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupEgressRequest
-import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupEgressResult
-import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressRequest
-import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressResult
-import com.amazonaws.services.ec2.model.IpPermission
-import com.amazonaws.services.ec2.model.IpRange
-import com.amazonaws.services.ec2.model.RevokeSecurityGroupEgressRequest
-import com.amazonaws.services.ec2.model.RevokeSecurityGroupEgressResult
-import com.amazonaws.services.ec2.model.RevokeSecurityGroupIngressRequest
-import com.amazonaws.services.ec2.model.RevokeSecurityGroupIngressResult
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import com.bertramlabs.plugins.karman.network.SecurityGroupRule
 import com.bertramlabs.plugins.karman.network.SecurityGroupRuleInterface

@@ -1,13 +1,5 @@
 package com.bertramlabs.plugins.karman.azure
 
-import com.amazonaws.services.ec2.AmazonEC2Client
-import com.amazonaws.services.ec2.model.CreateSecurityGroupRequest
-import com.amazonaws.services.ec2.model.CreateSecurityGroupResult
-import com.amazonaws.services.ec2.model.DeleteSecurityGroupRequest
-import com.amazonaws.services.ec2.model.DeleteSecurityGroupResult
-import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
-import com.amazonaws.services.ec2.model.DescribeSecurityGroupsResult
-import com.amazonaws.services.ec2.model.IpPermission
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroup
 import com.bertramlabs.plugins.karman.network.SecurityGroupRuleInterface
