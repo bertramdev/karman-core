@@ -92,7 +92,6 @@ class AzureShare extends AzureDirectory {
 		return name
 	}
 
-	@Override 
 	protected String getShareName() {
 		return name
 	}

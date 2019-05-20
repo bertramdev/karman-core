@@ -47,6 +47,7 @@ dependencies {
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
     compile 'org.apache.httpcomponents:httpcore:4.4.5'
     compile 'org.apache.httpcomponents:httpclient:4.5.2'
+    compile 'commons-beanutils:commons-beanutils:1.8.3'
 }
 
 publishing {
