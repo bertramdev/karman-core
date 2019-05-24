@@ -156,6 +156,7 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 	@Override
 	void setDirection(String targetDirection) {
 		super.setDirection(targetDirection)
+		direction = targetDirection
 		modified = true
 	}
 
@@ -167,6 +168,7 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 	@Override
 	void setDescription(String targetDescription) {
 		super.setDescription(targetDescription)
+		description = targetDescription
 		modified = true
 	}
 
