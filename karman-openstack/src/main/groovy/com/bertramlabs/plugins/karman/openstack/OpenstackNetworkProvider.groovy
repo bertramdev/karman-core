@@ -93,7 +93,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 	String username
 	String apiKey = ''
-	String region = 'IAD'
+	String region
 	String identityUrl = ''
 	String password
 	String tenantName
@@ -121,7 +121,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					basePath += identityVersion
 				}
 				uriBuilder.setPath([basePath.endsWith("/") ? basePath.substring(0, basePath.size() - 1) : basePath, "auth", "tokens"].join("/"))
-				log.info("Auth url: ${uriBuilder.build()}")
+				log.debug("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
 
@@ -141,13 +141,13 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				withHttpClient() { HttpClient client ->
 					response = client.execute(authPost)
 					HttpEntity responseEntity = response.getEntity();
-					
+
 					if(response.getStatusLine().statusCode == 400) {
-						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID. 
+						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID.
 						authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
 						authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
 						authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
-						
+
 						response = client.execute(authPost)
 						responseEntity = response.getEntity();
 					} 
@@ -185,7 +185,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				}
 
 				uriBuilder.setPath([identityVersion.endsWith("/") ? identityVersion.substring(0, identityVersion.size() - 1) : identityVersion, "tokens"].join("/"))
-				log.info("Auth url: ${uriBuilder.build()}")
+				log.debug("Auth url: ${uriBuilder.build()}")
 				HttpPost authPost = new HttpPost(uriBuilder.build())
 				authPost.addHeader("Content-Type", "application/json");
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
@@ -205,8 +205,8 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					accessInfo.projectId = accessInfo?.access?.token.tenant.id
 					accessInfo.authToken = accessInfo?.access?.token?.id?.toString()
 				}
-				
-				
+
+
 			}
 
 			setEndpoints(accessInfo)
@@ -240,24 +240,32 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
-		if(!result.success) {
-			throw new RuntimeException("Error in obtaining security groups: ${result.error}")
-		}
-		def provider = this
-		return result.content?.security_groups?.collect { securityGroupMeta ->
-			return new OpenstackSecurityGroup(provider, securityGroupMeta)
+		if(accessInfo?.endpointInfo?.networkApi) {
+			def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
+			if(!result.success) {
+				throw new RuntimeException("Error in obtaining security groups: ${result.error}")
+			}
+			def provider = this
+			return result.content?.security_groups?.collect { securityGroupMeta ->
+				return new OpenstackSecurityGroup(provider, securityGroupMeta)
+			}
+		} else {
+			throw new RuntimeException("Could not get security groups: no network api configured")
 		}
 	}
 
 	@Override
 	public SecurityGroupInterface getSecurityGroup(String uid) {
 		def accessInfo = getAccessInfo()
-		def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
-		if(!result.success) {
-			throw new RuntimeException("Error in obtaining security group: ${result.error}")
+		if(accessInfo?.endpointInfo?.networkApi) {
+			def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
+			if(!result.success) {
+				throw new RuntimeException("Error in obtaining security group: ${result.error}")
+			}
+			return new OpenstackSecurityGroup(this, result.content?.security_group)
+		} else {
+			throw new RuntimeException("Could not get security group: no network api configured")
 		}
-		return new OpenstackSecurityGroup(this, result.content?.security_group)
 	}
 
 	@Override
@@ -267,6 +275,10 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 
 	public callApi(url, path, opts = [:], method = 'GET') {
 		def rtn = [success: false, headers: [:]]
+		if(!url) {
+			log.warn("callApi: blank url provided for path: ${path}")
+			return rtn
+		}
 		try {
 			def token = getAccessInfo().authToken
 
@@ -302,7 +314,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				HttpEntity responseEntity = response.getEntity();
 				String responseText = responseEntity?.content?.text
 				Integer responseCode = response.getStatusLine().statusCode
-				log.info "  Result: ${responseText}"
+				log.debug("Result: ${responseText}")
 
 				if(responseText) {
 					rtn.content = new JsonSlurper().parseText(responseText)
@@ -329,24 +341,34 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 		def osHost = identityUri.getHost()
 		def serviceCatalog = accessInfo?.identityApiVersion == 'v3' ? tokenResults?.token?.catalog : tokenResults?.access?.serviceCatalog
 		def endpointTypes = [
-			[name: 'compute', accessLabel: 'compute', version: [noDot: false, defaultValue: null]],
-			[name: 'image', accessLabel: 'image', version: [noDot: true, defaultValue: 'v2']],
-			[name: 'volume', accessLabel: 'storage', version: [noDot: false, defaultValue: null]],
-			[name: 'network', accessLabel: 'network', version: [noDot: false, defaultValue: 'v2.0']]
+			[name:'compute', accessLabel:'compute', version:[noDot:false, defaultValue:null], required: true],
+			[name:'image', accessLabel:'image', version:[noDot:true, defaultValue:'v2'], required: true],
+			[name:'volume', accessLabel:'storage', version:[noDot:false, defaultValue:null], required: true],
+			[name:'network', accessLabel:'network', version:[noDot:false, defaultValue:'v2.0'], required: true],
+			[name:'load-balancer', accessLabel:'loadBalancer', version:[noDot:false, defaultValue:'v2.0'], required: false],
+			[name:'elb', accessLabel:'loadBalancer', version:[noDot:false, defaultValue:'v1.0'], required: false],
+			[name:'elbv1', accessLabel:'loadBalancerV1', version:[noDot:false, defaultValue:'v1.0'], required: false],
+			[name:'object', accessLabel:'objectStorage', version:[noDot:true, defaultValue:'v1'], required: false],
+			[name:'share', accessLabel:'sharedFileSystem', version:[noDot:true, defaultValue:'v1'], required: false]
 		]
 		if(!this.accessInfo) {
 			this.accessInfo = [:]
 		}
 		this.accessInfo.endpointInfo = [:]
 		endpointTypes.each { endpointType ->
-			def apiResults = findLatestEndpointInSet(findEndpointsForType(serviceCatalog, endpointType.name))
+			def endpointsForType = findEndpointsForType(serviceCatalog, endpointType.name)
+			if(region) {
+				endpointsForType = filterEndpointsForRegion(endpointsForType, region)
+			}
+			def apiResults = findLatestEndpointInSet(endpointsForType)
 			def match = findEndpointHost(apiResults?.endpoints, osHost)
-			if(!match) {
+			if(!match && endpointType.required) {
 				log.error("Openstack: Failed to set endpoint for ${endpointType.name} API")
 				rtn.errors << [(endpointType.name): "Failed to find endpoint."]
+			} else if(match) {
+				this.accessInfo.endpointInfo["${endpointType.accessLabel}Api"] = match ? parseEndpoint(match) : null
+				this.accessInfo.endpointInfo["${endpointType.accessLabel}Version"] = match ? parseEndpointVersion(match, endpointType.version.noDot, endpointType.version.defaultValue) : null
 			}
-			this.accessInfo.endpointInfo["${endpointType.accessLabel}Api"] = match ? parseEndpoint(match) : null
-			this.accessInfo.endpointInfo["${endpointType.accessLabel}Version"] = match ? parseEndpointVersion(match, endpointType.version.noDot, endpointType.version.defaultValue) : null
 		}
 		
 		if(rtn.errors.size() == 0) {
@@ -358,6 +380,15 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	
 	private findEndpointsForType(ArrayList serviceCatalog, String type) {
 		return serviceCatalog?.findAll { it.type.startsWith(type) }
+	}
+
+	private filterEndpointsForRegion(ArrayList endpointTypes, String tmpRegion) {
+		endpointTypes.each { endpointType ->
+			def regionEndpoints = endpointType.endpoints.findAll { endpoint -> endpoint.region == tmpRegion }
+			endpointType.endpoints = regionEndpoints
+		}
+
+		return endpointTypes
 	}
 	
 	private findLatestEndpointInSet(ArrayList endpoints) {
