@@ -1,3 +1,5 @@
+package com.bertramlabs.plugins.karman.local
+
 import org.springframework.context.ApplicationContext
 
 class KarmanUrlMappings {
