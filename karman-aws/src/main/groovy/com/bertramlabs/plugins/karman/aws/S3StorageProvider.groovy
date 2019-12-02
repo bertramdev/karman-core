@@ -77,6 +77,7 @@ class S3StorageProvider extends StorageProvider {
     Boolean anonymous = false
     Boolean forceMultipart = false
 	Boolean disableChunkedEncoding = false
+    Boolean pathStyleAccess = false
     AmazonS3Client client = null
     Long chunkSize = 100l*1024l*1024l
     public S3StorageProvider(Map options) {
@@ -93,6 +94,7 @@ class S3StorageProvider extends StorageProvider {
         useGzip        = options.useGzip        ?: useGzip
         forceMultipart = options.forceMultipart ?: forceMultipart
 		disableChunkedEncoding = options.disableChunkedEncoding ?: disableChunkedEncoding
+        pathStyleAccess = options.pathStyleAccess ?: pathStyleAccess
 
         anonymous = options.anonymous ?: anonymous
 
@@ -197,6 +199,9 @@ class S3StorageProvider extends StorageProvider {
 		if(disableChunkedEncoding) {
 			clientOptions.disableChunkedEncoding()
 		}
+        if(pathStyleAccess) {
+            clientOptions.setPathStyleAccess(pathStyleAccess)
+        }
 
         if(symmetricKey) {
             EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
