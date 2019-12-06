@@ -283,7 +283,9 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			def token = getAccessInfo().authToken
 
 			URIBuilder uriBuilder = new URIBuilder(url)
-			uriBuilder.setPath(uriBuilder.getPath() + path)
+			def existingPath = uriBuilder.getPath()
+			def tmpPath = existingPath ? existingPath + path : path
+			uriBuilder.setPath(tmpPath)
 			if(opts.query) {
 				opts.query.each { k,v -> uriBuilder.addParameter(k, v)}
 			}
