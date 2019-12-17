@@ -134,6 +134,9 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		if(options?.ethertype) {
 			this.setEthertype(options.ethertype)
 		}
+		if(options?.remote_group_id) {
+			this.setTargetGroupId(options.remote_group_id)	
+		}
 	}
 
 	private createPayload() {
@@ -159,6 +162,10 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 
 		if(this.getSecurityGroup().getId()) {
 			payload.security_group_rule.security_group_id = this.getSecurityGroup().getId()
+		}
+
+		if(this.getTargetGroupId()) {
+			payload.security_group_rule.remote_group_id = this.getTargetGroupId()
 		}
 
 		payload
