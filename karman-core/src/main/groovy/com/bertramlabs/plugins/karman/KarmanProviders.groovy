@@ -65,8 +65,8 @@ class KarmanProviders {
 				providerProperties.load(res.openStream())
 
 				providerProperties.keySet().each { providerName ->
+					String className = providerProperties.getProperty(providerName)
 					try {
-						String className = providerProperties.getProperty(providerName)
 						def cls = classLoader.loadClass(className)
 						if(NetworkProviderInterface.isAssignableFrom(cls)) {
 							if(!networkProviders[providerName]) {
