@@ -1,12 +1,22 @@
 package com.bertramlabs.plugins.karman.aws
 
 import com.amazonaws.ClientConfiguration
+import com.amazonaws.auth.AWSCredentials
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.auth.BasicSessionCredentials
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+import com.amazonaws.auth.InstanceProfileCredentialsProvider
 import com.amazonaws.services.ec2.AmazonEC2Client
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsResult
 import com.amazonaws.services.ec2.model.Filter
 import com.amazonaws.services.ec2.model.SecurityGroup
+import com.amazonaws.services.securitytoken.AWSSecurityTokenService
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
+import com.amazonaws.services.securitytoken.model.AssumeRoleRequest
+import com.amazonaws.services.securitytoken.model.AssumeRoleResult
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import groovy.util.logging.Commons
@@ -17,6 +27,9 @@ class AmazonNetworkProvider extends NetworkProvider {
 
 	String accessKey
 	String secretKey
+	Boolean useHostCredentials = false
+	String stsAssumeRole
+	String token
 	String proxyHost
 	Integer proxyPort
 	String proxyUser
@@ -25,33 +38,70 @@ class AmazonNetworkProvider extends NetworkProvider {
 	String proxyDomain
 	String endpoint
 	String region
-	private AmazonEC2Client client
+	private Date clientExpires
+	AmazonEC2Client client
 
 
 	AmazonEC2Client getClient() {
 		if(client) {
-			return client
-		} else {
-			def creds = new BasicAWSCredentials(accessKey, secretKey)
-			ClientConfiguration clientConfiguration = new ClientConfiguration()
-
-			if(proxyHost)
-				clientConfiguration.setProxyHost(proxyHost)
-			if(proxyPort)
-				clientConfiguration.setProxyPort(proxyPort)
-			if(proxyUser)
-				clientConfiguration.setProxyUsername(proxyUser)
-			if(proxyPassword)
-				clientConfiguration.setProxyPassword(proxyPassword)
-			if(proxyDomain)
-				clientConfiguration.setProxyDomain(proxyDomain)
-			if(proxyWorkstation)
-				clientConfiguration.setProxyWorkstation(proxyWorkstation)
-			client = new AmazonEC2Client(creds, clientConfiguration)
-			if(endpoint) //"ec2.us-west-2.amazonaws.com"
-				client.setEndpoint(endpoint)
-			return client
+			if(clientExpires == null || clientExpires > new Date()) {
+				return client
+			}
 		}
+
+		AWSCredentials credentials = null
+		if (accessKey && secretKey && token) {
+			credentials = new BasicSessionCredentials (accessKey, secretKey, token)
+		}
+		else if (accessKey && secretKey && !token) {
+			credentials = new BasicAWSCredentials(accessKey, secretKey)
+		}
+
+		def credentialsProvider
+
+		if (credentials) {
+			credentialsProvider = new AWSStaticCredentialsProvider(credentials)
+		} else {
+			if(useHostCredentials) {
+				credentialsProvider = new InstanceProfileCredentialsProvider()
+
+			} else {
+				credentialsProvider = new DefaultAWSCredentialsProviderChain()
+			}
+
+		}
+		if(stsAssumeRole) {
+
+			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).build()
+			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman'))
+			def roleCredentials = roleResult.credentials
+
+			credentials = new BasicSessionCredentials(roleCredentials.getAccessKeyId(), roleCredentials.getSecretAccessKey(), roleCredentials.getSessionToken());
+			if(roleCredentials) {
+				credentialsProvider = new AWSStaticCredentialsProvider(credentials)
+			}
+			clientExpires = roleCredentials.getExpiration()
+		}
+
+		ClientConfiguration clientConfiguration = new ClientConfiguration()
+
+		if(proxyHost)
+			clientConfiguration.setProxyHost(proxyHost)
+		if(proxyPort)
+			clientConfiguration.setProxyPort(proxyPort)
+		if(proxyUser)
+			clientConfiguration.setProxyUsername(proxyUser)
+		if(proxyPassword)
+			clientConfiguration.setProxyPassword(proxyPassword)
+		if(proxyDomain)
+			clientConfiguration.setProxyDomain(proxyDomain)
+		if(proxyWorkstation)
+			clientConfiguration.setProxyWorkstation(proxyWorkstation)
+		client = new AmazonEC2Client(credentialsProvider, clientConfiguration)
+		if(endpoint) //"ec2.us-west-2.amazonaws.com"
+			client.setEndpoint(endpoint)
+		return client
+
 	}
 
 	String getProviderName() {

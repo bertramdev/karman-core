@@ -17,10 +17,13 @@
 package com.bertramlabs.plugins.karman.aws
 
 import com.amazonaws.auth.AWSCredentialsProvider
+import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicSessionCredentials
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+import com.amazonaws.auth.InstanceProfileCredentialsProvider
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.amazonaws.internal.StaticCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.RegionUtils
@@ -33,6 +36,10 @@ import com.amazonaws.services.s3.model.CryptoStorageMode
 import com.amazonaws.ClientConfiguration
 import com.amazonaws.services.s3.model.EncryptionMaterials
 import com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider
+import com.amazonaws.services.securitytoken.AWSSecurityTokenService
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
+import com.amazonaws.services.securitytoken.model.AssumeRoleRequest
+import com.amazonaws.services.securitytoken.model.AssumeRoleResult
 import com.bertramlabs.plugins.karman.Directory
 import com.amazonaws.auth.AnonymousAWSCredentials
 import com.bertramlabs.plugins.karman.StorageProvider
@@ -58,6 +65,8 @@ class S3StorageProvider extends StorageProvider {
 
     String accessKey = ''
     String secretKey = ''
+	Boolean useHostCredentials = false
+	String stsAssumeRole
     String token = ''
     String region = ''
     String endpoint = ''
@@ -78,11 +87,14 @@ class S3StorageProvider extends StorageProvider {
     Boolean forceMultipart = false
 	Boolean disableChunkedEncoding = false
     Boolean pathStyleAccess = false
+	private Date clientExpires=null
     AmazonS3Client client = null
     Long chunkSize = 100l*1024l*1024l
     public S3StorageProvider(Map options) {
         accessKey      = options.accessKey      ?: accessKey
         secretKey      = options.secretKey      ?: secretKey
+		useHostCredentials = options.useHostCredentials ?: useHostCredentials
+		stsAssumeRole = options.stsAssumeRole ?: stsAssumeRole
         token          = options.token          ?: token
         region         = options.region         ?: region
         endpoint       = options.endpoint       ?: endpoint
@@ -122,12 +134,13 @@ class S3StorageProvider extends StorageProvider {
     AmazonS3Client getS3Client() {
 
         if(client) {
-            return client
+			if(clientExpires == null || clientExpires > new Date()) {
+				return client
+			}
         }
 
         AWSCredentials credentials = null
-
-        if (accessKey && secretKey && token) {
+		if (accessKey && secretKey && token) {
             credentials = new BasicSessionCredentials (accessKey, secretKey, token)
         }
         else if (accessKey && secretKey && !token) {
@@ -139,10 +152,27 @@ class S3StorageProvider extends StorageProvider {
         final AWSCredentialsProvider credentialsProvider
 
         if (credentials) {
-            credentialsProvider = new StaticCredentialsProvider(credentials)
+            credentialsProvider = new AWSStaticCredentialsProvider(credentials)
         } else {
-            credentialsProvider = new DefaultAWSCredentialsProviderChain()
+			if(useHostCredentials) {
+				credentialsProvider = new InstanceProfileCredentialsProvider()
+
+			} else {
+				credentialsProvider = new DefaultAWSCredentialsProviderChain()
+			}
+
         }
+		if(stsAssumeRole) {
+			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).build()
+			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman'))
+
+			if(roleResult.credentials) {
+				credentialsProvider = null
+			}
+			def roleCredentials = roleResult.credentials
+			credentials = new BasicSessionCredentials(roleCredentials.getAccessKeyId(), roleCredentials.getSecretAccessKey(), roleCredentials.getSessionToken());
+			clientExpires = roleCredentials.getExpiration()
+		}
 
         ClientConfiguration configuration = new ClientConfiguration()
         configuration.setUseTcpKeepAlive(keepAlive)
@@ -206,13 +236,23 @@ class S3StorageProvider extends StorageProvider {
         if(symmetricKey) {
             EncryptionMaterials materials = new EncryptionMaterials(new SecretKeySpec(symmetricKey.bytes,'AES'))
             CryptoConfiguration cryptoConfig = new CryptoConfiguration().withStorageMode(CryptoStorageMode.ObjectMetadata)
+			if(credentialsProvider) {
+				client = new AmazonS3EncryptionClient(credentialsProvider,
+					new StaticEncryptionMaterialsProvider(materials),
+					configuration,
+					cryptoConfig)
+			} else if(credentials) {
+				client = new AmazonS3EncryptionClient(credentials,new StaticEncryptionMaterialsProvider(materials),configuration,cryptoConfig)
+			}
 
-            client = new AmazonS3EncryptionClient(credentialsProvider,
-                    new StaticEncryptionMaterialsProvider(materials),
-                    configuration,
-                    cryptoConfig)
+
+
         } else {
-            client = new AmazonS3Client(credentialsProvider,configuration)
+			if(credentialsProvider) {
+				client = new AmazonS3Client(credentialsProvider, configuration)
+			} else if (credentials) {
+				client = new AmazonS3Client(credentials, configuration)
+			}
 
         }
 		client.setS3ClientOptions(clientOptions)
