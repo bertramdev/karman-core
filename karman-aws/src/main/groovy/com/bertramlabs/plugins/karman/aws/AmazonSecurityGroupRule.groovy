@@ -172,6 +172,11 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 		modified = true
 	}
 
+	@Override
+	String getDescription() {
+		return description
+	}
+
 
 	@Override
 	String getId() {

@@ -93,7 +93,8 @@ class AmazonSecurityGroup extends SecurityGroup{
 				def ranges = permission.getIpv4Ranges()
 				if(ranges) {
 					ranges.each { range ->
-						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, options)
+						def rangeDescription = range.getDescription()
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, [description: rangeDescription] + options)
 						rule.addIpRange(range.getCidrIp())
 						this.rulesList.add(rule)
 					}
@@ -112,7 +113,8 @@ class AmazonSecurityGroup extends SecurityGroup{
 				def ranges = permission.getIpv4Ranges()
 				if(ranges) {
 					ranges?.each { range ->
-						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)
+						def rangeDescription = range.getDescription()
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this, [description: rangeDescription] + options)
 						rule.addIpRange(range.getCidrIp())
 						this.rulesList.add(rule)
 
