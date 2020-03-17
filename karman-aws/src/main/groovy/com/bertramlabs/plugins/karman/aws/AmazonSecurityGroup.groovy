@@ -91,11 +91,19 @@ class AmazonSecurityGroup extends SecurityGroup{
 
 				def options = [direction: 'ingress', ipProtocol: permission.getIpProtocol(), minPort: minPort, maxPort: maxPort, existing: true]
 				def ranges = permission.getIpv4Ranges()
-				if(ranges) {
-					ranges.each { range ->
+				def userIdGroupPairs = permission.getUserIdGroupPairs()
+				if(ranges || userIdGroupPairs) {
+					ranges?.each { range ->
 						def rangeDescription = range.getDescription()
 						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, [description: rangeDescription] + options)
 						rule.addIpRange(range.getCidrIp())
+						this.rulesList.add(rule)
+					}
+					userIdGroupPairs?.each { groupPair ->
+						def groupPairDescription = groupPair.getDescription()
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, [description: groupPairDescription] + options)
+						rule.setTargetGroupId(groupPair.getGroupId())
+						rule.setTargetGroupName(groupPair.getGroupName())
 						this.rulesList.add(rule)
 					}
 				} else {
@@ -111,13 +119,21 @@ class AmazonSecurityGroup extends SecurityGroup{
 
 				def options = [direction: 'egress', ipProtocol: permission.getIpProtocol(), minPort: minPort, maxPort: maxPort, existing: true]
 				def ranges = permission.getIpv4Ranges()
-				if(ranges) {
+				def userIdGroupPairs = permission.getUserIdGroupPairs()
+				if(ranges || userIdGroupPairs) {
 					ranges?.each { range ->
 						def rangeDescription = range.getDescription()
 						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this, [description: rangeDescription] + options)
 						rule.addIpRange(range.getCidrIp())
 						this.rulesList.add(rule)
 
+					}
+					userIdGroupPairs?.each { groupPair ->
+						def groupPairDescription = groupPair.getDescription()
+						AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider, this, [description: groupPairDescription] + options)
+						rule.setTargetGroupId(groupPair.getGroupId())
+						rule.setTargetGroupName(groupPair.getGroupName())
+						this.rulesList.add(rule)
 					}
 				} else {
 					AmazonSecurityGroupRule rule = new AmazonSecurityGroupRule(provider,this,options)

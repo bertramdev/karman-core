@@ -11,6 +11,7 @@ import com.amazonaws.services.ec2.model.RevokeSecurityGroupEgressRequest
 import com.amazonaws.services.ec2.model.RevokeSecurityGroupEgressResult
 import com.amazonaws.services.ec2.model.RevokeSecurityGroupIngressRequest
 import com.amazonaws.services.ec2.model.RevokeSecurityGroupIngressResult
+import com.amazonaws.services.ec2.model.UserIdGroupPair
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import com.bertramlabs.plugins.karman.network.SecurityGroupRule
 import groovy.util.logging.Commons
@@ -199,11 +200,13 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 		ipPermission.withFromPort(minPort)
 		ipPermission.withToPort(maxPort)
 
-		if(!this.ipRange?.size()) {
-			throw new Exception('Must specify an ipRange / cidr')
+		if(ipRange) {
+			ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]).withDescription(this.description))
 		}
 
-		ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]).withDescription(this.description))
+		if(targetGroupId) {
+			ipPermission.withUserIdGroupPairs(new UserIdGroupPair().withGroupId(this.targetGroupId))
+		}
 
 		if(direction == 'egress') {
 			AuthorizeSecurityGroupEgressRequest request = new AuthorizeSecurityGroupEgressRequest()
@@ -243,7 +246,12 @@ class AmazonSecurityGroupRule extends SecurityGroupRule {
 		ipPermission.withIpProtocol(ipProtocol)
 		ipPermission.withFromPort(minPort)
 		ipPermission.withToPort(maxPort)
-		ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]))
+		if(ipRange.size()) {
+			ipPermission.withIpv4Ranges(new IpRange().withCidrIp(ipRange[0]))
+		}
+		if(targetGroupId) {
+			ipPermission.withUserIdGroupPairs(new UserIdGroupPair().withGroupId(targetGroupId))
+		}
 
 		if(originalDirection == 'egress') {
 			RevokeSecurityGroupEgressRequest egressRequest = new RevokeSecurityGroupEgressRequest()
