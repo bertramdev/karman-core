@@ -233,7 +233,7 @@ class AzurePageBlobFile extends CloudFile {
 			ChunkedInputStream chunkedStream = new ChunkedInputStream(writeStream, partSize)
 			long filePosition = 0
 			int partNumber = 1
-			int startByte = 0
+			long startByte = 0
 			while(chunkedStream.available() >= 0 && (!contentLength || filePosition < contentLength)) {
 				// Last part can be less than 5 MB. Adjust part size.
 				
