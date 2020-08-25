@@ -62,6 +62,9 @@ import java.security.cert.X509Certificate
 class S3StorageProvider extends StorageProvider {
 
     static String providerName = "s3"
+    static SSLContext sslcontext
+    static SSLConnectionSocketFactory sslConnectionFactory
+    
 
     String accessKey = ''
     String secretKey = ''
@@ -90,6 +93,33 @@ class S3StorageProvider extends StorageProvider {
 	private Date clientExpires=null
     AmazonS3Client client = null
     Long chunkSize = 100l*1024l*1024l
+
+    static {
+         sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                boolean isTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+                    return true
+                }
+        }).build()
+        sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
+            @Override
+            Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
+                if(socket instanceof SSLSocket) {
+                    try {
+                        socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
+                        PropertyUtils.setProperty(socket, "host", host.getHostName())
+                    } catch (NoSuchMethodException ex) {}
+                    catch (IllegalAccessException ex) {}
+                    catch (InvocationTargetException ex) {}
+                    catch (Exception ex) {
+                        
+                    }
+                }
+                return super.connectSocket(30000, socket, host, remoteAddress, localAddress, context)
+            }
+        }
+    }
+
     public S3StorageProvider(Map options) {
         accessKey      = options.accessKey      ?: accessKey
         secretKey      = options.secretKey      ?: secretKey
@@ -199,30 +229,6 @@ class S3StorageProvider extends StorageProvider {
 
         configuration.setUseGzip(useGzip)
 		if (endpoint) {
-			SSLContext sslcontext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-				@Override
-				boolean isTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
-					return true
-				}
-			}).build()
-
-			SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER) {
-				@Override
-				Socket connectSocket(int connectTimeout, Socket socket, HttpHost host, InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context) throws IOException, ConnectTimeoutException {
-					if(socket instanceof SSLSocket) {
-						try {
-							socket.setEnabledProtocols(['SSLv3', 'TLSv1', 'TLSv1.1', 'TLSv1.2'] as String[])
-							PropertyUtils.setProperty(socket, "host", host.getHostName())
-						} catch (NoSuchMethodException ex) {}
-						catch (IllegalAccessException ex) {}
-						catch (InvocationTargetException ex) {}
-						catch (Exception ex) {
-							log.error "We have an unhandled exception when attempting to connect to ${host} ignoring SSL errors", ex
-						}
-					}
-					return super.connectSocket(30000, socket, host, remoteAddress, localAddress, context)
-				}
-			}
 			configuration.getApacheHttpClientConfig().setSslSocketFactory(sslConnectionFactory)
 		}
 		S3ClientOptions clientOptions = new S3ClientOptions()
