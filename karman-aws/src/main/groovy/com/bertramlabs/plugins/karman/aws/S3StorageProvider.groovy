@@ -274,6 +274,12 @@ class S3StorageProvider extends StorageProvider {
         client
     }
 
+    public void shutdown() {
+        if(client) {
+            client.shutdown()
+        }
+    }
+
     // PRIVATE
 
     private S3Directory directoryFromS3Bucket(bucket) {

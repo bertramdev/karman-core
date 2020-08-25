@@ -25,4 +25,6 @@ interface StorageProviderInterface {
 
 	public Directory getAt(String key)
 
+	public void shutdown()
+
 }

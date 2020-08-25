@@ -106,6 +106,13 @@ abstract class StorageProvider implements StorageProviderInterface {
 		}
 	}
 
+	/*
+	* Allows to explicitly shutdown a provider when it is no longer in use
+	*/
+	public void shutdown() {
+		//default do nothing
+	}
+
 
 	/**
 	* Used to map to the getAt helper for Directory Names. Not directly called by a user.
