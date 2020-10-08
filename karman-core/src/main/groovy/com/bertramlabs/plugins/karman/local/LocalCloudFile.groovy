@@ -50,7 +50,12 @@ class LocalCloudFile extends CloudFile {
 		int len;
 		OutputStream out = new BufferedOutputStream(this.outputStream,1024*256)
 		while ((len = inputS.read(buffer)) != -1) {
-			out.write(buffer, 0, len);
+			if(len == 0) {
+				sleep(50) //dont kill i/o uselessly when there is nothing yet available to be written
+			} else {
+				out.write(buffer, 0, len);	
+			}
+			
 		}
 		
 		out.flush()

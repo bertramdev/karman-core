@@ -1,7 +1,7 @@
 package com.bertramlabs.plugins.karman.util
 
 @Singleton
-class Mimetypes {
+public class Mimetypes {
 
     static String MIMETYPE_OCTET_STREAM = 'application/octet-stream'
 
