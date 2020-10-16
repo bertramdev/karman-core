@@ -108,6 +108,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String proxyDomain
 	String domainScopeType = 'id'
 	String cloudType
+	String serviceApiEndpoint
 
 	protected Boolean authenticate() {
 		try {
@@ -240,8 +241,9 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public Collection<SecurityGroupInterface> getSecurityGroups() {
 		def accessInfo = getAccessInfo()
-		if(accessInfo?.endpointInfo?.networkApi) {
-			def result = callApi(accessInfo?.endpointInfo?.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
+		def apiEndpoint = getServiceApiEndpoint()
+		if(apiEndpoint) {
+			def result = callApi(apiEndpoint, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups", [query: [tenant_id: accessInfo.projectId]])
 			if(!result.success) {
 				throw new RuntimeException("Error in obtaining security groups: ${result.error}")
 			}
@@ -257,8 +259,10 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	@Override
 	public SecurityGroupInterface getSecurityGroup(String uid) {
 		def accessInfo = getAccessInfo()
-		if(accessInfo?.endpointInfo?.networkApi) {
-			def result = callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
+		def apiEndpoint = getServiceApiEndpoint()
+
+		if(apiEndpoint) {
+			def result = callApi(apiEndpoint, "/${accessInfo?.endpointInfo?.networkVersion}/security-groups/${uid}", [query: [tenant_id: accessInfo.projectId]])
 			if(!result.success) {
 				throw new RuntimeException("Error in obtaining security group: ${result.error}")
 			}
@@ -461,6 +465,11 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				rtn = rtn.substring(0, dotIndex)
 		}
 		return rtn
+	}
+
+	private getServiceApiEndpoint() {
+		def accessInfo = getAccessInfo()
+		this.serviceApiEndpoint ?: accessInfo?.endpointInfo?.networkApi
 	}
 	
 	private HttpClient withHttpClient(Closure cl) {

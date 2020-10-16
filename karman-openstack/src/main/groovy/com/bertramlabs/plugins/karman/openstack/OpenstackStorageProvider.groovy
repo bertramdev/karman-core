@@ -55,6 +55,7 @@ public class OpenstackStorageProvider extends StorageProvider {
 	String identityUrl = ''
 	Long chunkSize = 0l
 	Map accessInfo
+	String serviceApiEndpoint
 
 	protected Boolean authenticate() {
 		try {
@@ -163,6 +164,10 @@ public class OpenstackStorageProvider extends StorageProvider {
 			if(!authenticate()) {
 				return null
 			}
+		}
+
+		if(this.serviceApiEndpoint) {
+			return this.serviceApiEndpoint
 		}
 
 		if(accessInfo.auth.storageUrl) {
