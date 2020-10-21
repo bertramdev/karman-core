@@ -80,7 +80,8 @@ public class OpenstackSecurityGroupRule extends SecurityGroupRule {
 		
 
 		if(!result.success) {
-			throw new RuntimeException("Error in creating or updating security group rule: ${result.error}")
+			String error = result.content?.NeutronError?.message ?: result.error
+			throw new RuntimeException("Error in creating or updating security group rule: ${error}")
 		} else {
 			initializeFromOptions(result.content?.security_group_rule)
 		}
