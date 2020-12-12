@@ -193,7 +193,7 @@ class S3StorageProvider extends StorageProvider {
 
         }
 		if(stsAssumeRole) {
-			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).build()
+			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).withRegion(region).build()
 			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman'))
 
 			if(roleResult.credentials) {
