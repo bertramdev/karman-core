@@ -19,6 +19,11 @@ package com.bertramlabs.plugins.karman.cifs
 import com.bertramlabs.plugins.karman.*
 import jcifs.smb.NtlmPasswordAuthentication
 import jcifs.smb.SmbFile
+import jcifs.context.SingletonContext
+import jcifs.context.BaseContext
+import jcifs.CIFSContext
+import jcifs.Configuration
+import jcifs.config.PropertyConfiguration
 
 class CifsStorageProvider extends StorageProvider {
 
@@ -34,10 +39,11 @@ class CifsStorageProvider extends StorageProvider {
 	String domain = ''
 	String host
 	String baseUrl
-	NtlmPasswordAuthentication cifsAuthentication
+	// NtlmPasswordAuthentication cifsAuthentication
+	CIFSContext cifsContext
 
 	public CifsStorageProvider(Map options) {
-		jcifs.Config.setProperty("resolveOrder", "DNS");
+		// jcifs.Config.setProperty("resolveOrder", "DNS");
 		host = options.host
 		baseUrl  = options.baseUrl  ?: baseUrl
 		username = options.username ?: username
@@ -49,11 +55,32 @@ class CifsStorageProvider extends StorageProvider {
 		}
 	}
 
-	NtlmPasswordAuthentication getCifsAuthentication() {
-		if(cifsAuthentication == null && username != null) {
-			cifsAuthentication = new NtlmPasswordAuthentication(domain, username, password)
+	// NtlmPasswordAuthentication getCifsAuthentication() {
+	// 	if(cifsAuthentication == null && username != null) {
+	// 		cifsAuthentication = new NtlmPasswordAuthentication(domain, username, password)
+	// 	}
+	// 	return cifsAuthentication
+	// }
+
+	CIFSContext getCifsContext() {
+		if(cifsContext) {
+			return cifsContext
+		} else {
+			Properties prop = new Properties();
+			prop.put("resolveOrder", "DNS")
+			// prop.put( "jcifs.smb.client.enableSMB2", "true");
+			// prop.put( "jcifs.smb.client.disableSMB1", "false");
+			// prop.put( "jcifs.traceResources", "true" );
+			Configuration config = new PropertyConfiguration(prop);
+			CIFSContext baseContext = new BaseContext(config);
+			if(username != null) {
+				CIFSContext contextWithCred = baseContext.withCredentials(new NtlmPasswordAuthentication(baseContext, domain, username, password));
+				cifsContext = contextWithCred	
+			} else {
+				cifsContext = baseContext
+			}
+			return cifsContext
 		}
-		return cifsAuthentication
 	}
 
 	Directory getDirectory(String name) {
@@ -67,12 +94,8 @@ class CifsStorageProvider extends StorageProvider {
 
 	def getDirectories() {
 		def directories = []
-		def cifsAuth = getCifsAuthentication()
-		def baseDirectory
-		if(cifsAuth)
-			baseDirectory = new SmbFile(smbUrl, cifsAuth)
-		else
-			baseDirectory = new SmbFile(smbUrl)
+		def baseDirectory = new SmbFile(smbUrl, getCifsContext())
+	
 
 		baseDirectory.listFiles()?.each { file ->
 			if(file.isDirectory())

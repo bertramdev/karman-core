@@ -20,6 +20,7 @@ import com.bertramlabs.plugins.karman.*
 import java.nio.file.*
 import jcifs.smb.NtlmPasswordAuthentication
 import jcifs.smb.SmbFile
+import jcifs.context.SingletonContext
 
 class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 
@@ -28,15 +29,13 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 
 	SmbFile getCifsFile(String prefix=null) {
 		def rtn
-		def cifsAuth = provider.getCifsAuthentication()
 		def dirName = name + '/'
 		if(prefix) {
 			dirName = dirName + normalizePath(prefix)
 		}
-		if(cifsAuth)
-			rtn = new SmbFile(provider.getSmbUrl(dirName), cifsAuth)
-		else
-			rtn = new SmbFile(provider.getSmbUrl(dirName))
+		
+		rtn = new SmbFile(provider.getSmbUrl(dirName), provider.getCifsContext())
+		
 		return rtn
 	}
 

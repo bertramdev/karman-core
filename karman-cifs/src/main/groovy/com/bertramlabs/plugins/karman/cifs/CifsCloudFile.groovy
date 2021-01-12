@@ -35,13 +35,9 @@ class CifsCloudFile extends CloudFile {
 			return baseFile
 		}
 		def rtn
-		def cifsAuth = provider.getCifsAuthentication()
 		def parentFile = parent.getCifsFile()
 		// def path = parentFile.path + '/' + name
-		if(cifsAuth)
-			rtn = new SmbFile(parentFile.path, name, cifsAuth)
-		else
-			rtn = new SmbFile(parentFile.path, name)
+		rtn = new SmbFile(parentFile.path, name, provider.getCifsContext())
 		baseFile = rtn
 		return rtn
 	}
@@ -143,7 +139,7 @@ class CifsCloudFile extends CloudFile {
 	@CompileStatic
   	def save(acl = '') {
 		if(sourceStream) {
-			SmbFile parentFile = provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent,provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
+			SmbFile parentFile = new SmbFile(cifsFile.parent,provider.getCifsContext())
 			try {
 				if(!parentFile.exists()) {
 					parentFile.mkdirs()
@@ -198,11 +194,11 @@ class CifsCloudFile extends CloudFile {
 		def cifsFile = getCifsFile()
 
 		
-		SmbFile parentDir =  provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent, provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
+		SmbFile parentDir =  new SmbFile(cifsFile.parent, provider.getCifsContext())
 		while(parentDir.canonicalPath != parent.cifsFile.canonicalPath) {
 			if(parentDir.list().size() == 0) {
 				parentDir.delete()
-				parentDir = provider.getCifsAuthentication() ? new SmbFile(parentDir.parent, provider.getCifsAuthentication()) : new SmbFile(parentDir.parent)
+				parentDir = new SmbFile(parentDir.parent, provider.getCifsContext())
 			} else {
 				break
 			}
@@ -211,7 +207,7 @@ class CifsCloudFile extends CloudFile {
 
   private ensurePathExists() {
   	SmbFile cifsFile = getCifsFile()
-	SmbFile parentFile =  provider.getCifsAuthentication() ? new SmbFile(cifsFile.parent, provider.getCifsAuthentication()) : new SmbFile(cifsFile.parent)
+	SmbFile parentFile =  new SmbFile(cifsFile.parent, provider.getCifsContext()) 
     if(!parentFile.exists()) {
     	try {
     		parentFile.mkdirs()	

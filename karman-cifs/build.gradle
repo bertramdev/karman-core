@@ -41,7 +41,8 @@ dependencies {
 	compileOnly 'org.codehaus.groovy:groovy-all:2.0.7'
 	compile project(':karman-core')
 	testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
-	compile 'jcifs:jcifs:1.3.17'
+	compile "eu.agno3.jcifs:jcifs-ng:2.1.5"
+	// compile 'jcifs:jcifs:1.3.17'
 	compile group:'commons-beanutils', name:'commons-beanutils', version:'1.9.3'
 }
 
