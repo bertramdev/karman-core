@@ -37,7 +37,8 @@ class CifsCloudFile extends CloudFile {
 		def rtn
 		def parentFile = parent.getCifsFile()
 		// def path = parentFile.path + '/' + name
-		rtn = new SmbFile(parentFile.path, name, provider.getCifsContext())
+
+		rtn = new SmbFile(parentFile, name)
 		baseFile = rtn
 		return rtn
 	}
