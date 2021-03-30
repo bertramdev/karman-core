@@ -9,7 +9,6 @@ buildscript {
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'java-library'
 
@@ -36,7 +35,7 @@ publishing {
             pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'asset-pipeline-core'
+                    name 'karman-core'
                     description 'Karman is a standardized Cloud File Management Interface for Groovy. It provides a unified means and simple DSL for accessing files on the cloud via extensible StorageProviders'
                     url 'https://github.com/bertramdev/karman-core'
                     scm {
@@ -63,6 +62,25 @@ publishing {
             from components.java
         }
     }
+
+    repositories {
+        maven {
+            if( !isReleaseVersion ) {
+                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                if(project.hasProperty('labsNexusUser')) {
+                    credentials {
+                        username = labsNexusUser
+                        password = labsNexusPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 
@@ -71,15 +89,7 @@ groovydoc {
     footer = "Karman-Core is Licensed under the APACHE 2 License"
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
 task(console, dependsOn: 'classes', type: JavaExec) {
   main = 'groovy.ui.Console'

@@ -35,7 +35,7 @@ dependencies {
     api 'org.apache.httpcomponents:httpclient:4.5.2'
     api 'com.amazonaws:aws-java-sdk:1.11.471'
     api group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    
+
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
     
     
@@ -77,10 +77,24 @@ publishing {
             from components.java
         }
     }
+    repositories {
+        maven {
+            if( !isReleaseVersion ) {
+                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                if(project.hasProperty('labsNexusUser')) {
+                    credentials {
+                        username = labsNexusUser
+                        password = labsNexusPassword
+                    }
+                }
+            }
+        }
+    }
 }
 
-configurations {
-    provided
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
  
 
@@ -112,16 +126,6 @@ configurations {
 //         }
 //     }
 // }
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
 task(console, dependsOn: 'classes', type: JavaExec) {
   main = 'groovy.ui.Console'

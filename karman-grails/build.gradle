@@ -35,25 +35,77 @@ repositories {
 
 
 dependencies {
-  implementation 'org.springframework.boot:spring-boot-starter-logging'
-  implementation "org.springframework.boot:spring-boot-starter-actuator"
-  implementation "org.springframework.boot:spring-boot-autoconfigure"
-  implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  provided 'org.springframework.boot:spring-boot-starter-logging'
+  provided "org.springframework.boot:spring-boot-starter-actuator"
+  provided "org.springframework.boot:spring-boot-autoconfigure"
+  provided "org.springframework.boot:spring-boot-starter-tomcat"
 
-  implementation "org.grails:grails-web-boot"
-  implementation "org.grails:grails-dependencies"
-  implementation 'javax.servlet:javax.servlet-api:3.1.0'
+  provided "org.grails:grails-web-boot"
+  provided "org.grails:grails-dependencies"
+  provided 'javax.servlet:javax.servlet-api:3.1.0'
 
   testCompile "org.grails:grails-plugin-testing"
 
   console "org.grails:grails-console"
   api project(':karman-core')
 
-
-
 }
 bootJar.enabled = false
 
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'karman-grails'
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'karman-grails'
+                    description 'Karman Storage Provider Asset Serving Plugin for Grails'
+                    url 'https://github.com/bertramdev/karman-core'
+                    scm {
+                        url 'https://github.com/bertramdev/karman-core'
+                        connection 'scm:https://bertramdev@github.com/bertramdev/karman-core.git'
+                        developerConnection 'scm:git://github.com/bertramdev/karman-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'davydotcom'
+                            name 'David Estes'
+                            email 'destes@bcap.com'
+                        }
+                    }
+                }
+            }
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            if( !isReleaseVersion ) {
+                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                if(project.hasProperty('labsNexusUser')) {
+                    credentials {
+                        username = labsNexusUser
+                        password = labsNexusPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 // grailsPublish {
 //   if(project.hasProperty('bintrayUser')) {

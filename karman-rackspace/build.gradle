@@ -75,17 +75,25 @@ publishing {
             from components.java
         }
     }
+    repositories {
+        maven {
+            if( !isReleaseVersion ) {
+                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                if(project.hasProperty('labsNexusUser')) {
+                    credentials {
+                        username = labsNexusUser
+                        password = labsNexusPassword
+                    }
+                }
+            }
+        }
+    }
 }
 
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 task(console, dependsOn: 'classes', type: JavaExec) {
