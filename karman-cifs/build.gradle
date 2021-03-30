@@ -1,49 +1,34 @@
 buildscript {
 	repositories {
 		mavenLocal()
-		jcenter()
+		mavenCentral()
 	}
 	dependencies {
 	}
 }
 
-plugins {
-	id "com.jfrog.bintray" version "1.4"
-}
+
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'java-library'
 
 group = 'com.bertramlabs.plugins'
 
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 repositories {
-	jcenter()
 	mavenLocal()
 	mavenCentral()
-	maven { url 'http://dl.bintray.com/bertramlabs/karman' }
-}
-
-configurations {
-	provided
-}
- 
-sourceSets {
-	main {
-		compileClasspath += configurations.provided
-	}
 }
 
 dependencies {
-	compileOnly 'org.codehaus.groovy:groovy-all:2.0.7'
-	compile project(':karman-core')
+	implementation 'org.codehaus.groovy:groovy-all:2.0.7'
+	api project(':karman-core')
 	testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
-	compile "eu.agno3.jcifs:jcifs-ng:2.1.5"
+	api "eu.agno3.jcifs:jcifs-ng:2.1.5"
 	// compile 'jcifs:jcifs:1.3.17'
-	compile group:'commons-beanutils', name:'commons-beanutils', version:'1.9.3'
+	api group:'commons-beanutils', name:'commons-beanutils', version:'1.9.3'
 }
 
 publishing {
@@ -83,39 +68,10 @@ publishing {
 				}
 			}
 			from components.java
-			artifact sourcesJar
-			artifact javadocJar
 		}
 	}
 }
 
-//Define bintrayUser and bintrayKey in ~/.gradle/gradle.properties
-bintray {
-	if(project.hasProperty('bintrayUser')) {
-		user = bintrayUser
-		key = bintrayKey
-	}
-	publish = true
-	publications = ['maven']
-	pkg {
-		repo = 'karman'
-		userOrg = 'bertramlabs'
-		name = 'karman-cifs'
-		licenses = ['Apache-2.0']
-		vcsUrl = 'https://github.com/bertramdev/karman-core.git'
-		version {
-            if (project.hasProperty('mavenUser')) {
-                mavenCentralSync {
-                    sync = true //Optional (true by default). Determines whether to sync the version to Maven Central.
-                    user = mavenUser //OSS user token
-                    password = mavenPassword //OSS user password
-                    close = '1'
-                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                }
-            }
-        }
-	}
-}
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
 	classifier = 'javadoc'
@@ -140,4 +96,3 @@ test {
 	}
 }
 
-bintrayUpload.dependsOn build, sourcesJar, javadocJar

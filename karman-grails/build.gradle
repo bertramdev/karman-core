@@ -11,29 +11,20 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "0.6.1.RELEASE"
-    id "com.jfrog.bintray" version "1.6"
-}
 
 group "com.bertramlabs.plugins"
 
-apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: 'maven-publish'
+apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-plugin-publish"
+// apply plugin: "org.grails.grails-plugin-publish"
 
 ext {
   grailsVersion = project.grailsVersion
-  gradleWrapperVersion = project.gradleWrapperVersion
 }
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 
 repositories {
@@ -42,84 +33,40 @@ repositories {
   maven { url "https://repo.grails.org/grails/core" }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
 
 dependencies {
-  provided 'org.springframework.boot:spring-boot-starter-logging'
-  provided "org.springframework.boot:spring-boot-starter-actuator"
-  provided "org.springframework.boot:spring-boot-autoconfigure"
-  provided "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation 'org.springframework.boot:spring-boot-starter-logging'
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-autoconfigure"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-  provided "org.grails:grails-web-boot"
-  provided "org.grails:grails-dependencies"
-  provided 'javax.servlet:javax.servlet-api:3.1.0'
+  implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-dependencies"
+  implementation 'javax.servlet:javax.servlet-api:3.1.0'
 
   testCompile "org.grails:grails-plugin-testing"
 
   console "org.grails:grails-console"
-  compile 'com.bertramlabs.plugins:karman-core:0.9.21'
+  api project(':karman-core')
 
 
 
 }
-
-bintray {
-    publications = ['maven']
-    publish = true
-    pkg {
-        repo = 'karman'
-        githubRepo = 'bertramdev/karman-core' //Optional Github repository
-        githubReleaseNotesFile = 'karman-grails/README.md' //Optional Github readme file
-        name = "karman-grails"
-        userOrg = 'bertramlabs'
-        licenses = ['Apache-2.0']
-        version {
-            if (project.hasProperty('mavenUser')) {
-                mavenCentralSync {
-                    sync = true //Optional (true by default). Determines whether to sync the version to Maven Central.
-                    user = mavenUser //OSS user token
-                    password = mavenPassword //OSS user password
-                    close = '1'
-                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                }
-            }
-        }
-    }
-}
-
-grailsPublish {
-  if(project.hasProperty('bintrayUser')) {
-    user = bintrayUser
-    key = bintrayKey
-  }
-  userOrg = 'bertramlabs'
-    githubSlug = 'bertramdev/karman-core'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "Karman"
-    desc = "Karman is a standardized / extensible interface plugin for dealing with various cloud services including Local, S3, and Openstack."
-    developers = [davydotcom:"David Estes", bdwheeler: "Brian Wheeler"]
-}
+bootJar.enabled = false
 
 
-eclipse {
-    classpath {
-        plusConfigurations += [configurations.provided]
-    }
-}
+// grailsPublish {
+//   if(project.hasProperty('bintrayUser')) {
+//     user = bintrayUser
+//     key = bintrayKey
+//   }
+//   userOrg = 'bertramlabs'
+//     githubSlug = 'bertramdev/karman-core'
+//     license {
+//         name = 'Apache-2.0'
+//     }
+//     title = "Karman"
+//     desc = "Karman is a standardized / extensible interface plugin for dealing with various cloud services including Local, S3, and Openstack."
+//     developers = [davydotcom:"David Estes", bdwheeler: "Brian Wheeler"]
+// }
 
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
-
-task wrapper(type: Wrapper) {
-  gradleVersion = gradleWrapperVersion
-}
