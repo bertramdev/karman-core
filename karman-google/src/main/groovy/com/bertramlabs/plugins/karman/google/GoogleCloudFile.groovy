@@ -122,7 +122,7 @@ class GoogleCloudFile extends CloudFile {
 			loadObjectMetaData()
 		}
 		if(!exists()) {return null}
-		return googleMeta['Last-Modified']
+		return Date.from(LocalDateTime.parse(googleMeta['Last-Modified'].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")).toInstant(ZoneOffset.UTC))
 	}
 
 	void setContentLength(Long length) {

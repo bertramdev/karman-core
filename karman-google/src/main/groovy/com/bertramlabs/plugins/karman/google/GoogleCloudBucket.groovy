@@ -24,6 +24,64 @@ import com.bertramlabs.plugins.karman.Directory
 @Commons
 class GoogleCloudBucket extends Directory {
 
+	private String locationType
+	private String location
+	private String storageClass
+	private Boolean metaDataLoaded = false
+
+	public GoogleCloudBucket(options) {
+		this.locationType = options.locationType ?: locationType
+		this.location = options.location ?: location
+		this.storageClass = options.storageClass ?: storageClass
+		this.name = options.name ?: name
+		this.provider = options.provider ?: provider
+		this.metaDataLoaded = options.metaDataLoaded ?: metaDataLoaded
+	}
+
+	void setLocationType(locationType) {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		this.locationType = locationType
+	}
+
+	String getLocationType() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		return locationType
+	}
+
+	void setLocation(location) {
+		log.trace "setLocation: ${location}"
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		this.location = location
+	}
+
+	String getLocation() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		return location
+	}
+
+	void setStorageClass(storageClass) {
+		log.trace "setStorageClass: ${storageClass}"
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		this.storageClass = storageClass
+	}
+
+	String getStorageClass() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		return storageClass
+	}
+
 	Boolean exists() {
 		log.debug "exists: ${name}"
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
@@ -99,15 +157,17 @@ class GoogleCloudBucket extends Directory {
 		new GoogleCloudDirectory(provider: provider, name: directoryName, parent: this)
 	}
 
-    /**
-     * Create bucket
-     * @return Bucket
-     */
 	def save() {
-		log.debug "save: ${name}"
+		log.debug "save: ${name}, ${location}, ${locationType}, ${storageClass}"
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
 		def path = "storage/v1/b"
 		def requestOpts = [body: [name: name], query: [project: provider.projectId]]
+		if(location) {
+			requestOpts.body.location = location
+		}
+		if(storageClass) {
+			requestOpts.body.storageClass = storageClass
+		}
 		def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, requestOpts, 'POST')
 		if(!results.success && results.statusCode == 409) {
 			// try a patch to prove we own it
@@ -116,6 +176,7 @@ class GoogleCloudBucket extends Directory {
 		if(!results.success) {
 			log.error "Error saving bucket with name ${name}: ${results}"
 		}
+		metaDataLoaded = false
 		results.success
 	}
 
@@ -165,5 +226,20 @@ class GoogleCloudBucket extends Directory {
 
 	CloudFile getFile(String name) {
 		new GoogleCloudFile(provider: provider, parent: this, name: name)
+	}
+
+	private void loadObjectMetaData() {
+		log.debug "loadObjectMetaData ${name}"
+
+		metaDataLoaded = true
+
+		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
+		def path = "storage/v1/b/${name}"
+		def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, [:], 'GET')
+		if(results.success) {
+			this.location = results.data.location
+			this.locationType = results.data.locationType
+			this.storageClass = results.data.storageClass
+		}
 	}
 }

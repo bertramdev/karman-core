@@ -123,6 +123,15 @@ class GoogleCloudFileSpec extends Specification {
 		cloudFile.name == "nonexistent/get-name-test"
 	}
 
+	def "getLastModified"() {
+		setup:
+		def cloudFile = storageProvider[testBucket.name]['nonexistent/get-last-modified-test']
+		setBytesAndSave(cloudFile)
+
+		expect:
+		cloudFile.dateModified instanceof Date
+	}
+
 	def "getUrl"() {
 		setup:
 		def cloudFile = storageProvider[testBucket.name]['sub dir/getat syntax/getUrl']

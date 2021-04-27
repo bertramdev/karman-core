@@ -239,6 +239,127 @@ class GoogleCloudBucketSpec extends Specification {
 		bucket.delete()
 	}
 
+	def "create a bucket in particular region"(){
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider, location: 'US-EAST4')
+		def saveResult = directory.save()
+		def dir = storageProvider.getDirectory(name)
+
+		then:
+		saveResult == true
+		dir != null
+		dir.getName() == name
+		dir.isFile() == false
+		dir.isDirectory() == true
+		dir.exists() == true
+		dir.location == 'US-EAST4'
+		dir.locationType == 'region'
+
+		cleanup:
+		directory.delete()
+	}
+
+	def "create a bucket in particular dual-region"(){
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider, location: 'NAM4')
+		def saveResult = directory.save()
+		def dir = storageProvider.getDirectory(name)
+
+		then:
+		saveResult == true
+		dir != null
+		dir.getName() == name
+		dir.isFile() == false
+		dir.isDirectory() == true
+		dir.exists() == true
+		dir.location == 'NAM4'
+		dir.locationType == 'dual-region'
+
+		cleanup:
+		directory.delete()
+	}
+
+	def "create a bucket in particular multi-region"(){
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider, location: 'US')
+		def saveResult = directory.save()
+		def dir = storageProvider.getDirectory(name)
+
+		then:
+		saveResult == true
+		dir != null
+		dir.getName() == name
+		dir.isFile() == false
+		dir.isDirectory() == true
+		dir.exists() == true
+		dir.location == 'US'
+		dir.locationType == 'multi-region'
+
+		cleanup:
+		directory.delete()
+	}
+
+	def "create a bucket with storage class"() {
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider, storageClass: 'ARCHIVE')
+		def saveResult = directory.save()
+		def dir = storageProvider.getDirectory(name)
+
+		then:
+		saveResult == true
+		dir != null
+		dir.getName() == name
+		dir.isFile() == false
+		dir.isDirectory() == true
+		dir.exists() == true
+		dir.storageClass == 'ARCHIVE'
+
+		cleanup:
+		directory.delete()
+	}
+
+	def "modify a bucket's storage class"() {
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider, storageClass: 'STANDARD')
+		def saveResult = directory.save()
+		def dir = storageProvider.getDirectory(name)
+		dir.storageClass = 'ARCHIVE'
+		def updateResult = dir.save()
+
+		then:
+		saveResult == true
+		updateResult == true
+		dir != null
+		dir.getName() == name
+		dir.isFile() == false
+		dir.isDirectory() == true
+		dir.exists() == true
+		dir.storageClass == 'ARCHIVE'
+
+		cleanup:
+		directory.delete()
+	}
+
+	def "buckets listed must already have metaDataLoaded"() {
+		when:
+		def name = getTestBucketName()
+		GoogleCloudBucket directory = new GoogleCloudBucket(name: name, provider: storageProvider)
+		directory.save()
+		def dirs = storageProvider.getDirectories()
+		def dir = dirs.find { it.name == directory.name}
+
+		then:
+		dir.metaDataLoaded == true
+
+		cleanup:
+		directory.delete()
+	}
+
 	private createFile(GoogleCloudBucket bucket, String name) {
 		def cloudFile = storageProvider[bucket.name][name]
 		setBytesAndSave(cloudFile)

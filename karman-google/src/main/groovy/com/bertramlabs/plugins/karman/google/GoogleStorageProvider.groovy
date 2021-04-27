@@ -122,7 +122,7 @@ class GoogleStorageProvider extends StorageProvider {
 			def results = callApi("https://storage.googleapis.com", path, requestOpts, 'GET')
 			if(results.success) {
 				for(bucket in results.data.items) {
-					directories << new GoogleCloudBucket(name: bucket.name, provider: provider)
+					directories << new GoogleCloudBucket(name: bucket.name, provider: provider, storageClass: bucket.storageClass, locationType:bucket.locationType, location: bucket.location, metaDataLoaded: true)
 				}
 				nextPageToken = results.data.nextPageToken
 				if(!nextPageToken) {
