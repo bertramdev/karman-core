@@ -134,8 +134,8 @@ class GoogleCloudBucketSpec extends Specification {
 
 		then:
 		files.size() == 2
-		files[0].name == "${bucketName}/file1"
-		files[1].name == "${bucketName}/file2"
+		files[0].name == "file1"
+		files[1].name == "file2"
 
 		cleanup:
 		files[0].delete()

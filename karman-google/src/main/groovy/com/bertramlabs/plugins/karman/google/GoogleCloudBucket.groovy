@@ -28,6 +28,7 @@ class GoogleCloudBucket extends Directory {
 	private String location
 	private String storageClass
 	private Boolean metaDataLoaded = false
+	private String lastError
 
 	public GoogleCloudBucket(options) {
 		this.locationType = options.locationType ?: locationType
@@ -50,6 +51,10 @@ class GoogleCloudBucket extends Directory {
 			loadObjectMetaData()
 		}
 		return locationType
+	}
+
+	String getLastError() {
+		return this.lastError
 	}
 
 	void setLocation(location) {
@@ -84,6 +89,7 @@ class GoogleCloudBucket extends Directory {
 
 	Boolean exists() {
 		log.debug "exists: ${name}"
+		lastError = null
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
 		def path = "storage/v1/b/${name}"
 		def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, [:], 'GET')
@@ -92,6 +98,7 @@ class GoogleCloudBucket extends Directory {
 
 	List listFiles(options = [:]) {
 		log.debug "listFiles: ${name} options:${options}"
+		lastError = null
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
 		def path = "storage/v1/b/${name}/o"
 		def keepGoing = true
@@ -138,7 +145,7 @@ class GoogleCloudBucket extends Directory {
 					}
 
 				} else if(results.data.items) {
-					files += results.data.items?.collect { f -> new GoogleCloudFile([name: "${name}/${f.name}", provider: provider, parent: thisDirectory, existsFlag: true]) }
+					files += results.data.items?.collect { f -> new GoogleCloudFile([name: f.name, provider: provider, parent: thisDirectory, existsFlag: true]) }
 				}
 
 				nextPageToken = results.data.nextPageToken
@@ -159,6 +166,7 @@ class GoogleCloudBucket extends Directory {
 
 	def save() {
 		log.debug "save: ${name}, ${location}, ${locationType}, ${storageClass}"
+		lastError = null
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
 		def path = "storage/v1/b"
 		def requestOpts = [body: [name: name], query: [project: provider.projectId]]
@@ -175,6 +183,7 @@ class GoogleCloudBucket extends Directory {
 		}
 		if(!results.success) {
 			log.error "Error saving bucket with name ${name}: ${results}"
+			lastError = results ? googleStorageProvider.parseRestError(results)?.msg : null
 		}
 		metaDataLoaded = false
 		results.success
@@ -182,6 +191,7 @@ class GoogleCloudBucket extends Directory {
 
 	def delete() {
 		log.debug "delete: ${name}"
+		lastError = null
 		// To delete a bucket (directory) must delete ALL the objects in it first
 		def path = "storage/v1/b/${name}/o"
 		def keepGoing = true
@@ -231,6 +241,7 @@ class GoogleCloudBucket extends Directory {
 	private void loadObjectMetaData() {
 		log.debug "loadObjectMetaData ${name}"
 
+		lastError = null
 		metaDataLoaded = true
 
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider

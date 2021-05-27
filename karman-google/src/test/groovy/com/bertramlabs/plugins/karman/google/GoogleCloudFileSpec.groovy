@@ -13,7 +13,7 @@ class GoogleCloudFileSpec extends Specification {
 
 	static GoogleStorageProvider storageProvider
 	static GoogleCloudBucket testBucket
-
+		
 	def setupSpec() {
 		storageProvider = GoogleStorageProvider.create(
 				provider:'google',
@@ -96,6 +96,16 @@ class GoogleCloudFileSpec extends Specification {
 		cloudFile.getContentLength() == 2048
 	}
 
+	def "create a file and default content-type to application/octet-stream"() {
+		setup:
+		def cloudFile = storageProvider[testBucket.name]['subdir2/another/default-content-type']
+		setBytesAndSave(cloudFile)
+
+		expect:
+		cloudFile.name == 'subdir2/another/default-content-type'
+		cloudFile.getContentType() == 'application/octet-stream'
+	}
+
 	def "exists for a file that does not exist"() {
 		when:
 		def cloudFile = storageProvider[testBucket.name].getFile('bogus-file')
@@ -139,8 +149,8 @@ class GoogleCloudFileSpec extends Specification {
 		def cloudFileNotSaved = storageProvider[testBucket.name]['sub dir/getat syntax/getUrlNotSaved']
 
 		expect:
-		cloudFile.getURL().toString() == 'https://storage.googleapis.com/storage/v1/b/karman-gogle-spec-test/o/sub%20dir%2Fgetat%20syntax%2FgetUrl'
-		cloudFileNotSaved.getURL().toString() == 'https://storage.googleapis.com/storage/v1/b/karman-gogle-spec-test/o/sub%20dir%2Fgetat%20syntax%2FgetUrlNotSaved'
+		cloudFile.getURL().toString() == 'https://storage.googleapis.com/storage/v1/b/karman-gogle-spec-test/o/sub dir/getat syntax/getUrl'
+		cloudFileNotSaved.getURL().toString() == 'https://storage.googleapis.com/storage/v1/b/karman-gogle-spec-test/o/sub dir/getat syntax/getUrlNotSaved'
 	}
 
 	def "getText and setText"() {
@@ -228,6 +238,32 @@ class GoogleCloudFileSpec extends Specification {
 		deleteResult == true
 	}
 
+	def "delete a nested file with spaces in the name"() {
+		setup:
+		def cloudFile = storageProvider[testBucket.name]['folder1/folder with spaces/delete file with spaces']
+		setBytesAndSave(cloudFile)
+		assert storageProvider[testBucket.name]['folder1/folder with spaces/delete file with spaces'].exists()
+		def deleteResult = cloudFile.delete()
+		def refetchFile = storageProvider[testBucket.name]['folder1/folder with spaces/delete file with spaces']
+
+		expect:
+		refetchFile.exists() == false
+		deleteResult == true
+	}
+
+	def "delete a file with spaces in the name"() {
+		setup:
+		def cloudFile = storageProvider[testBucket.name]['delete file with spaces']
+		setBytesAndSave(cloudFile)
+		assert cloudFile.exists()
+		def deleteResult = cloudFile.delete()
+		def refetchFile = storageProvider[testBucket.name]['delete file with spaces']
+
+		expect:
+		refetchFile.exists() == false
+		deleteResult == true
+	}
+
 	def "delete a file that does not exist"() {
 		setup:
 		def cloudFile = storageProvider[testBucket.name]['delete-test-does-not-exist']
@@ -285,31 +321,31 @@ class GoogleCloudFileSpec extends Specification {
 		refetch.isDirectory() == false
 		refetch.getContentLength() == tempFile.size()
 	}
-//
-// 	def "create a file larger than chunk size"() {
-//		setup:
-//		File largeFile = new File('/Users/bob/Downloads/Screen Capture on 2019-10-06 at 18-12-45.mov')
-//
-//		when:
-//		def cloudFile = storageProvider[testBucket.name]['very-large']
-//		storageProvider.chunkSize = 8l * 1024l * 1024l
-//		cloudFile.chunked = true
-//		cloudFile.setInputStream(new FileInputStream(largeFile))
-//		cloudFile.setContentLength(largeFile.size())
-//		def saveResult = cloudFile.save()
-//		def refetch = storageProvider[testBucket.name]['very-large']
-//
-//		then:
-//		saveResult == true
-//		cloudFile.exists() == true
-//		cloudFile.isFile() == true
-//		cloudFile.isDirectory() == false
-//		cloudFile.getContentLength() == largeFile.size()
-//		refetch.exists() == true
-//		refetch.isFile() == true
-//		refetch.isDirectory() == false
-//		refetch.getContentLength() == largeFile.size()
-//	}
+
+	def "create a file larger than chunk size"() {
+		setup:
+		File largeFile = new File('/Users/bob/Downloads/Screen Capture on 2019-10-06 at 18-12-45.mov')
+
+		when:
+		def cloudFile = storageProvider[testBucket.name]['very-large']
+		storageProvider.chunkSize = 8l * 1024l * 1024l
+		cloudFile.chunked = true
+		cloudFile.setInputStream(new FileInputStream(largeFile))
+		cloudFile.setContentLength(largeFile.size())
+		def saveResult = cloudFile.save()
+		def refetch = storageProvider[testBucket.name]['very-large']
+
+		then:
+		saveResult == true
+		cloudFile.exists() == true
+		cloudFile.isFile() == true
+		cloudFile.isDirectory() == false
+		cloudFile.getContentLength() == largeFile.size()
+		refetch.exists() == true
+		refetch.isFile() == true
+		refetch.isDirectory() == false
+		refetch.getContentLength() == largeFile.size()
+	}
 
 	private getOneKiloString() {
 		return '''Lorem ipsum dolor sit amet, eum eu sanctus voluptatum assueverit, nulla splendide pro et. Nominati democritum cu vel, te clita virtute inermis nam, id praesent voluptatum mel. Et vel stet tantas repudiandae, no cum latine laoreet efficiantur. At mucius consetetur nec, ei ipsum iuvaret mea. Illum incorrupte est ne, mea in ferri impetus impedit. Habeo laoreet pericula at vim, tantas putent sea at.

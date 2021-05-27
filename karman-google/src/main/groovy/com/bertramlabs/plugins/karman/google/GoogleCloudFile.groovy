@@ -166,8 +166,8 @@ class GoogleCloudFile extends CloudFile {
 	InputStream getInputStream() {
 		if(valid) {
 			GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
-			def path = "storage/v1/b/${parent.name}/o/${encodedName}"
-			def requestOpts = [inputStream: true, query: [alt:'media']]
+			def path = "storage/v1/b/${parent.name}/o"
+			def requestOpts = [additionalPathSegments: [name], inputStream: true, query: [alt:'media']]
 			def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, requestOpts, 'GET')
 			return results.content
 		} else {
@@ -192,7 +192,7 @@ class GoogleCloudFile extends CloudFile {
 
 	URL getURL(Date expirationDate = null) {
 		if(valid) {
-			return new URL("https://storage.googleapis.com/storage/v1/b/${parent.name}/o/${encodedName}")
+			return new URL("https://storage.googleapis.com/storage/v1/b/${parent.name}/o/${name}")
 		}
 	}
 
@@ -226,7 +226,10 @@ class GoogleCloudFile extends CloudFile {
 					    name: name,
 						uploadType: 'resumable'
 					],
-					body: [metadata: [:]]
+					body: [
+						contentType: googleMeta['Content-Type'] ?: 'application/octet-stream',
+						metadata: [:]
+					]
 			]
 			// Add all the properties (stored in metadata) as the payload
 			addMetadataToPayload(requestOpts)
@@ -330,8 +333,9 @@ class GoogleCloudFile extends CloudFile {
 		def result = false
 		if(valid) {
 			GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
-			def path = "storage/v1/b/${parent.name}/o/${encodedName}"
-			def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, [:], 'DELETE')
+			def path = "storage/v1/b/${parent.name}/o"
+			def requestOpts = [additionalPathSegments: [name]]
+			def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, requestOpts, 'DELETE')
 			if(results.success) {
 				existsFlag = false
 				result = true
@@ -428,9 +432,5 @@ class GoogleCloudFile extends CloudFile {
 		assert parent.name
 		assert name
 		true
-	}
-
-	private String getEncodedName() {
-		return java.net.URLEncoder.encode(name, "UTF-8").replaceAll('\\+', '%20')
 	}
 }
