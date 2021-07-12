@@ -27,7 +27,6 @@ import org.apache.http.client.utils.URIBuilder
  */
 @Commons
 public class OpenstackSecurityGroup extends SecurityGroup {
-
 	private OpenstackNetworkProvider provider
 	private Map options
 	private List<OpenstackSecurityGroupRule> rules = new ArrayList<OpenstackSecurityGroupRule>()
@@ -64,11 +63,12 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 
 	@Override
 	String getVpcId() {
-		return null
+		options.vpcId
 	}
 
 	@Override
 	void setVpcId(String vpcId) {
+		options.vpcId = vpcId
 
 	}
 
@@ -92,7 +92,7 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 
 	public void save() {
 		def accessInfo = provider.getAccessInfo()
-		def opts = [body: createPayload(), query: [tenant_id: accessInfo.projectId]]
+		def opts = [body: createPayload()]
 
 		def result
 		def desiredRules = new ArrayList<OpenstackSecurityGroupRule>(this.getRules())
@@ -103,6 +103,7 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		}
 
 		if(!result.success) {
+			log.debug("SecurityGroup.save() results: ${result}")
 			throw new RuntimeException("Error in creating security group: ${result.error}")
 		} else {
 			initializeFromOptions(result.content?.security_group)
@@ -155,12 +156,15 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		def payLoad = [
 			security_group: [
 				name: this.getName(),
-				description: this.getDescription() ?: ''	
+				description: this.getDescription() ?: ''
 			]
 		]
-		if(this.provider.cloudType != 'opentelekom' && this.provider.cloudType != 'huawei') {
-			payLoad.tenant_id = provider.getAccessInfo()?.projectId
+
+		def projectId = getVpcId() ?: provider.getAccessInfo()?.projectId
+		if(projectId) {
+			payLoad.security_group.tenant_id = projectId
 		}
-		payLoad
+
+		return payLoad
 	}
 }
