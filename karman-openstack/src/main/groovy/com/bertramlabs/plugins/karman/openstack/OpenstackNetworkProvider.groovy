@@ -137,6 +137,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					}
 				}
 
+				log.debug("Authentication w/ domain ID Map: ${authMap}")
 				authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
 
 				withHttpClient() { HttpClient client ->
@@ -144,11 +145,13 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					HttpEntity responseEntity = response.getEntity();
 
 					if(response.getStatusLine().statusCode == 400) {
+						log.debug("Failed to authenticate using domain ID, trying domain name")
 						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID.
 						authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
 						authMap.auth.scope = [project: [name: this.tenantName, domain: [name:this.domainId ?: 'default']]]
 						authPost.setEntity(new StringEntity(new JsonBuilder(authMap).toString()))
 
+						log.debug("Authentication w/ domain name Map: ${authMap}")
 						response = client.execute(authPost)
 						responseEntity = response.getEntity();
 					} 
@@ -367,6 +370,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 				endpointsForType = filterEndpointsForRegion(endpointsForType, region)
 			}
 			def apiResults = findLatestEndpointInSet(endpointsForType)
+			log.debug("setEndpoints: found available endpoints: ${apiResults}")
 			def match = findEndpointHost(apiResults?.endpoints, osHost)
 			if(!match && endpointType.required) {
 				log.error("Openstack: Failed to set endpoint for ${endpointType.name} API")
@@ -385,7 +389,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	}
 	
 	private findEndpointsForType(ArrayList serviceCatalog, String type) {
-		return serviceCatalog?.findAll { it.type.startsWith(type) }
+		return serviceCatalog?.findAll { it.type.replaceAll(/v\d+$/, '') == type || it.type == type }
 	}
 
 	private filterEndpointsForRegion(ArrayList endpointTypes, String tmpRegion) {
