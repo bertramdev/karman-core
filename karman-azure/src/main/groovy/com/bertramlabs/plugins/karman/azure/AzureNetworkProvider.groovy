@@ -417,7 +417,7 @@ class AzureNetworkProvider extends NetworkProvider {
 						catch(IllegalAccessException ex) { }
 						catch(InvocationTargetException ex) { }
 					}
-					return super.connectSocket(opts.timeout ?: 30000, socket, host, remoteAddress, localAddress, context)
+					return super.connectSocket(opts.timeout ?: 90000, socket, host, remoteAddress, localAddress, context)
 				}
 			}
 		}
