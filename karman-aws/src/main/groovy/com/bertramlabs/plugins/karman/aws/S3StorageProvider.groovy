@@ -16,6 +16,7 @@
 
 package com.bertramlabs.plugins.karman.aws
 
+import com.amazonaws.util.AwsHostNameUtils
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicSessionCredentials
@@ -269,6 +270,25 @@ class S3StorageProvider extends StorageProvider {
         }
         if (endpoint) {
             client.endpoint = endpoint
+            
+            /**
+             Edge case for S3 Like URLS that are not Amazon and follow the domain structure S3.*.com
+             AWS Java SDK will automatically try and extract the region from * in s3.*.com and does not verify if its a valid Amazon region
+             Not doing below will result in InvalidLocationConstraint error being thrown on Bucket Creation
+             AWS Java SDK will treat us-east-1 as a null Location Constraint (empty Location Constraint) so we can explicitly set this to prevent LocationConstraint
+             issues caused by the SDK automatically trying to extract a region from the URL
+             **/
+            def host = getHostName(endpoint)
+            if (!region && host) { //No region specified in Karman
+                def sdkStandardParsedRegion = AwsHostNameUtils.parseRegion(host, 's3') //AmazonS3Client.createBucket (v1) uses region from this in LocationConstraint unless override is specified
+                def sdkAmazonPartitionParsedRegion = AwsHostNameUtils.parseRegionFromAwsPartitionPattern(host) //has to end in amazonaws.com
+                if (sdkStandardParsedRegion && sdkAmazonPartitionParsedRegion == null) { //Not an amazon URL and SDK thinks there is a region in the URL and could incorrectly set it unless we correct region override
+                    def awsRegions = RegionUtils.getRegions()
+                    if (!awsRegions.contains(sdkStandardParsedRegion)) { //not a valid region in the URL
+                        client.setSignerRegionOverride("us-east-1") // Doing this makes SDK not set a location constraint for the invalid region
+                    }
+                }
+            }
         }
 
         client
@@ -288,6 +308,16 @@ class S3StorageProvider extends StorageProvider {
                 name: bucket.name,
                 provider: this
         )
+    }
+    
+    private getHostName(String url) {
+      URI uri = new URI(url)
+      String hostname = uri.getHost()
+      //check if not null then return only hostname, without www.
+      if (hostname != null) {
+        return hostname.startsWith("www.") ? hostname.substring(4) : hostname
+      }
+      return hostname
     }
 
 }
