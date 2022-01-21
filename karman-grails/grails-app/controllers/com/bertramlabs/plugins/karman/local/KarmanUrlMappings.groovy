@@ -7,8 +7,8 @@ class KarmanUrlMappings {
 	static mappings = { ApplicationContext context ->
 
 		def config = context.grailsApplication.config.grails.plugin.karman
-		def serveLocalStorage = config.containsKey('serveLocalStorage') ? config.serveLocalStorage : true
-		def path = config.serveLocalMapping ?: 'storage'
+		def serveLocalStorage = context.grailsApplication.config.getProperty('grails.plugin.karman.serveLocalStorage',Boolean,true)
+		def path = context.grailsApplication.config.getProperty('grails.plugin.karman.serveLocalMapping',String,'storage')
 
 		if(serveLocalStorage) {
 			"/$path/$directory/$id**" (

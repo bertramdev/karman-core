@@ -21,7 +21,7 @@ class KarmanGrailsPlugin extends Plugin {
 
 
     def doWithApplicationContext = { applicationContext ->
-        def config = grailsApplication.config.grails.plugin.karman
+        def config = grailsApplication.config.getProperty('grails.plugin.karman',Map,[:])
 
         KarmanConfigHolder.config = config
 
