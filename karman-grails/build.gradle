@@ -7,7 +7,7 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
     }
 }
 
@@ -35,14 +35,14 @@ repositories {
 
 
 dependencies {
-  provided 'org.springframework.boot:spring-boot-starter-logging'
-  provided "org.springframework.boot:spring-boot-starter-actuator"
-  provided "org.springframework.boot:spring-boot-autoconfigure"
-  provided "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation 'org.springframework.boot:spring-boot-starter-logging'
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-autoconfigure"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-  provided "org.grails:grails-web-boot"
-  provided "org.grails:grails-dependencies"
-  provided 'javax.servlet:javax.servlet-api:3.1.0'
+  implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-dependencies"
+  runtimeOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
   testCompile "org.grails:grails-plugin-testing"
 
