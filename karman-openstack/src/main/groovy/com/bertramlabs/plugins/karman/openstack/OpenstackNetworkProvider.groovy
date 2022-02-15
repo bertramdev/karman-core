@@ -2,6 +2,7 @@ package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
+import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
@@ -371,7 +372,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 			}
 			def apiResults = findLatestEndpointInSet(endpointsForType)
 			log.debug("setEndpoints: found available endpoints: ${apiResults}")
-			def match = findEndpointHost(apiResults?.endpoints, osHost)
+			def match = findEndpoint(apiResults?.endpoints, osHost)
 			if(!match && endpointType.required) {
 				log.error("Openstack: Failed to set endpoint for ${endpointType.name} API")
 				rtn.errors << [(endpointType.name): "Failed to find endpoint."]
@@ -405,26 +406,42 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 		return endpoints?.sort {a,b -> b.type <=> a.type }?.getAt(0)
 	}
 
-	private findEndpointHost(endpoints, osHost) {
+	private findEndpoint(endpoints, osHost) {
 		def rtn
 		def endpoint
 		try {
 			if(endpoints && endpoints.size() > 0) {
-				endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
-				if(!endpoint) {
-					osHost = osHost.substring(osHost.indexOf('.') + 1)
+				// try to find public endpoints first
+				def publicEndpoints = endpoints.findAll { it.interface == "public" }
+				if(publicEndpoints.size() == 1) {
+					endpoint = publicEndpoints.getAt(0)
+					rtn = endpoint.url
+				} else if(publicEndpoints.size() > 0) {
+					// find best public??? (probably not a likely case)
+					endpoint = publicEndpoints?.find { doesEndpointContainHost(it, osHost) }
+					if(!endpoint) {
+						endpoint = publicEndpoints.getAt(0)
+					}
+					rtn = endpoint?.url
+				} else {
+					// if no public endpoints found then do our best to find a usable endpoint (legacy endpoint detection method)					
 					endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
-				}
-				endpoint = endpoint ?: endpoints?.first()
-				if(endpoint) {
-					rtn = [endpoint.publicURL, endpoint.url, endpoint.adminURL].find { it && it.indexOf(osHost) > -1 }
-				}
-			}
+					if(!endpoint) {
+						osHost = osHost.substring(osHost.indexOf('.') + 1)
+						endpoint = endpoints?.find { doesEndpointContainHost(it, osHost) }
+					}
+					endpoint = endpoint ?: endpoints?.first()
+					if(endpoint) {
+						log.debug("findEndpoint: using endpoint :${endpoint}")
+						rtn = [endpoint.publicURL, endpoint.url, endpoint.adminURL].find { it && it.indexOf(osHost) > -1 }
+					}
 
-			if(!rtn) {
-				/// Endpoint doesn't match osHost
-				endpoint = endpoints.find { it.interface == "public" }
-				rtn = endpoint?.url
+					if(!rtn) {
+						/// Endpoint doesn't match osHost
+						endpoint = endpoints.find { it.interface == "public" }
+						rtn = endpoint?.url
+					}
+				}
 			}
 		} catch(e) {
 			log.error("Openstack, Error parsing endpoint host: ${e}", e)

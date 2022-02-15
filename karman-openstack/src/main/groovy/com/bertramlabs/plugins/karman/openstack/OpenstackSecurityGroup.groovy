@@ -4,6 +4,7 @@ import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroup
 import com.bertramlabs.plugins.karman.network.SecurityGroupRuleInterface
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
+import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import groovy.util.logging.Commons
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -99,6 +100,10 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 		if(getId()) {
 			result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups/${getId()}", opts, 'PUT')
 		} else {	
+			def projectId = getVpcId() ?: provider.getAccessInfo()?.projectId
+			if(projectId) {
+				opts.body.security_group.tenant_id = projectId
+			}
 			result = provider.callApi(accessInfo.endpointInfo.networkApi, "/${accessInfo.endpointInfo.networkVersion}/security-groups", opts, 'POST')
 		}
 
@@ -160,10 +165,6 @@ public class OpenstackSecurityGroup extends SecurityGroup {
 			]
 		]
 
-		def projectId = getVpcId() ?: provider.getAccessInfo()?.projectId
-		if(projectId) {
-			payLoad.security_group.tenant_id = projectId
-		}
 
 		return payLoad
 	}

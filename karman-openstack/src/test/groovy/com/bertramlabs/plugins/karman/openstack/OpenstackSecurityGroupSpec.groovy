@@ -3,7 +3,6 @@ package com.bertramlabs.plugins.karman.openstack
 import com.bertramlabs.plugins.karman.network.SecurityGroup
 import com.bertramlabs.plugins.karman.network.SecurityGroupRule
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
-import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import com.bertramlabs.plugins.karman.openstack.OpenstackNetworkProvider
 import com.bertramlabs.plugins.karman.openstack.OpenstackSecurityGroupRule
 import spock.lang.Specification

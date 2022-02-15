@@ -73,36 +73,36 @@ class OpenstackNetworkProviderSpec extends Specification {
 		result.errors?.getAt(0)?.get('network') != null
 	}
 	
-	def "findEndpointHost: parsing endpoints with an error returns nothing."() {
+	def "findEndpoint: parsing endpoints with an error returns nothing."() {
 		when:
-		def result = networkProvider.findEndpointHost([], "http://127.0.0.1:0001")
+		def result = networkProvider.findEndpoint([], "http://127.0.0.1:0001")
 		
 		then:
 		result == null
 	}
 	
-	def "findEndpointHost: returns publicURL endpoint first"() {
+	def "findEndpoint: returns publicURL endpoint first"() {
 		when:
 		def endpoints = [[publicURL: 'http://127.0.0.1:0001', url: 'http://10.0.0.1:0001', adminURL: 'http://10.0.0.1:0001']]
-		def result = networkProvider.findEndpointHost(endpoints, "http://127.0.0.1:0001")
+		def result = networkProvider.findEndpoint(endpoints, "http://127.0.0.1:0001")
 		
 		then:
 		result == endpoints.getAt(0).publicURL
 	}
 	
-	def "findEndpointHost: returns url if publicURL doens't contiain host"() {
+	def "findEndpoint: returns url if publicURL doens't contiain host"() {
 		when:
 		def endpoints = [[publicURL: 'http://10.0.0.1:0001', url: 'http://127.0.0.1:0001', adminURL: 'http://10.0.0.1:0001']]
-		def result = networkProvider.findEndpointHost(endpoints, "http://127.0.0.1:0001")
+		def result = networkProvider.findEndpoint(endpoints, "http://127.0.0.1:0001")
 		
 		then:
 		result == endpoints.getAt(0).url
 	}
 	
-	def "findEndpointHost: returns adminURL if the adminUrl cotains the host and no other endpoint urls contains the host"() {
+	def "findEndpoint: returns adminURL if the adminUrl cotains the host and no other endpoint urls contains the host"() {
 		when:
 		def endpoints = [[publicURL: 'http://10.0.0.1:0001', url: 'http://10.0.0.1:0001', adminURL: 'http://127.0.0.1:0001']]
-		def result = networkProvider.findEndpointHost(endpoints, "http://127.0.0.1:0001")
+		def result = networkProvider.findEndpoint(endpoints, "http://127.0.0.1:0001")
 		
 		then:
 		result == endpoints.getAt(0).adminURL
