@@ -125,7 +125,7 @@ class GoogleCloudBucket extends Directory {
 					for(p in results.data.prefixes) {
 						if(p != options.prefix) {
 							if(options.prefix) {
-								prefixes << (options.prefix) + p.substring(options.prefix.length()).split(options.delimiter)[0]
+								prefixes << options.prefix + p.substring(options.prefix.length()).split(options.delimiter)[0]
 							} else {
 								prefixes << p.split(options.delimiter)[0]
 							}

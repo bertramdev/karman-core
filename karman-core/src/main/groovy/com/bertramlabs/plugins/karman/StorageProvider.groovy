@@ -122,5 +122,8 @@ abstract class StorageProvider implements StorageProviderInterface {
 	}
 
 
+	String getProviderName() {
+		return providerName
+	}
 
 }

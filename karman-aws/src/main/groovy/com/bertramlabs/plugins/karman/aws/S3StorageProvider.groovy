@@ -180,7 +180,7 @@ class S3StorageProvider extends StorageProvider {
             credentials = new AnonymousAWSCredentials()
         }
 
-        final AWSCredentialsProvider credentialsProvider
+        AWSCredentialsProvider credentialsProvider
 
         if (credentials) {
             credentialsProvider = new AWSStaticCredentialsProvider(credentials)

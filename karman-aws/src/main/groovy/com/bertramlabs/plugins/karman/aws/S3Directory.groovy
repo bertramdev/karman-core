@@ -55,7 +55,7 @@ class S3Directory extends Directory {
 			objectListing.commonPrefixes?.each { String prefix ->
 				if(prefix != options.prefix) {
                     if(options.prefix) {
-                        prefixes << (options.prefix) + prefix.substring(options.prefix.length()).split(options.delimiter)[0]    
+                        prefixes << options.prefix + prefix.substring(options.prefix.length()).split(options.delimiter)[0]    
                     } else {
                     	def prefixArgs = prefix.split(options.delimiter)
                     	if(prefixArgs) {
