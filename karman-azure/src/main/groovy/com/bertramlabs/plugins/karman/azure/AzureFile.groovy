@@ -48,6 +48,7 @@ class AzureFile extends CloudFile {
 	private Boolean existsFlag = null
 	private Boolean metaDataLoaded = false
 	private Long chunkSize = 4096
+	private Long cloudFileContentLength
 
 	void setMetaAttribute(key, value) {
 		azureMeta[key] = value
@@ -90,6 +91,13 @@ class AzureFile extends CloudFile {
 			loadObjectMetaData()
 		}
 		azureMeta['Content-Length']?.toLong()
+	}
+	
+	Long getCloudFileContentLength() {
+		if(!metaDataLoaded) {
+			loadObjectMetaData()
+		}
+		return this.cloudFileContentLength
 	}
 
 	Date getDateModified() {
@@ -225,7 +233,7 @@ class AzureFile extends CloudFile {
 				}
 			} else {
 				// Make sure the size has not changed
-				if(getContentLength() != contentLength) {
+				if(getCloudFileContentLength() != contentLength) {
 					def updateFileOpts = [
 						verb: 'PUT',
 						queryParams: [comp:'properties'],
@@ -243,7 +251,9 @@ class AzureFile extends CloudFile {
 					}
 				}
 			}
-
+			
+			this.cloudFileContentLength = contentLength
+			
 			// Second.. chunk all the bytes
 			def maxChunkSize = 4l * 1024l * 1024l
 			long partSize = Math.min(maxChunkSize, contentLength)
@@ -453,6 +463,9 @@ class AzureFile extends CloudFile {
 			response.getAllHeaders()?.each { Header header ->
 				if(header.name != 'x-ms-request-id') {
 					azureMeta[header.name] = header.value
+					if(header.name?.toLowerCase() == "content-length") {
+						this.cloudFileContentLength = header.value?.toLong()
+					}
 				}
 			}
 			EntityUtils.consume(response.entity)
