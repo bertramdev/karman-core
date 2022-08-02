@@ -335,6 +335,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					log.error("Request Failed ${responseCode} when trying to connect to Openstack Cloud: ${responseText}")
 					EntityUtils.consume(responseEntity)
 					rtn.success = false
+					rtn.error = getApiError(rtn.content)
 				}
 			}
 			
@@ -491,6 +492,38 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	private getServiceApiEndpoint() {
 		def accessInfo = getAccessInfo()
 		this.serviceApiEndpoint ?: accessInfo?.endpointInfo?.networkApi
+	}
+	
+	private getApiError(Map responseContent) {
+		def rtn
+		try {
+			if(responseContent) {
+				if(responseContent['NeutronError']?.message) {
+					rtn = responseContent['NeutronError'].message
+				} else if(responseContent.badRequest?.message) {
+					rtn = responseContent.badRequest.message
+				} else if(responseContent.message) {
+					try {
+						def errorMsg = new JsonSlurper().parseText(responseContent.message)
+						rtn = errorMsg['NeutronError']?.message
+					} catch (e) {
+						rtn = responseContent.message
+					}
+				} else if(responseContent.faultstring) {
+					rtn = responseContent.faultstring
+				} else if(responseContent.error) {
+					if(responseContent.error instanceof Map && responseContent.error.message) {
+						rtn = responseContent.error.message.toString()
+					} else {
+						rtn = responseContent.error.toString()
+					}
+				}
+			}
+			rtn = rtn ?: 'unknown error'
+		} catch(Exception e) {
+			log.error("getNeutronError error: {}", e, e)
+		}
+		return rtn
 	}
 	
 	private HttpClient withHttpClient(Closure cl) {
