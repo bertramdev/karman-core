@@ -145,7 +145,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 					response = client.execute(authPost)
 					HttpEntity responseEntity = response.getEntity();
 
-					if(response.getStatusLine().statusCode == 400) {
+					if(response.getStatusLine().statusCode == 400 || response.getStatusLine().statusCode == 401) {
 						log.debug("Failed to authenticate using domain ID, trying domain name")
 						// Legacy migration path, attempt to auth using the domain ID input as the domain name instead of domain ID.
 						authMap = [auth:[identity:[methods:['password'], password:[user:[name:this.username, password:this.password, domain:[name:this.domainId ?: 'default']]]]]]
