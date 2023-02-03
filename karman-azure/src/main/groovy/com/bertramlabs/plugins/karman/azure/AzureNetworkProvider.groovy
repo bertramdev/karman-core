@@ -135,16 +135,23 @@ class AzureNetworkProvider extends NetworkProvider {
 			apiPath = "/subscriptions/${subscriptionId}/providers/Microsoft.Network/networkSecurityGroups"
 		}
 
-		def results = callApi(apiPath, [query: ['api-version': '2018-11-01'], token: options.token], 'GET')
-		if(!results.success) {
-			throw new Exception('Error in calling Azure api')
-		}
-		def parsedResults = new groovy.json.JsonSlurper().parseText(results.content)
-		if(parsedResults?.error) {
-			throw new RuntimeException(parsedResults?.error?.message ?: 'Error in getting Security Groups from Azure')
-		}
-		parsedResults?.value?.each {
-			securityGroups << new AzureSecurityGroup(this, [id:it.id, name:it.name, resourceGroup: parseResourceGroupName(it.id), location:it.location, tags:it.tags, etag:it.etag, properties:it.properties])
+		def nextLink = apiPath
+		while(nextLink) {
+			def results = callApi(apiPath, [query: ['api-version': '2018-11-01'], token: options.token], 'GET')
+			if (!results.success) {
+				throw new Exception('Error in calling Azure api')
+			}
+			def parsedResults = new groovy.json.JsonSlurper().parseText(results.content)
+			if (parsedResults?.error) {
+				throw new RuntimeException(parsedResults?.error?.message ?: 'Error in getting Security Groups from Azure')
+			}
+			parsedResults?.value?.each {
+				securityGroups << new AzureSecurityGroup(this, [id: it.id, name: it.name, resourceGroup: parseResourceGroupName(it.id), location: it.location, tags: it.tags, etag: it.etag, properties: it.properties])
+			}
+			nextLink = parsedResults.results?.nextLink ?: parsedResults.nextLink
+			if(nextLink?.startsWith('http')) {
+				nextLink = nextLink.toString().substring(nextLink.toString().indexOf('/subscriptions'))
+			}
 		}
 
 		return securityGroups
