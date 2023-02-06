@@ -84,6 +84,7 @@ class S3StorageProvider extends StorageProvider {
     String proxyPassword
     String proxyWorkstation
     String proxyDomain
+    String noProxy
     Integer maxConnections = 50
     Boolean keepAlive = false
     Boolean useGzip = false
@@ -226,6 +227,9 @@ class S3StorageProvider extends StorageProvider {
         }
         if(proxyWorkstation) {
             configuration.setProxyWorkstation(proxyWorkstation)
+        }
+        if(noProxy) {
+            configuration.setNonProxyHosts(noProxy)
         }
 
         configuration.setUseGzip(useGzip)

@@ -92,6 +92,7 @@ class GoogleStorageProvider extends StorageProvider {
 	String proxyPassword
 	String proxyWorkstation
 	String proxyDomain
+	String noProxy
 
 	Long chunkSize = 0l
 

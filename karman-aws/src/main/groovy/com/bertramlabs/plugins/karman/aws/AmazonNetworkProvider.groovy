@@ -36,6 +36,7 @@ class AmazonNetworkProvider extends NetworkProvider {
 	String proxyPassword
 	String proxyWorkstation
 	String proxyDomain
+	String noProxy
 	String endpoint
 	String region
 	private Date clientExpires
@@ -97,6 +98,9 @@ class AmazonNetworkProvider extends NetworkProvider {
 			clientConfiguration.setProxyDomain(proxyDomain)
 		if(proxyWorkstation)
 			clientConfiguration.setProxyWorkstation(proxyWorkstation)
+		if(noProxy) {
+            clientConfiguration.setNonProxyHosts(noProxy)
+		}
 		client = new AmazonEC2Client(credentialsProvider, clientConfiguration)
 		if(endpoint) //"ec2.us-west-2.amazonaws.com"
 			client.setEndpoint(endpoint)

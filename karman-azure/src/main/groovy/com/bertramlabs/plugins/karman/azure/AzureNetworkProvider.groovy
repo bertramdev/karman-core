@@ -473,6 +473,7 @@ class AzureNetworkProvider extends NetworkProvider {
 		String proxyPassword = proxyPassword
 		String proxyDomain = proxyDomain
 		String proxyWorkstation = proxyWorkstation
+		String noProxy
 		if(proxyHost && proxyPort) {
 			log.debug "proxy detected at ${proxyHost}:${proxyPort}"
 			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))

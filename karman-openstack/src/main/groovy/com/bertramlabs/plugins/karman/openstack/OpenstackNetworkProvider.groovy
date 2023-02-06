@@ -104,6 +104,7 @@ public class OpenstackNetworkProvider extends NetworkProvider {
 	String proxyHost
 	Integer proxyPort
 	String proxyUser
+	String noProxy
 	String proxyPassword
 	String proxyWorkstation
 	String proxyDomain
