@@ -137,7 +137,7 @@ class AzureNetworkProvider extends NetworkProvider {
 
 		def nextLink = apiPath
 		while(nextLink) {
-			def results = callApi(apiPath, [query: ['api-version': '2018-11-01'], token: options.token], 'GET')
+			def results = callApi(nextLink, [query: ['api-version': '2018-11-01'], token: options.token], 'GET')
 			if (!results.success) {
 				throw new Exception('Error in calling Azure api')
 			}
