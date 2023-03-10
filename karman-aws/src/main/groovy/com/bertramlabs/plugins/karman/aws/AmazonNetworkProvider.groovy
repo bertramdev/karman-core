@@ -29,6 +29,7 @@ class AmazonNetworkProvider extends NetworkProvider {
 	String secretKey
 	Boolean useHostCredentials = false
 	String stsAssumeRole
+	String stsExternalId = null
 	String token
 	String proxyHost
 	Integer proxyPort
@@ -74,7 +75,7 @@ class AmazonNetworkProvider extends NetworkProvider {
 		if(stsAssumeRole) {
 
 			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).build()
-			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman'))
+			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman').withExternalId(stsExternalId))
 			def roleCredentials = roleResult.credentials
 
 			credentials = new BasicSessionCredentials(roleCredentials.getAccessKeyId(), roleCredentials.getSecretAccessKey(), roleCredentials.getSessionToken());

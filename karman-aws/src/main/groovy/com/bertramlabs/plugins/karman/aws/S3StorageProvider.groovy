@@ -71,6 +71,7 @@ class S3StorageProvider extends StorageProvider {
     String secretKey = ''
 	Boolean useHostCredentials = false
 	String stsAssumeRole
+    String stsExternalId = null
     String token = ''
     String region = ''
     String endpoint = ''
@@ -196,7 +197,7 @@ class S3StorageProvider extends StorageProvider {
         }
 		if(stsAssumeRole) {
 			AWSSecurityTokenService sts = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(credentialsProvider).withRegion(region).build()
-			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman'))
+			AssumeRoleResult roleResult = sts.assumeRole(new AssumeRoleRequest().withRoleArn(stsAssumeRole).withRoleSessionName('karman').withExternalId(stsExternalId))
 
 			if(roleResult.credentials) {
 				credentialsProvider = null
