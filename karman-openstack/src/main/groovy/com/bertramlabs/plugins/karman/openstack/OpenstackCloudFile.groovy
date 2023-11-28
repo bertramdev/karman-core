@@ -1,7 +1,6 @@
 package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.CloudFile
-import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
 import org.apache.http.Header
 import org.apache.http.HttpEntity
@@ -13,20 +12,13 @@ import org.apache.http.client.methods.HttpHead
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.entity.InputStreamEntity
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicHeader
-import org.apache.http.params.HttpConnectionParams
-import org.apache.http.params.HttpParams
 import org.apache.http.util.EntityUtils
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 
-import java.net.URLEncoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -137,17 +129,17 @@ class OpenstackCloudFile extends CloudFile {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
+		log.debug("CloudFile exists? ${existsFlag}")
 		return existsFlag
 	}
-
-
 
 	/**
 	 * Bytes setter/getter
 	 */
 	byte[] getBytes() {
-		def result = inputStream?.bytes
-		inputStream.close()
+		def tmpInputStream = getInputStream()
+		def result = tmpInputStream?.bytes
+		tmpInputStream.close()
 		return result
 	}
 	void setBytes(bytes) {
@@ -160,31 +152,27 @@ class OpenstackCloudFile extends CloudFile {
 	 * @return inputStream
 	 */
 	InputStream getInputStream() {
+		InputStream rtn = null
 		if(valid) {
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			URI listUri
 			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
 
-
 			HttpGet request = new HttpGet(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
 			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
-			HttpResponse response = client.execute(request)
-
-			openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
-				[(header.name): header.value]
+			new OpenstackApiClient().withHttpClient(false) { HttpClient client ->
+				HttpResponse response = client.execute(request)
+				openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
+					[(header.name): header.value]
+				}
+				metaDataLoaded = true
+				HttpEntity entity = response.getEntity()
+				rtn = new BufferedInputStream(entity.content, 8000)
 			}
-
-			metaDataLoaded = true
-			HttpEntity entity = response.getEntity()
-			return entity.content
-		} else {
-			return null
 		}
+
+		return rtn
 	}
 
 	/**
@@ -194,12 +182,13 @@ class OpenstackCloudFile extends CloudFile {
 	 */
 	String getText(String encoding = null) {
 		def result
+		InputStream tmpInputStream = getInputStream()
 		if (encoding) {
-			result = inputStream?.getText(encoding)
+			result = tmpInputStream?.getText(encoding)
 		} else {
-			result = inputStream?.text
+			result = tmpInputStream?.text
 		}
-		inputStream?.close()
+		tmpInputStream?.close()
 		return result
 	}
 
@@ -212,11 +201,14 @@ class OpenstackCloudFile extends CloudFile {
 	 * Save file
 	 */
 	def save(acl) {
+		def rtn = false
+		log.debug("Saving file ${encodedName}")
 		if (valid) {
 			assert writeStream
 
 			OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 			if(!this.getContentLength()) {
+				log.debug("no content length, saving to temp file")
 				File tmpFile = cacheStreamToFile(null,writeStream)
 				this.setContentLength(tmpFile.size())
 				InputStream is = tmpFile.newInputStream()
@@ -237,8 +229,6 @@ class OpenstackCloudFile extends CloudFile {
 
 			URI listUri
 			URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
-
-
 			HttpPut request = new HttpPut(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
 			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
@@ -249,28 +239,29 @@ class OpenstackCloudFile extends CloudFile {
 			}
 			request.setEntity(new InputStreamEntity(writeStream, this.getContentLength()))
 
+			new OpenstackApiClient().withHttpClient() { HttpClient client ->
+				HttpResponse response = client.execute(request)
+				log.debug("save, response: ${response.statusLine.statusCode}")
+				if(response.statusLine.statusCode != 201) {
+					//failed to create file
+					rtn = false
+				}
 
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
+				metaDataLoaded = false
+				openstackMeta = [:]
 
-			HttpResponse response = client.execute(request)
-			if(response.statusLine.statusCode != 201) {
-				//Successfully Created File
-				return false
+				existsFlag = true
+				rtn = true
 			}
-
-			metaDataLoaded = false
-			openstackMeta = [:]
-
-			existsFlag = true
-			return true
 		}
-		return false
+
+		log.debug("save, rtn: ${rtn}")
+		return rtn
 	}
 
 	def saveWithChunks(acl) {
+		log.debug("saveWithChunks")
+		def rtn = true
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 
 		def segmentSize = openstackProvider.chunkSize
@@ -281,29 +272,26 @@ class OpenstackCloudFile extends CloudFile {
 		// get connection for first part
 		try {
 			ChunkedInputStream cis = new ChunkedInputStream(writeStream, segmentSize)
-			while (true) {
+			def keepGoing = true
+			while (keepGoing) {
 				HttpPut req = getObjectStoreConnection(token, openstackProvider, segment, openstackMeta)
 				req.setEntity(new InputStreamEntity(cis, -1))
 
-				HttpClient client = new DefaultHttpClient()
-				HttpParams params = client.getParams()
-				HttpConnectionParams.setConnectionTimeout(params, 30000)
-				HttpConnectionParams.setSoTimeout(params, 20000)
-
-				HttpResponse response = client.execute(req)
-				if(response.statusLine.statusCode != 201) {
-					return false
+				new OpenstackApiClient().withHttpClient { HttpClient client ->
+					HttpResponse response = client.execute(req)
+					if(response.statusLine.statusCode != 201) {
+						rtn = false
+						keepGoing = false
+					}
+					segment++
+					if(!cis.nextChunk())
+						keepGoing = false
 				}
-				segment++
-				if (!cis.nextChunk())
-					break
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			log.error(t)
-			return false
-		}
-		finally {
+			rtn = false
+		} finally {
 			writeStream.close()
 		}
 
@@ -313,25 +301,23 @@ class OpenstackCloudFile extends CloudFile {
 			log.debug("Writing manifest for ${name}")
 			HttpPut req = getObjectStoreConnection(token, openstackProvider, null, headers)
 
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
+			new OpenstackApiClient().withHttpClient { HttpClient client ->
+				HttpResponse response = client.execute(req)
+				if(response.statusLine.statusCode != 201) {
+					rtn = false
+				}
+				metaDataLoaded = true
+				openstackMeta = [:]
 
-			HttpResponse response = client.execute(req)
-			if(response.statusLine.statusCode != 201) {
-				return false
+				existsFlag = true
 			}
-			metaDataLoaded = true
-			openstackMeta = [:]
-
-			existsFlag = true
 		}
 		catch (Throwable t) {
 			// log.error("Failed to write manifest data", t)
-			return false
+			rtn = false
 		}
-		return true
+
+		return rtn
 	}
 
 	private HttpPut getObjectStoreConnection(String token, OpenstackStorageProvider provider, Integer segment, Map headers = [:]) {
@@ -359,12 +345,9 @@ class OpenstackCloudFile extends CloudFile {
 	 * Delete file
 	 */
 	def delete() {
+		def rtn = true
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-
-		URI listUri
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${parent.name}/${encodedName}".toString())
-
-
 		HttpDelete request = new HttpDelete(uriBuilder.build())
 		request.addHeader("Accept", "application/json")
 		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
@@ -374,17 +357,15 @@ class OpenstackCloudFile extends CloudFile {
 			}
 		}
 
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-
-		HttpResponse response = client.execute(request)
-		if(response.statusLine.statusCode != 201) {
-			return false
+		new OpenstackApiClient().withHttpClient { HttpClient client ->
+			HttpResponse response = client.execute(request)
+			if(response.statusLine.statusCode != 201) {
+				rtn = false
+			}
+			existsFlag = false
 		}
-		existsFlag = false
-		return true
+
+		return rtn
 	}
 
 	/**
@@ -420,21 +401,20 @@ class OpenstackCloudFile extends CloudFile {
 			HttpHead request = new HttpHead(uriBuilder.build())
 			request.addHeader("Accept", "application/json")
 			request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
-			HttpClient client = new DefaultHttpClient()
-			HttpParams params = client.getParams()
-			HttpConnectionParams.setConnectionTimeout(params, 30000)
-			HttpConnectionParams.setSoTimeout(params, 20000)
-			HttpResponse response = client.execute(request)
-			if(response.statusLine.statusCode == 404) {
-				existsFlag = false
-				return
+
+			new OpenstackApiClient().withHttpClient { HttpClient client ->
+				HttpResponse response = client.execute(request)
+				if(response.statusLine.statusCode == 404) {
+					existsFlag = false
+					return
+				}
+				existsFlag = true
+				openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
+					[(header.name): header.value]
+				}
+				EntityUtils.consume(response.entity)
+				metaDataLoaded = true
 			}
-			existsFlag = true
-			openstackMeta = response.getAllHeaders()?.collectEntries() { Header header ->
-				[(header.name): header.value]
-			}
-			EntityUtils.consume(response.entity)
-			metaDataLoaded = true
 		}
 	}
 

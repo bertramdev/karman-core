@@ -1,7 +1,9 @@
 package com.bertramlabs.plugins.karman.openstack
+
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
+import groovy.util.logging.Commons
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -10,41 +12,32 @@ import org.apache.http.client.methods.HttpPut
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.client.utils.URIBuilder
-import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicHeader
-import org.apache.http.params.HttpConnectionParams
-import org.apache.http.params.HttpParams
 import org.apache.http.util.EntityUtils
 
 /**
  * Created by davidestes on 10/12/15.
  */
+@Commons
 class OpenstackDirectory extends Directory {
 
+	/**
+	 * Get the api client from the provider
+	 */
+	OpenstackApiClient getApiClient() {
+		OpenstackStorageProvider storageProvider = (OpenstackStorageProvider) provider
+		(OpenstackApiClient) storageProvider.getApiClient()
+	}
 
 	/**
 	 * Check if bucket exists
 	 * @return Boolean
 	 */
 	Boolean exists() {
-		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-
-		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
-		HttpHead request = new HttpHead(uriBuilder.build())
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
-
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-		EntityUtils.consume(response.entity)
-		if(response.statusLine.statusCode == 200) {
-			return true
-		} else {
-			return false
-		}
+		String endpointUrl = getApiClient().getApiEndpoint('objectStorage')
+		String path = "/${name}"
+		def results = getApiClient().callApi(endpointUrl, path, [:], 'HEAD')
+		return results.success
 	}
 
 	/**
@@ -53,32 +46,15 @@ class OpenstackDirectory extends Directory {
 	 * @return List
 	 */
 	List listFiles(options = [:]) {
-		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-		URI listUri
-		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
-
-		options?.each { entry ->
-			uriBuilder.addParameter(entry.key,entry.value?.toString())
-		}
-
-		listUri = uriBuilder.build()
-
-		HttpGet request = new HttpGet(listUri)
-
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-
-		HttpEntity responseEntity = response.getEntity()
-		def jsonBody = new JsonSlurper().parse(new InputStreamReader(responseEntity.content))
-		return jsonBody?.collect { meta ->
+		List rtn = []
+		String endpointUrl = getApiClient().getApiEndpoint('objectStorage')
+		String path = "/${name}"
+		def results = getApiClient().callApi(endpointUrl, path, [query:options], 'GET')
+		rtn = results.content?.collect { meta ->
 			cloudFileFromOpenstackMeta(meta)
 		}
-		EntityUtils.consume(responseEntity)
+
+		return rtn
 	}
 
 	/**
@@ -86,46 +62,33 @@ class OpenstackDirectory extends Directory {
 	 * @return Bucket
 	 */
 	def save() {
-		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
-		HttpPut request = new HttpPut(uriBuilder.build())
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
+		log.debug("saveing directory ${name}")
+		String endpointUrl = getApiClient().getApiEndpoint('objectStorage')
+		String path = "/${name}"
+		def results = getApiClient().callApi(endpointUrl, path, [:], 'PUT')
 
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-		EntityUtils.consume(response.entity)
-		if(response.statusLine.statusCode == 200) {
-
-			return true
-		} else {
-			return false
-		}
+		return results.success
 	}
 
+	/**
+	 * Delete bucket
+	 * @return Boolean
+	 */
 	def delete() {
-		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
-		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
-		HttpDelete request = new HttpDelete(uriBuilder.build())
-		request.addHeader("Accept", "application/json")
-		request.addHeader(new BasicHeader('X-Auth-Token', openstackProvider.getToken()))
+		log.debug("deleting directory ${name}")
+		log.debug("saveing directory ${name}")
+		String endpointUrl = getApiClient().getApiEndpoint('objectStorage')
+		String path = "/${name}"
+		def results = getApiClient().callApi(endpointUrl, path, [:], 'DELETE')
 
-		HttpClient client = new DefaultHttpClient()
-		HttpParams params = client.getParams()
-		HttpConnectionParams.setConnectionTimeout(params, 30000)
-		HttpConnectionParams.setSoTimeout(params, 20000)
-		HttpResponse response = client.execute(request)
-		EntityUtils.consume(response.entity)
-		if(response.statusLine.statusCode == 200) {
-			return true
-		} else {
-			return false
-		}
+		return results.success
 	}
 
+	/**
+	 * Get a file from the bucket
+	 * @param name
+	 * @return File
+	 */
 	CloudFile getFile(String name) {
 		new OpenstackCloudFile(
 			provider: provider,
@@ -133,8 +96,6 @@ class OpenstackDirectory extends Directory {
 			name: name
 		)
 	}
-
-	// PRIVATE
 
 	private CloudFile cloudFileFromOpenstackMeta(Map meta) {
 		if(meta.subdir) {
