@@ -18,6 +18,8 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.amazonaws.services.securitytoken.model.AssumeRoleRequest
 import com.amazonaws.services.securitytoken.model.AssumeRoleResult
 import com.bertramlabs.plugins.karman.network.NetworkProvider
+import com.amazonaws.regions.Region
+import com.amazonaws.regions.RegionUtils
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import groovy.util.logging.Commons
 import com.amazonaws.regions.RegionUtils
