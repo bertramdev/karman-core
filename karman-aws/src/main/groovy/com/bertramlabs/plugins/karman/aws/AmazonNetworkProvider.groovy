@@ -20,6 +20,7 @@ import com.amazonaws.services.securitytoken.model.AssumeRoleResult
 import com.bertramlabs.plugins.karman.network.NetworkProvider
 import com.bertramlabs.plugins.karman.network.SecurityGroupInterface
 import groovy.util.logging.Commons
+import com.amazonaws.regions.RegionUtils
 
 @Commons
 class AmazonNetworkProvider extends NetworkProvider {
@@ -103,6 +104,10 @@ class AmazonNetworkProvider extends NetworkProvider {
             clientConfiguration.setNonProxyHosts(noProxy)
 		}
 		client = new AmazonEC2Client(credentialsProvider, clientConfiguration)
+		if (region) {
+            Region region = RegionUtils.getRegion(region)
+            client.region = region
+        }
 		if(endpoint) //"ec2.us-west-2.amazonaws.com"
 			client.setEndpoint(endpoint)
 		return client

@@ -16,9 +16,14 @@ import groovy.util.logging.Commons
 @Commons
 class NfsCloudFile extends CloudFile{
 
+	NfsStorageProvider provider
 	Nfs3File baseFile
 	NfsDirectory parent
 	InputStream sourceStream = null
+
+	URL getURL(Date expirationDate = null) {
+		new URL("${provider.baseUrl}/${parent.name}/${name}")
+	}
 
 	@Override
 	InputStream getInputStream() {
