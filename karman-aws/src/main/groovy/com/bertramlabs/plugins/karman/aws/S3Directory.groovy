@@ -41,6 +41,13 @@ class S3Directory extends Directory {
         s3Client.doesBucketExist(name)
 	}
 
+	String getRegion() {
+		if(!region) {
+			region = s3Client.getBucketLocation(name)
+		}
+		return region;
+	}
+
     /**
      * List bucket files
      * @param options (prefix, marker, delimiter and maxKeys)
