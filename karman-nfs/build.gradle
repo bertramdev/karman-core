@@ -35,7 +35,7 @@ dependencies {
     api project(':karman-core')
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
 
-    api 'com.emc.ecs:nfs-client:1.0.3'
+    api 'com.emc.ecs:nfs-client:1.1.0'
 }
 
 publishing {
