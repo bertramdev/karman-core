@@ -90,9 +90,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly 'org.codehaus.groovy:groovy:2.5.15'
-	compile 'commons-logging:commons-logging:1.1.1'
-	testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+	
 
 }
 
