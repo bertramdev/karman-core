@@ -60,7 +60,7 @@ import java.lang.reflect.InvocationTargetException
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 
-class S3StorageProvider extends StorageProvider {
+class S3StorageProvider extends StorageProvider<S3Directory> {
 
     static String providerName = "s3"
     static SSLContext sslcontext
@@ -155,11 +155,11 @@ class S3StorageProvider extends StorageProvider {
 		tempDir = options.tempDir ?: tempDir
     }
 
-    Directory getDirectory(String name) {
+	S3Directory getDirectory(String name) {
         new S3Directory(name: name, provider: this)
     }
 
-    List<Directory> getDirectories() {
+    List<S3Directory> getDirectories() {
         List<Bucket> buckets = s3Client.listBuckets()
         buckets.collect { bucket -> directoryFromS3Bucket(bucket)}
     }

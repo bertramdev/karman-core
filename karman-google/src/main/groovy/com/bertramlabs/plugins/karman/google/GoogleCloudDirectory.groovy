@@ -16,12 +16,10 @@
 
 package com.bertramlabs.plugins.karman.google
 
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
-import com.bertramlabs.plugins.karman.CloudFile
-
-@Commons
-class GoogleCloudDirectory extends CloudFile {
+@Slf4j
+class GoogleCloudDirectory extends GoogleCloudFile {
 
 	GoogleCloudBucket parent
 
@@ -136,22 +134,22 @@ class GoogleCloudDirectory extends CloudFile {
 	}
 
 	@Override
-	void setMetaAttribute(Object key, Object value) {
+	void setMetaAttribute(String key, String value) {
 
 	}
 
 	@Override
-	def getMetaAttribute(Object key) {
+	String getMetaAttribute(String key) {
 		return null
 	}
 
 	@Override
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		return null
 	}
 
 	@Override
-	void removeMetaAttribute(Object key) {
+	void removeMetaAttribute(String key) {
 
 	}
 }

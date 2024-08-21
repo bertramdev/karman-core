@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.*
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 import org.apache.http.Header
 import org.apache.http.HttpEntity
@@ -85,7 +86,7 @@ import java.net.URLEncoder
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
-class S3CloudFile extends CloudFile {
+class S3CloudFile extends CloudFile<S3Directory> {
 
 	S3Directory parent
 	S3Object object
@@ -101,7 +102,7 @@ class S3CloudFile extends CloudFile {
 	/**
 	 * Meta attributes setter/getter
 	 */
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key, String value) {
 		switch(key) {
 			case Headers.CACHE_CONTROL:
 				s3Object.objectMetadata.cacheControl = value
@@ -145,21 +146,21 @@ class S3CloudFile extends CloudFile {
 		writeableStream = new S3ObjectInputStream(rawSourceStream, null)
 	}
 
-	String getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		s3Object.objectMetadata.userMetadata[key]
 	}
 
-	Map getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		s3Object.objectMetadata.userMetadata
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		s3Object.objectMetadata.userMetadata.remove(key)
 	}
 
@@ -213,7 +214,7 @@ class S3CloudFile extends CloudFile {
 		return result
 	}
 
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		rawSourceStream = new ByteArrayInputStream(bytes)
 		writeableStream = new S3ObjectInputStream(rawSourceStream, null)
 		setContentLength(bytes.length)
@@ -409,7 +410,7 @@ class S3CloudFile extends CloudFile {
 	/**
 	 * Save file
 	 */
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		if(valid) {
 			assert writeableStream
 			setMetaAttribute(Headers.S3_CANNED_ACL, acl)
@@ -425,7 +426,7 @@ class S3CloudFile extends CloudFile {
 				InputStream is = tmpFile.newInputStream()
 				try {
 					this.setInputStream(is)
-					return this.save(acl)
+					this.save(acl)
 				} finally {
 					if(is) {
 						try { is.close()} catch(ex) {}
@@ -439,11 +440,10 @@ class S3CloudFile extends CloudFile {
 		}
 	}
 
-	def saveChunked() {
+	void saveChunked() {
 		Long contentLength = object.objectMetadata.contentLength
 		List<PartETag> partETags = new ArrayList<PartETag>();
-		InitiateMultipartUploadRequest initRequest = new
-			InitiateMultipartUploadRequest(parent.name, name);
+		InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(parent.name, name);
 		initRequest.setObjectMetadata(object.objectMetadata)
 		InitiateMultipartUploadResult initResponse =
 			s3Client.initiateMultipartUpload(initRequest);
@@ -515,7 +515,7 @@ class S3CloudFile extends CloudFile {
 	/**
 	 * Delete file
 	 */
-	def delete() {
+	void delete() {
 		if(valid) {
 			s3Client.deleteObject(parent.name, name)
 			existsFlag = false

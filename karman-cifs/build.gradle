@@ -23,12 +23,11 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
 	api project(':karman-core')
-	testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+	testImplementation "org.spockframework:spock-core:$spockVersion"
 
 	api "eu.agno3.jcifs:jcifs-ng:2.1.7"
-	// compile 'jcifs:jcifs:1.3.17'
 	api group:'commons-beanutils', name:'commons-beanutils', version:'1.9.3'
 }
 

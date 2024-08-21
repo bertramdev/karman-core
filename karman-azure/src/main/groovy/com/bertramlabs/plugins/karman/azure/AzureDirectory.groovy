@@ -1,6 +1,7 @@
 package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileInterface
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
@@ -22,7 +23,7 @@ import org.apache.http.util.EntityUtils
  * Created by bwhiton on 12/02/2016.
  */
 @Commons
-class AzureDirectory extends Directory {
+class AzureDirectory<C extends CloudFileInterface> extends Directory<C> {
 	
 	protected String shareName
 
@@ -56,7 +57,7 @@ class AzureDirectory extends Directory {
 	 * @param options prefix, delimiter
 	 * @return List
 	 */
-	List listFiles(options = [:]) {
+	List<C> listFiles(Map<String,Object> options = [:]) {
 		log.info "listFiles from AzureDirectory path: ${getFullPath()}"
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
@@ -110,7 +111,7 @@ class AzureDirectory extends Directory {
 	/**
 	 * Create directory
 	 */
-	def save() {
+	void save() {
 		if(!this.exists()) {
 			AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
@@ -127,7 +128,7 @@ class AzureDirectory extends Directory {
 
 			def saveSuccessful = (response.statusLine.statusCode == 201)
 			if(saveSuccessful) {
-				return true
+			//	return true
 			} else {
 				def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 				EntityUtils.consume(response.entity)
@@ -142,7 +143,7 @@ class AzureDirectory extends Directory {
 	/**
 	 * Delete a directory 
 	 */
-	def delete() {
+	void delete() {
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
 		def opts = [
@@ -158,7 +159,7 @@ class AzureDirectory extends Directory {
 
 		def deleteSuccessful = (response.statusLine.statusCode == 202)
 		if(deleteSuccessful) {
-			return true
+			//return true
 		} else {
 			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 			EntityUtils.consume(response.entity)
@@ -169,7 +170,7 @@ class AzureDirectory extends Directory {
 		}
 	}
 
-	CloudFile getFile(String fullFileName) {
+	AzureFile getFile(String fullFileName) {
 		// With the syntax of ['somedirectory/another directory/file.txt'] the path
 		// may be a subdirectory of the current directory so construct the fullPath
 		// correctly

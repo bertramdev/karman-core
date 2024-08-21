@@ -24,7 +24,7 @@ import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
 
 @Commons
-class LocalCloudFile extends CloudFile {
+class LocalCloudFile extends CloudFile<LocalDirectory> {
 	LocalDirectory parent
 
 	File getFsFile() {
@@ -88,7 +88,7 @@ class LocalCloudFile extends CloudFile {
 		fsFile.text = text
 	}
 
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
         ensurePathExists()
 		fsFile.bytes = bytes
 	}
@@ -107,35 +107,34 @@ class LocalCloudFile extends CloudFile {
 
 	void setContentType(String contentType) {
 		// Content Type is not implemented in most file system stores
-		return
+
 	}
 
 	Boolean exists() {
 		fsFile.exists()
 	}
 
-    void setMetaAttribute(key, value) {
+    void setMetaAttribute(String key, String value) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	def getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-    def save(acl = '') {
+	void save(CloudFileACL acl) {
         // Auto saves
-		return
 	}
 
-	def delete() {
+	void delete() {
 		fsFile.delete()
 		cleanUpTree()
 	}

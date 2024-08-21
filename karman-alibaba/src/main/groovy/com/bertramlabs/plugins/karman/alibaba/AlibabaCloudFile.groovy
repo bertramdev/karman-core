@@ -96,7 +96,7 @@ import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
 @Commons
-class AlibabaCloudFile extends CloudFile{
+class AlibabaCloudFile extends CloudFile<AlibabaDirectory> {
 		AlibabaDirectory parent
 		OSSObject object
 		OSSObjectSummary summary // Only set when object is retrieved by listFiles
@@ -111,7 +111,7 @@ class AlibabaCloudFile extends CloudFile{
 		/**
 		 * Meta attributes setter/getter
 		 */
-		void setMetaAttribute(key, value) {
+		void setMetaAttribute(String key,String value) {
 			switch(key) {
 				case 'Cache-Control':
 					object.objectMetadata.setCacheControl(value)
@@ -170,21 +170,21 @@ class AlibabaCloudFile extends CloudFile{
 			writeableStream = rawSourceStream
 		}
 
-		String getMetaAttribute(key) {
+		String getMetaAttribute(String key) {
 			if(!metaDataLoaded) {
 				loadObjectMetaData()
 			}
 			getOSSObject().objectMetadata.userMetadata[key]
 		}
 
-		Map getMetaAttributes() {
+		Map<String,String> getMetaAttributes() {
 			if(!metaDataLoaded) {
 				loadObjectMetaData()
 			}
 			getOSSObject().objectMetadata.userMetadata
 		}
 
-		void removeMetaAttribute(key) {
+		void removeMetaAttribute(String key) {
 			getOSSObject().objectMetadata.userMetadata.remove(key)
 		}
 
@@ -240,7 +240,7 @@ class AlibabaCloudFile extends CloudFile{
 			return result
 		}
 
-		void setBytes(bytes) {
+		void setBytes( byte[] bytes) {
 			rawSourceStream = new ByteArrayInputStream(bytes)
 			writeableStream = rawSourceStream
 			setContentLength(bytes.length)
@@ -436,7 +436,7 @@ class AlibabaCloudFile extends CloudFile{
 		/**
 		 * Save file
 		 */
-		def save(acl) {
+		void save(CloudFileACL acl) {
 			if(valid) {
 				assert writeableStream
 				setMetaAttribute('Object-Acl', acl)
@@ -453,7 +453,7 @@ class AlibabaCloudFile extends CloudFile{
 					InputStream is = tmpFile.newInputStream()
 					try {
 						this.setInputStream(is)
-						return this.save(acl)
+						 this.save(acl)
 					} finally {
 						if(is) {
 							try { is.close()} catch(ex) {}
@@ -470,8 +470,7 @@ class AlibabaCloudFile extends CloudFile{
 		def saveChunked() {
 			Long contentLength = getOSSObject().objectMetadata.contentLength
 			List<PartETag> partETags = new ArrayList<PartETag>();
-			InitiateMultipartUploadRequest initRequest = new
-				InitiateMultipartUploadRequest(parent.name, name);
+			InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(parent.name, name);
 			initRequest.setObjectMetadata(getOSSObject().objectMetadata)
 			InitiateMultipartUploadResult initResponse = getOSSClient().initiateMultipartUpload(initRequest)
 			long partSize = parent.provider.chunkSize; // Set part size to 5 MB.
@@ -533,8 +532,7 @@ class AlibabaCloudFile extends CloudFile{
 				chunkedStream.nextChunk()
 			}
 			// Step 3: Complete.
-			CompleteMultipartUploadRequest compRequest = new
-				CompleteMultipartUploadRequest(
+			CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(
 				parent.name,
 				name,
 				initResponse.getUploadId(),
@@ -546,7 +544,7 @@ class AlibabaCloudFile extends CloudFile{
 		/**
 		 * Delete file
 		 */
-		def delete() {
+		void delete() {
 			if(valid) {
 				getOSSClient().deleteObject(parent.name, name)
 				existsFlag = false

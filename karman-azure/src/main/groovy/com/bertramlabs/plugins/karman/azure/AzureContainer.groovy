@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils
  * Created by bwhiton on 11/22/2016.
  */
 @Commons
-class AzureContainer extends Directory {
+class AzureContainer extends Directory<AzurePageBlobFile> {
 	/**
 	 * Check if container exists
 	 * @return Boolean
@@ -49,7 +49,7 @@ class AzureContainer extends Directory {
 	 * @param options (prefix, marker, delimiter and maxKeys)
 	 * @return List
 	 */
-	List listFiles(options = [:]) {
+	List<AzurePageBlobFile> listFiles(Map<String,Object> options = [:]) {
 		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
@@ -83,7 +83,7 @@ class AzureContainer extends Directory {
 	 * Create container 
 	 * @return Container
 	 */
-	def save() {
+	void save() {
 		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
@@ -99,7 +99,7 @@ class AzureContainer extends Directory {
 		
 		def saveSuccessful = (response.statusLine.statusCode == 201)	
 		if(saveSuccessful) {
-			return true
+
 		} else {
 			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 			EntityUtils.consume(response.entity)
@@ -114,7 +114,7 @@ class AzureContainer extends Directory {
 	 * Delete a container 
 	 * @return Container
 	 */
-	def delete() {
+	void delete() {
 		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
@@ -130,7 +130,7 @@ class AzureContainer extends Directory {
 
 		def deleteSuccessful = (response.statusLine.statusCode == 202)
 		if(deleteSuccessful) {
-			return true
+
 		} else {
 			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 			EntityUtils.consume(response.entity)
@@ -141,7 +141,7 @@ class AzureContainer extends Directory {
 		}
 	}
 
-	CloudFile getFile(String name) {
+	AzurePageBlobFile getFile(String name) {
 		new AzurePageBlobFile(
 			provider: provider,
 			parent: this,

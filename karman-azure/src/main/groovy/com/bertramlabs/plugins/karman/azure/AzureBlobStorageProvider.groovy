@@ -37,7 +37,7 @@ import java.text.*;
  * @author Bob Whiton
  */
 @Commons
-public class AzureBlobStorageProvider extends AzureStorageProvider {
+public class AzureBlobStorageProvider extends AzureStorageProvider<AzureContainer> {
 	static String providerName = "azure-pageblob"
 
 	public String getProviderName() {
@@ -50,11 +50,11 @@ public class AzureBlobStorageProvider extends AzureStorageProvider {
 		return "${protocol}://${storageAccount}.blob.${base}"
 	}
 
-	Directory getDirectory(String name) {
+	AzureContainer getDirectory(String name) {
 		new AzureContainer(name: name, provider: this)
 	}
 
-	List<Directory> getDirectories() {
+	List<AzureContainer> getDirectories() {
 		def opts = [
 			verb: 'GET',
 			queryParams: [comp: 'list'], 

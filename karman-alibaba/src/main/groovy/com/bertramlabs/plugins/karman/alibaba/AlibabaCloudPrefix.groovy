@@ -1,10 +1,11 @@
 package com.bertramlabs.plugins.karman.alibaba
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.util.logging.Commons
 
 @Commons
-class AlibabaCloudPrefix extends CloudFile {
+class AlibabaCloudPrefix extends AlibabaCloudFile {
 
 	AlibabaDirectory parent
 
@@ -40,7 +41,7 @@ class AlibabaCloudPrefix extends CloudFile {
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 
 	}
 
@@ -79,32 +80,33 @@ class AlibabaCloudPrefix extends CloudFile {
 		return true
 	}
 
-	def save(acl) {
+	@Override
+	void save(CloudFileACL acl) {
 		throw new Exception("Not Implemented for a directory")
 	}
 
 	@Override
-	def delete() {
+	void delete() {
+		//
+	}
+
+	@Override
+	void setMetaAttribute(String key, String value) {
+
+	}
+
+	@Override
+	String getMetaAttribute(String key) {
 		return null
 	}
 
 	@Override
-	void setMetaAttribute(Object key, Object value) {
-
-	}
-
-	@Override
-	def getMetaAttribute(Object key) {
+	Map<String,String> getMetaAttributes() {
 		return null
 	}
 
 	@Override
-	def getMetaAttributes() {
-		return null
-	}
-
-	@Override
-	void removeMetaAttribute(Object key) {
+	void removeMetaAttribute(String key) {
 
 	}
 }

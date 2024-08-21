@@ -1,6 +1,7 @@
 package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
@@ -37,9 +38,9 @@ import java.time.format.DateTimeFormatter
  * @author Bob Whiton
  */
 @Commons
-class AzureFile extends CloudFile {
-	
-	Directory parent // Not used
+class AzureFile extends CloudFile<AzureShare> {
+
+	AzureShare parent // Not used
 
 	String shareName
 
@@ -50,7 +51,7 @@ class AzureFile extends CloudFile {
 	private Long chunkSize = 4096
 	private Long cloudFileContentLength
 
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key,String value) {
 		azureMeta[key] = value
 	}
 
@@ -65,21 +66,21 @@ class AzureFile extends CloudFile {
 	}
 
 
-	String getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		return azureMeta[key]
 	}
 
-	Map getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		return azureMeta
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -141,7 +142,7 @@ class AzureFile extends CloudFile {
 		return result
 	}
 	
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		writeStream = new ByteArrayInputStream(bytes)
 		setContentLength(bytes.length)
 	}
@@ -187,7 +188,7 @@ class AzureFile extends CloudFile {
 		setBytes(text.bytes)
 	}
 
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		log.info "save started"
 		if (valid) {
 			assert writeStream
@@ -202,7 +203,7 @@ class AzureFile extends CloudFile {
 					InputStream is = tmpFile.newInputStream()
 					try {
 						this.setInputStream(tmpFile.newInputStream())
-						return this.save(acl)
+						this.save(acl)
 					} finally {
 						if(is) {
 							try { is.close()} catch(ex) {}
@@ -280,10 +281,10 @@ class AzureFile extends CloudFile {
 			azureMeta = [:]
 
 			existsFlag = true
-			return true
+			//return true
 		}
 		log.info "save complete"
-		return false
+		//return false
 	}
 
 	private void uploadChunk(ChunkedInputStream chunkedStream, Long startByte, Long contentLength) {
@@ -310,7 +311,7 @@ class AzureFile extends CloudFile {
 		}
 	}
 
-	def delete() {
+	void delete() {
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
 		def opts = [
@@ -327,10 +328,10 @@ class AzureFile extends CloudFile {
 			azureProvider.throwResponseFailure(response, "Error deleting file")
 			} catch(e) {}
 
-			return false
+			//return false
 		}
 
-		return true
+		//return true
 	}
 
 	def copy(String srcURI) {

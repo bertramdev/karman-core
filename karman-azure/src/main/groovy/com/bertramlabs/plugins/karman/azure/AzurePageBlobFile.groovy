@@ -1,6 +1,7 @@
 package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
 import org.apache.http.Header
@@ -36,7 +37,7 @@ import java.time.ZoneId
  * @author Bob Whiton
  */
 @Commons
-class AzurePageBlobFile extends CloudFile {
+class AzurePageBlobFile extends CloudFile<AzureContainer> {
 	
 	AzureContainer parent
 
@@ -46,7 +47,7 @@ class AzurePageBlobFile extends CloudFile {
 	private Boolean metaDataLoaded = false
 	private Long chunkSize = 4096
 
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key, String value) {
 		azureMeta[key] = value
 	}
 
@@ -61,7 +62,7 @@ class AzurePageBlobFile extends CloudFile {
 	}
 
 
-	String getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -75,7 +76,7 @@ class AzurePageBlobFile extends CloudFile {
 		return azureMeta
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -134,7 +135,7 @@ class AzurePageBlobFile extends CloudFile {
 		return result
 	}
 	
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		writeStream = new ByteArrayInputStream(bytes)
 		setContentLength(bytes.length)
 	}
@@ -180,7 +181,7 @@ class AzurePageBlobFile extends CloudFile {
 		setBytes(text.bytes)
 	}
 
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		log.info "save started"
 		if (valid) {
 			assert writeStream
@@ -193,7 +194,7 @@ class AzurePageBlobFile extends CloudFile {
 				InputStream is = tmpFile.newInputStream()
 				try {
 					this.setInputStream(tmpFile.newInputStream())
-					return this.save(acl)
+					this.save(acl)
 				} finally {
 					if(is) {
 						try { is.close()} catch(ex) {}
@@ -251,10 +252,10 @@ class AzurePageBlobFile extends CloudFile {
 			azureMeta = [:]
 
 			existsFlag = true
-			return true
+			//return true
 		}
 		log.info "save complete"
-		return false
+		//return false
 	}
 
 	private void uploadChunk(ChunkedInputStream chunkedStream, Long startByte, Long contentLength) {
@@ -281,7 +282,7 @@ class AzurePageBlobFile extends CloudFile {
 		}
 	}
 
-	def delete() {
+	void delete() {
 		AzureBlobStorageProvider azureProvider = (AzureBlobStorageProvider) provider
 
 		def opts = [
@@ -299,10 +300,10 @@ class AzurePageBlobFile extends CloudFile {
 			azureProvider.throwResponseFailure(response, "Error deleting page blob")
 			} catch(e) {}
 
-			return false
+//			return false
 		}
 
-		return true
+//		return true
 	}
 
 	def copy(String srcURI, snapshot=null) {

@@ -28,7 +28,7 @@ import com.amazonaws.services.s3.model.VersionListing
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
 
-class S3Directory extends Directory {
+class S3Directory extends Directory<S3CloudFile> {
 
 	Bucket bucket
     String region = ''
@@ -53,7 +53,7 @@ class S3Directory extends Directory {
      * @param options (prefix, marker, delimiter and maxKeys)
      * @return List
      */
-	List listFiles(options = [:]) {
+	List<S3CloudFile> listFiles(Map<String,Object> options = [:]) {
         ListObjectsRequest request = new ListObjectsRequest(name, options?.prefix, options?.marker, options?.delimiter, options?.maxKeys)
         ObjectListing objectListing = s3Client.listObjects(request)
 		def files = []
@@ -92,7 +92,7 @@ class S3Directory extends Directory {
      * Create bucket for a given region (default to region in config if not defined)
      * @return Bucket
      */
-	def save() {
+	void save() {
         if (region) {
             s3Client.createBucket(name, region)
         } else {
@@ -100,7 +100,7 @@ class S3Directory extends Directory {
         }
 	}
 
-	def delete() {
+	void delete() {
 		ObjectListing objectListing = s3Client.listObjects(name);
 		while (true) {
 			Iterator<S3ObjectSummary> objIter = objectListing.getObjectSummaries().iterator();
@@ -137,7 +137,7 @@ class S3Directory extends Directory {
 		s3Client.deleteBucket(name)
 	}
 
-	CloudFile getFile(String name) {
+	S3CloudFile getFile(String name) {
 		new S3CloudFile(
                 provider: provider,
                 parent: this,

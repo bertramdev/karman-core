@@ -20,10 +20,11 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.*
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
 
-class S3CloudPrefix extends CloudFile {
+class S3CloudPrefix extends S3CloudFile {
 
 	S3Directory parent
 
@@ -59,7 +60,7 @@ class S3CloudPrefix extends CloudFile {
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 
 	}
 
@@ -98,12 +99,12 @@ class S3CloudPrefix extends CloudFile {
 		return true
 	}
 
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		throw new Exception("Not Implemented for a directory")
 	}
 
 	@Override
-	def delete() {
+	void delete() {
 		def dirName = name
 		if(!name.endsWith('/')) {
 			dirName = name + '/'
@@ -132,26 +133,25 @@ class S3CloudPrefix extends CloudFile {
 				s3Client.deleteObjects(deleteRequest)
 			}
 		}
-		return true
 	}
 
 	@Override
-	void setMetaAttribute(Object key, Object value) {
+	void setMetaAttribute(String key, String value) {
 
 	}
 
 	@Override
-	def getMetaAttribute(Object key) {
+	String getMetaAttribute(String key) {
 		return null
 	}
 
 	@Override
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		return null
 	}
 
 	@Override
-	void removeMetaAttribute(Object key) {
+	void removeMetaAttribute(String key) {
 
 	}
 

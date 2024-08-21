@@ -1,20 +1,22 @@
 package com.bertramlabs.plugins.karman.nfs
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import com.emc.ecs.nfsclient.nfs.io.Nfs3File
 import com.emc.ecs.nfsclient.nfs.io.NfsFileOutputStream
 import groovy.transform.CompileStatic
 import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
 /**
  * Wrapped implementation of a CloudFile for Karman leveraging the NFSv3 interfaces
  *
  * @author David Estes
  */
-@Commons
-class NfsCloudFile extends CloudFile{
+@Slf4j
+class NfsCloudFile extends CloudFile<NfsDirectory> {
 
 	NfsStorageProvider provider
 	Nfs3File baseFile
@@ -62,7 +64,7 @@ class NfsCloudFile extends CloudFile{
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 		sourceStream = new ByteArrayInputStream(bytes)
 	}
 
@@ -106,7 +108,7 @@ class NfsCloudFile extends CloudFile{
 	}
 
 
-	def save(acl = '') {
+	void save(CloudFileACL acl) {
 		// Auto saves
 		if(sourceStream) {
 			try {
@@ -121,7 +123,6 @@ class NfsCloudFile extends CloudFile{
 				copyStream(sourceStream, getOutputStream())
 			sourceStream = null
 		}
-		return
 	}
 
 	@CompileStatic
@@ -142,7 +143,7 @@ class NfsCloudFile extends CloudFile{
 	}
 
 	@Override
-	def delete() {
+	void delete() {
 		baseFile.delete()
 		cleanUpTree()
 	}
@@ -159,19 +160,19 @@ class NfsCloudFile extends CloudFile{
 		}
 	}
 
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key,String value) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for NfsCloudFile")
 	}
 
-	def getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for NfsCloudFile")
 	}
 
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		log.warn("Karman CloudFile Meta Attributes Not Available for NfsCloudFile")
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for NfsCloudFile")
 	}
 

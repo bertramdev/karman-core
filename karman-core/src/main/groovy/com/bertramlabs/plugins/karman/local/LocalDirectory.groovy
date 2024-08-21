@@ -23,7 +23,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.FileSystem
 
-class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
+class LocalDirectory extends Directory<LocalCloudFile> {
 
 	String region
 
@@ -35,7 +35,7 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 		fsFile.exists()
 	}
 
-	List listFiles(options = [:]) {
+	List<LocalCloudFile> listFiles(Map<String,Object> options = [:]) {
 		Collection<LocalCloudFile> rtn = []
 
 		def delimiter = options.delimiter
@@ -140,17 +140,17 @@ class LocalDirectory extends com.bertramlabs.plugins.karman.Directory {
 		return rtn
 	}
 
-	def save() {
+	void save() {
 		fsFile.mkdirs()
 	}
 
-	def delete() {
+	void delete() {
 		if(fsFile.exists()) {
 			fsFile.deleteDir()
 		}
 	}
 
-	CloudFile getFile(String name) {
+	LocalCloudFile getFile(String name) {
 		new LocalCloudFile(provider: provider, parent: this, name: name)
 	}
 

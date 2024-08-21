@@ -1,8 +1,10 @@
 package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.json.JsonSlurper
 import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -34,8 +36,8 @@ import java.time.format.DateTimeFormatter
  * Openstack Cloud File implementation for the Openstack Cloud Files API v1
  * @author David Estes
  */
-@Commons
-class OpenstackCloudFile extends CloudFile {
+@Slf4j
+class OpenstackCloudFile extends CloudFile<OpenstackDirectory> {
 	Map openstackMeta = [:]
 	OpenstackDirectory parent
 	private Boolean metaDataLoaded = false
@@ -46,7 +48,7 @@ class OpenstackCloudFile extends CloudFile {
 	/**
 	 * Meta attributes setter/getter
 	 */
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key,String value) {
 		openstackMeta[key] = value
 	}
 
@@ -60,14 +62,14 @@ class OpenstackCloudFile extends CloudFile {
 		writeStream = inputS
 	}
 
-	String getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		return openstackMeta[key]
 	}
 
-	Map getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -85,7 +87,7 @@ class OpenstackCloudFile extends CloudFile {
 		}
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -150,7 +152,7 @@ class OpenstackCloudFile extends CloudFile {
 		inputStream.close()
 		return result
 	}
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		writeStream = new ByteArrayInputStream(bytes)
 		setContentLength(bytes.length)
 	}
@@ -211,7 +213,7 @@ class OpenstackCloudFile extends CloudFile {
 	/**
 	 * Save file
 	 */
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		if (valid) {
 			assert writeStream
 
@@ -222,7 +224,8 @@ class OpenstackCloudFile extends CloudFile {
 				InputStream is = tmpFile.newInputStream()
 				try {
 					this.setInputStream(tmpFile.newInputStream())
-					return this.save(acl)
+					this.save(acl)
+					return
 				} finally {
 					if(is) {
 						try { is.close()} catch(ex) {}
@@ -232,7 +235,8 @@ class OpenstackCloudFile extends CloudFile {
 			}
 			// do chunk save
 			if (openstackProvider.chunkSize > 0 && chunked) {
-				return saveWithChunks(acl)
+				saveWithChunks(acl)
+				return
 			}
 
 			URI listUri
@@ -258,19 +262,20 @@ class OpenstackCloudFile extends CloudFile {
 			HttpResponse response = client.execute(request)
 			if(response.statusLine.statusCode != 201) {
 				//Successfully Created File
-				return false
+//				return false
+				return
 			}
 
 			metaDataLoaded = false
 			openstackMeta = [:]
 
 			existsFlag = true
-			return true
+//			return true
 		}
-		return false
+//		return false
 	}
 
-	def saveWithChunks(acl) {
+	def saveWithChunks(CloudFileACL acl) {
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 
 		def segmentSize = openstackProvider.chunkSize
@@ -358,7 +363,7 @@ class OpenstackCloudFile extends CloudFile {
 	/**
 	 * Delete file
 	 */
-	def delete() {
+	void delete() {
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 
 		URI listUri
@@ -381,10 +386,10 @@ class OpenstackCloudFile extends CloudFile {
 
 		HttpResponse response = client.execute(request)
 		if(response.statusLine.statusCode != 201) {
-			return false
+//			return false
 		}
 		existsFlag = false
-		return true
+//		return true
 	}
 
 	/**

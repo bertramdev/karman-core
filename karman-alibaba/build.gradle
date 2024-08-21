@@ -16,18 +16,16 @@ group = 'com.bertramlabs.plugins'
 
 
 repositories {
-    jcenter()
     mavenLocal()
     mavenCentral()
-    maven { url 'http://dl.bintray.com/bertramlabs/karman' }
 }
 
 
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
     api project(':karman-core')
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation "org.spockframework:spock-core:$spockVersion"
 
     api 'org.apache.httpcomponents:httpcore:4.4.5'
     api 'org.apache.httpcomponents:httpclient:4.5.2'

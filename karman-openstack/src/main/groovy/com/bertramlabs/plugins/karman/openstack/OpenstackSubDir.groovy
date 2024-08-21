@@ -1,8 +1,9 @@
 package com.bertramlabs.plugins.karman.openstack
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 
-class OpenstackSubDir extends CloudFile {
+class OpenstackSubDir extends OpenstackCloudFile {
 	OpenstackDirectory parent
 
 	@Override
@@ -76,27 +77,27 @@ class OpenstackSubDir extends CloudFile {
 		return true
 	}
 
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		throw new Exception("Not Implemented for a directory")
 	}
 
 	@Override
-	def delete() {
+	void delete() {
+
+	}
+
+	@Override
+	void setMetaAttribute(String key, String value) {
+
+	}
+
+	@Override
+	String getMetaAttribute(String key) {
 		return null
 	}
 
 	@Override
-	void setMetaAttribute(Object key, Object value) {
-
-	}
-
-	@Override
-	def getMetaAttribute(Object key) {
-		return null
-	}
-
-	@Override
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		return null
 	}
 

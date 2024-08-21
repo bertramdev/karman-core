@@ -12,7 +12,7 @@ import java.nio.file.*
  *
  * @author David Estes
  */
-class NfsDirectory extends Directory {
+class NfsDirectory extends Directory<NfsCloudFile> {
 
 	Nfs3File baseFile
 
@@ -22,7 +22,7 @@ class NfsDirectory extends Directory {
 
 	}
 
-	List listFiles(options = [:]) {
+	List<NfsCloudFile> listFiles(Map<String,Object> options = [:]) {
 		Collection<NfsCloudFile> rtn = []
 
 		def delimiter = options.delimiter
@@ -129,22 +129,21 @@ class NfsDirectory extends Directory {
 
 
 	@Override
-	CloudFile getFile(String name) {
+	NfsCloudFile getFile(String name) {
 
 		def path = baseFile.path + '/' + name
 		return cloudFileFromNfs3File(new Nfs3File(baseFile.nfs,path))
 	}
 
 	@Override
-	def save() {
+	void save() {
 		if(!baseFile.exists()) {
 			baseFile.mkdirs()
 		}
-		return null
 	}
 
 
-	def delete() {
+	void delete() {
 		if(baseFile.exists()) {
 			baseFile.delete()
 		}

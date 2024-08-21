@@ -37,7 +37,7 @@ import java.text.*;
  * @author Bob Whiton
  */
 @Commons
-public class AzureFileStorageProvider extends AzureStorageProvider {
+public class AzureFileStorageProvider extends AzureStorageProvider<AzureShare> {
 	static String providerName = "azure"
 
 	public String getProviderName() {
@@ -49,7 +49,7 @@ public class AzureFileStorageProvider extends AzureStorageProvider {
 		return "${protocol}://${storageAccount}.file.${base}"
 	}
 
-	Directory getDirectory(String name) {
+	AzureShare getDirectory(String name) {
 		new AzureShare(name: name, provider: this, shareName: name)
 	}
 

@@ -1,5 +1,7 @@
 package com.bertramlabs.plugins.karman.azure
 
+import com.bertramlabs.plugins.karman.DirectoryInterface
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
@@ -76,7 +78,7 @@ import java.security.cert.X509Certificate
 import java.text.*;
 
 @Commons
-abstract class AzureStorageProvider extends StorageProvider {
+abstract class AzureStorageProvider<T extends DirectoryInterface> extends StorageProvider<T> {
 
 	String storageAccount
 	String storageKey

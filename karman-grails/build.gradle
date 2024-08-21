@@ -4,6 +4,7 @@ buildscript {
     }
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -44,7 +45,7 @@ dependencies {
   implementation "org.grails:grails-dependencies"
   runtimeOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
-  testCompile "org.grails:grails-plugin-testing"
+  testImplementation "org.grails:grails-plugin-testing"
 
   console "org.grails:grails-console"
   api project(':karman-core')
@@ -102,23 +103,8 @@ publishing {
     }
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
-// grailsPublish {
-//   if(project.hasProperty('bintrayUser')) {
-//     user = bintrayUser
-//     key = bintrayKey
-//   }
-//   userOrg = 'bertramlabs'
-//     githubSlug = 'bertramdev/karman-core'
-//     license {
-//         name = 'Apache-2.0'
-//     }
-//     title = "Karman"
-//     desc = "Karman is a standardized / extensible interface plugin for dealing with various cloud services including Local, S3, and Openstack."
-//     developers = [davydotcom:"David Estes", bdwheeler: "Brian Wheeler"]
+// java {
+//     withSourcesJar()
+//     //withJavadocJar()
 // }
 

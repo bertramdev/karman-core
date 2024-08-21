@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.24.0'
     implementation 'com.google.apis:google-api-services-storage:v1-rev148-1.25.0'
     api project(':karman-core')
@@ -38,7 +38,7 @@ dependencies {
     api 'org.apache.httpcomponents:httpmime:4.5.2'
     api group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation "org.spockframework:spock-core:$spockVersion"
 
 }
 

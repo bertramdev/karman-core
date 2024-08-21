@@ -45,7 +45,7 @@ import org.apache.http.client.utils.URIBuilder
  * @author David Estes
  */
 @Commons
-public class OpenstackStorageProvider extends StorageProvider {
+public class OpenstackStorageProvider extends StorageProvider<OpenstackDirectory> {
 	static String providerName = "openstack"
 
 	String username
@@ -204,12 +204,12 @@ public class OpenstackStorageProvider extends StorageProvider {
 		return accessInfo?.access?.token?.id?.toString() ?: accessInfo?.auth?.token
 	}
 
-	Directory getDirectory(String name) {
+	OpenstackDirectory getDirectory(String name) {
 		new OpenstackDirectory(name: name, provider: this)
 	}
 
 
-	List<Directory> getDirectories() {
+	List<OpenstackDirectory> getDirectories() {
 		if(!accessInfo) {
 			authenticate()
 		}

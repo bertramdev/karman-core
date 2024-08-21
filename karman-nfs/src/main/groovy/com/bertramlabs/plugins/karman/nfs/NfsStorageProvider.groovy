@@ -23,14 +23,15 @@ import com.emc.ecs.nfsclient.nfs.io.Nfs3File
 import com.emc.ecs.nfsclient.nfs.nfs3.Nfs3
 import com.emc.ecs.nfsclient.rpc.CredentialUnix
 import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
-@Commons
+@Slf4j
 /**
  * Provides an NFSv3 specification implementation for Karman and utilizing karman to manage files on the NFSv3 share
  * NOTE: It may be required to set the mount points on your nfs host to insecure and allow insecure ports
  * @author David Estes
  */
-class NfsStorageProvider extends StorageProvider {
+class NfsStorageProvider extends StorageProvider<NfsDirectory> {
 	static String providerName = "nfs"
 
 	public String getProviderName() {
@@ -55,7 +56,7 @@ class NfsStorageProvider extends StorageProvider {
 		password = options.password
 		this.exportFolder = options.exportFolder
 	}
-	Directory getDirectory(String name) {
+	NfsDirectory getDirectory(String name) {
 		new NfsDirectory(name: name, provider: this, baseFile: new Nfs3File(getNfsClient(),name))
 	}
 
@@ -65,7 +66,7 @@ class NfsStorageProvider extends StorageProvider {
 	}
 
 
-	def getDirectories() {
+	List<NfsDirectory> getDirectories() {
 		Nfs3 client = getNfsClient()
 		def files = new Nfs3File(client,"/").listFiles()
 		return files.findAll { file ->

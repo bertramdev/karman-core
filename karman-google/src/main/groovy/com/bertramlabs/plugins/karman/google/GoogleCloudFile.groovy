@@ -16,26 +16,16 @@
 
 package com.bertramlabs.plugins.karman.google
 
-import groovy.util.logging.Commons
-
+import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.util.ChunkedInputStream
-
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSession
-import javax.net.ssl.SSLSocket
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
-import java.lang.reflect.InvocationTargetException
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import java.text.SimpleDateFormat
+import groovy.util.logging.Slf4j
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-@Commons
-class GoogleCloudFile extends CloudFile {
+@Slf4j
+class GoogleCloudFile extends CloudFile<GoogleCloudBucket> {
 
 	GoogleCloudBucket parent
 
@@ -76,7 +66,7 @@ class GoogleCloudFile extends CloudFile {
 		kmsKeyName: [:]
 	]
 
-	void setMetaAttribute(key, value) {
+	void setMetaAttribute(String key,String value) {
 		log.trace "setMetaAttribute key: ${key}, value: ${value}"
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
@@ -84,7 +74,7 @@ class GoogleCloudFile extends CloudFile {
 		googleMeta[getStoreMetadataKey(key)] = value
 	}
 
-	String getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -92,14 +82,14 @@ class GoogleCloudFile extends CloudFile {
 		return googleMeta[getStoreMetadataKey(key)]
 	}
 
-	Map getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
 		googleMeta
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		if(!metaDataLoaded) {
 			loadObjectMetaData()
 		}
@@ -158,7 +148,7 @@ class GoogleCloudFile extends CloudFile {
 		return result
 	}
 
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		writeStream = new ByteArrayInputStream(bytes)
 		setContentLength(bytes.length)
 	}
@@ -207,11 +197,10 @@ class GoogleCloudFile extends CloudFile {
 		}
 	}
 
-	def save(acl) {
-		log.debug "save"
+	void save(CloudFileACL acl) {
 		if(valid) {
 			if(!writeStream) {
-				return update(acl)
+				update(acl)
 			}
 
 			assert writeStream
@@ -238,7 +227,8 @@ class GoogleCloudFile extends CloudFile {
 			log.debug "upload path ${path} with requestOpts ${requestOpts}"
 			def results = googleStorageProvider.callApi("https://storage.googleapis.com", path, requestOpts, 'POST')
 			if(!results.success) {
-				return false
+//				return false
+				return
 			}
 
 			// Second.. upload the actual data
@@ -283,7 +273,8 @@ class GoogleCloudFile extends CloudFile {
 				}
 				catch (e) {
 					log.error "Error on upload: ${e}", e
-					return false
+//					return false
+					return
 				}
 				finally {
 					writeStream.close()
@@ -291,14 +282,15 @@ class GoogleCloudFile extends CloudFile {
 			} else {
 				results = googleStorageProvider.callApi("https://storage.googleapis.com", path, requestOpts, 'PUT')
 				if (!results.success) {
-					return false
+//					return false
+					return;
 				}
 			}
 
 			metaDataLoaded = false
 			googleMeta = [:]
 			existsFlag = true
-			return true
+//			return true
 		}
 	}
 
@@ -329,7 +321,7 @@ class GoogleCloudFile extends CloudFile {
 	/**
 	 * Delete file
 	 */
-	def delete() {
+	void delete() {
 		def result = false
 		if(valid) {
 			GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
@@ -343,7 +335,7 @@ class GoogleCloudFile extends CloudFile {
 				log.error "Error in deleting file: ${name}: ${results}"
 			}
 		}
-		result
+		//result
 	}
 
 	private addMetadataToPayload(requestOpts) {

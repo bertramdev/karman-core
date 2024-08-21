@@ -7,7 +7,7 @@ import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.util.logging.Commons
 
 @Commons
-class AlibabaStorageProvider extends StorageProvider {
+class AlibabaStorageProvider extends StorageProvider<AlibabaDirectory> {
 
 	static String providerName = "alibaba"
 
@@ -54,11 +54,11 @@ class AlibabaStorageProvider extends StorageProvider {
 		tempDir = options.tempDir ?: tempDir
 	}
 
-	Directory getDirectory(String name) {
+	AlibabaDirectory getDirectory(String name) {
 		new AlibabaDirectory(name: name, provider: this)
 	}
 
-	List<Directory> getDirectories() {
+	List<AlibabaDirectory> getDirectories() {
 		List<Bucket> buckets = getOSSClient().listBuckets()
 		buckets.collect { bucket -> directoryFromOSSBucket(bucket)}
 	}

@@ -1,16 +1,9 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-    }
-}
-
+apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
-apply plugin: 'java-library'
+
 
 group = 'com.bertramlabs.plugins'
 
@@ -23,9 +16,9 @@ repositories {
 
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
-    api("commons-logging:commons-logging:1.1.1")
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+	implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
+    api "org.slf4j:slf4j-api:$slf4jVersion"
+    testImplementation "org.spockframework:spock-core:$spockVersion"
 
 }
 
@@ -33,6 +26,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifactId 'karman-core'
+            version project.version
             pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
@@ -67,11 +61,16 @@ publishing {
     repositories {
         maven {
             if( !isReleaseVersion ) {
-                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                url = "https://nexus.bertramlabs.com/content/repositories/snapshots"
                 if(project.hasProperty('labsNexusUser')) {
                     credentials {
                         username = labsNexusUser
                         password = labsNexusPassword
+                    }
+                }  else {
+                    credentials {
+                        username = System.getenv('LABS_NEXUS_USER')
+                        password = System.getenv('LABS_NEXUS_PASSWORD')
                     }
                 }
             }

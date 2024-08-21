@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils
 /**
  * Created by davidestes on 10/12/15.
  */
-class OpenstackDirectory extends Directory {
+class OpenstackDirectory extends Directory<OpenstackCloudFile> {
 
 
 	/**
@@ -52,7 +52,7 @@ class OpenstackDirectory extends Directory {
 	 * @param options (prefix, marker, delimiter and maxKeys)
 	 * @return List
 	 */
-	List listFiles(options = [:]) {
+	List<OpenstackCloudFile> listFiles(Map<String,Object> options = [:]) {
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 		URI listUri
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
@@ -85,7 +85,7 @@ class OpenstackDirectory extends Directory {
 	 * Create bucket for a given region (default to region in config if not defined)
 	 * @return Bucket
 	 */
-	def save() {
+	void save() {
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 		HttpPut request = new HttpPut(uriBuilder.build())
@@ -100,9 +100,9 @@ class OpenstackDirectory extends Directory {
 		EntityUtils.consume(response.entity)
 		if(response.statusLine.statusCode == 200) {
 
-			return true
+//			return true
 		} else {
-			return false
+//			return false
 		}
 	}
 
@@ -120,13 +120,13 @@ class OpenstackDirectory extends Directory {
 		HttpResponse response = client.execute(request)
 		EntityUtils.consume(response.entity)
 		if(response.statusLine.statusCode == 200) {
-			return true
+//			return true
 		} else {
-			return false
+//			return false
 		}
 	}
 
-	CloudFile getFile(String name) {
+	OpenstackCloudFile getFile(String name) {
 		new OpenstackCloudFile(
 			provider: provider,
 			parent: this,
@@ -136,7 +136,7 @@ class OpenstackDirectory extends Directory {
 
 	// PRIVATE
 
-	private CloudFile cloudFileFromOpenstackMeta(Map meta) {
+	private OpenstackCloudFile cloudFileFromOpenstackMeta(Map meta) {
 		if(meta.subdir) {
 			return new OpenstackSubDir(
 				provider: provider,

@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.bertramlabs.plugins.karman
+package com.bertramlabs.plugins.karman;
 
 public enum CloudFileACL {
 
@@ -46,21 +46,21 @@ public enum CloudFileACL {
 	/**
 	* Specifies the owner is granted and the group grantee is granted access.
 	*/
-	AuthenticatedRead("authenticated-read"),
+	AuthenticatedRead("authenticated-read");
 
 
 	/** The header value representing the canned acl */
-	private final String acl
+	private final String acl;
 
 	private CloudFileACL(String acl) {
-		this.acl = acl
+		this.acl = acl;
 	}
 
 	/**
 	* Returns the header value for this canned acl.
 	*/
 	public String toString() {
-		return acl
+		return acl;
 	}
 
 

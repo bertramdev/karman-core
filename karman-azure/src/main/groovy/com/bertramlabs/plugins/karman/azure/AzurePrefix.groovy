@@ -1,6 +1,7 @@
 package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
+import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.util.logging.Commons
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -11,9 +12,9 @@ import org.apache.http.client.methods.HttpPut
 import org.apache.http.util.EntityUtils
 
 @Commons
-class AzurePrefix extends CloudFile {
+class AzurePrefix extends AzureFile {
 
-	AzureDirectory parent
+	AzureShare parent
 	String shareName
 
 	protected String getType() {
@@ -52,7 +53,7 @@ class AzurePrefix extends CloudFile {
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 
 	}
 
@@ -104,7 +105,7 @@ class AzurePrefix extends CloudFile {
 		return true
 	}
 
-	def save(acl) {
+	void save(CloudFileACL acl) {
 		if(!this.exists()) {
 			AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
@@ -121,7 +122,6 @@ class AzurePrefix extends CloudFile {
 
 			def saveSuccessful = (response.statusLine.statusCode == 201)
 			if(saveSuccessful) {
-				return true
 			} else {
 				def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 				EntityUtils.consume(response.entity)
@@ -137,7 +137,7 @@ class AzurePrefix extends CloudFile {
 	/**
 	 * Delete a directory
 	 */
-	def delete() {
+	void delete() {
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
 		def opts = [
@@ -153,7 +153,6 @@ class AzurePrefix extends CloudFile {
 
 		def deleteSuccessful = (response.statusLine.statusCode == 202)
 		if(deleteSuccessful) {
-			return true
 		} else {
 			def xmlDoc = new XmlSlurper().parse(responseEntity.content)
 			EntityUtils.consume(response.entity)
@@ -165,22 +164,22 @@ class AzurePrefix extends CloudFile {
 	}
 
 	@Override
-	void setMetaAttribute(Object key, Object value) {
+	void setMetaAttribute(String key, String value) {
 
 	}
 
 	@Override
-	def getMetaAttribute(Object key) {
+	String getMetaAttribute(String key) {
 		return null
 	}
 
 	@Override
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		return null
 	}
 
 	@Override
-	void removeMetaAttribute(Object key) {
+	void removeMetaAttribute(String key) {
 
 	}
 

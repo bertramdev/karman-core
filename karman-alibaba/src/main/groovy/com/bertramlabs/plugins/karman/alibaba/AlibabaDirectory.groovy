@@ -9,7 +9,7 @@ import com.bertramlabs.plugins.karman.Directory
 import groovy.util.logging.Commons
 
 @Commons
-class AlibabaDirectory extends Directory {
+class AlibabaDirectory extends Directory<AlibabaCloudFile> {
 
 	String region = ''
 
@@ -26,7 +26,7 @@ class AlibabaDirectory extends Directory {
 	 * @param options (prefix, marker, delimiter and maxKeys)
 	 * @return List
 	 */
-	List listFiles(options = [:]) {
+	List<AlibabaCloudFile> listFiles(Map<String,Object> options = [:]) {
 		ListObjectsRequest request = new ListObjectsRequest()
 		request.setBucketName(name)
 		request.setPrefix(options?.prefix)
@@ -72,7 +72,7 @@ class AlibabaDirectory extends Directory {
 	 * Create bucket for a given region (default to region in config if not defined)
 	 * @return Bucket
 	 */
-	def save() {
+	void save() {
 		if (region) {
 			getOSSClient().createBucket(name, region)
 		} else {
@@ -80,11 +80,11 @@ class AlibabaDirectory extends Directory {
 		}
 	}
 
-	def delete() {
+	void delete() {
 		getOSSClient().deleteBucket(name)
 	}
 
-	CloudFile getFile(String name) {
+	AlibabaCloudFile getFile(String name) {
 		new AlibabaCloudFile(
 			provider: provider,
 			parent: this,

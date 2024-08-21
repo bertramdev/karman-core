@@ -25,7 +25,7 @@ import jcifs.CIFSContext
 import jcifs.Configuration
 import jcifs.config.PropertyConfiguration
 
-class CifsStorageProvider extends StorageProvider {
+class CifsStorageProvider extends StorageProvider<CifsDirectory> {
 
 	static String providerName = "cifs"
 
@@ -83,7 +83,7 @@ class CifsStorageProvider extends StorageProvider {
 		}
 	}
 
-	Directory getDirectory(String name) {
+	CifsDirectory getDirectory(String name) {
 		name = name.replace('\\','/')
 		new CifsDirectory(name:name, provider:this)
 	}
@@ -92,7 +92,7 @@ class CifsStorageProvider extends StorageProvider {
 		"smb://${host}/${path ? (path + '/') : ''}"
 	}
 
-	def getDirectories() {
+	List<CifsDirectory> getDirectories() {
 		def directories = []
 		def baseDirectory = new SmbFile(smbUrl, getCifsContext())
 	

@@ -22,7 +22,7 @@ import jcifs.smb.NtlmPasswordAuthentication
 import jcifs.smb.SmbFile
 import jcifs.context.SingletonContext
 
-class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
+class CifsDirectory extends com.bertramlabs.plugins.karman.Directory<CifsCloudFile> {
 
 	CifsStorageProvider provider
 	String region
@@ -44,7 +44,7 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 		return cifsFile ? cifsFile.exists() : false
 	}
 
-	List listFiles(options = [:]) {
+	List<CifsCloudFile> listFiles(Map<String,Object> options = [:]) {
 		Collection<CifsCloudFile> rtn = []
 
 		def delimiter = options.delimiter
@@ -163,19 +163,19 @@ class CifsDirectory extends com.bertramlabs.plugins.karman.Directory {
 	}
 
 
-	def save() {
+	void save() {
 		def baseDir = getCifsFile()
 		baseDir.mkdirs()
 	}
 
-	def delete() {
+	void delete() {
 		def baseDir = getCifsFile()
 		if(baseDir.exists()) {
 			baseDir.delete()
 		}
 	}
 
-	CloudFile getFile(String name) {
+	CifsCloudFile getFile(String name) {
 		name = name.replace('\\','/')
 		new CifsCloudFile(provider:provider, parent:this, name:name)
 	}

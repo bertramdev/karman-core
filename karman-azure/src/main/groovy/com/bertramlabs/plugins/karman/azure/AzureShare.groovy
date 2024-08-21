@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils
  * Created by bwhiton on 12/02/2016.
  */
 @Commons
-class AzureShare extends AzureDirectory {
+class AzureShare extends AzureDirectory<AzureFile> {
 	
 	@Override
 	protected String getType() {
@@ -34,7 +34,8 @@ class AzureShare extends AzureDirectory {
 	 * @param options (prefix, marker, delimiter and maxKeys)
 	 * @return List
 	 */
-	List listFiles(options = [:]) {
+	@Override
+	List<AzureFile> listFiles(Map<String,Object> options = [:]) {
 		AzureFileStorageProvider azureProvider = (AzureFileStorageProvider) provider
 
 		def opts = [

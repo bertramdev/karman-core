@@ -76,7 +76,7 @@ import java.security.cert.X509Certificate
 import java.util.zip.GZIPInputStream
 
 @Commons
-class GoogleStorageProvider extends StorageProvider {
+class GoogleStorageProvider extends StorageProvider<GoogleCloudBucket> {
 
 	static String providerName = "google"
 
@@ -106,11 +106,11 @@ class GoogleStorageProvider extends StorageProvider {
 		projectId = options.projectId ?: projectId
 	}
 
-	Directory getDirectory(String name) {
+	GoogleCloudBucket getDirectory(String name) {
 		new GoogleCloudBucket(name: name, provider: this)
 	}
 
-	def getDirectories() {
+	List<GoogleCloudBucket> getDirectories() {
 		log.debug "getDirectories"
 
 		def path = "storage/v1/b"

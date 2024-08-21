@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package com.bertramlabs.plugins.karman
+package com.bertramlabs.plugins.karman;
 
-import com.bertramlabs.plugins.karman.util.Mimetypes
+import com.bertramlabs.plugins.karman.util.Mimetypes;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 
 /** 
 * This is an abstract class implementation for managing directories / buckets in the cloud.
@@ -40,21 +45,12 @@ import com.bertramlabs.plugins.karman.util.Mimetypes
 * </pre>
 * @author David Estes
 */
-abstract class Directory implements DirectoryInterface {
-	/**
-	* Reference to the provider which instantiated this class
-	*/
-	StorageProvider provider
+abstract class Directory<F extends CloudFileInterface> implements DirectoryInterface<F> {
+	protected StorageProvider provider;
 
-	/**
-	* Parent Directory (not commonly used)
-	*/
-	Directory parent
+	protected Directory parent;
 
-	/**
-	* Directory / Bucket Name
-	*/
-	String name
+	protected String name;
 
 
 	/**
@@ -62,8 +58,8 @@ abstract class Directory implements DirectoryInterface {
 	* This is in place for compatibility in your code when jumping between files and directories.
 	* @return false as a directory is never a file.
 	*/
-	Boolean isFile() {
-		return false
+	public Boolean isFile() {
+		return false;
 	}
 
 	/**
@@ -77,8 +73,8 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-	public CloudFile getAt(String key) {
-		getFile(key)
+	public F getAt(String key) {
+		return getFile(key);
 	}
 
 	/**
@@ -94,8 +90,8 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-	public void putAt(String key, CloudFile file)  {
-		file.save()
+	public void putAt(String key, F file)  {
+		file.save();
 	}
 
 
@@ -112,7 +108,11 @@ abstract class Directory implements DirectoryInterface {
 	* </pre>
 	*/
   public void putAt(String key, File file)  {
-    putAt(key, file.bytes)
+      try {
+          putAt(key, Files.readAllBytes(file.toPath()));
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
   }
 
   /**
@@ -129,13 +129,13 @@ abstract class Directory implements DirectoryInterface {
 	* </pre>
 	*/
   public void putAt(String key, byte[] bytes)  {
-		def cloudFile = getFile(key)	
-    def mimeType = Mimetypes.instance.getMimetype(key)
-		if(mimeType) {
-			cloudFile.contentType = mimeType
-		}
-		cloudFile.bytes = bytes
-		cloudFile.save()
+	  F cloudFile = getFile(key);
+	  String mimeType = Mimetypes.instance.getMimetype(key);
+	  if(mimeType != null) {
+		  cloudFile.setContentType(mimeType);
+	  }
+		cloudFile.setBytes(bytes);
+		cloudFile.save();
 	}
 
     /**
@@ -150,13 +150,13 @@ abstract class Directory implements DirectoryInterface {
 	* </pre>
 	*/
 	public void putAt(String key, String text)  {
-		def cloudFile = getFile(key)
-		def mimeType = Mimetypes.instance.getMimetype(key)
-    if(mimeType) {
-			cloudFile.contentType = mimeType
+		F cloudFile = getFile(key);
+		String mimeType = Mimetypes.instance.getMimetype(key);
+    	if(mimeType != null) {
+			cloudFile.setContentType(mimeType);
 		}
-		cloudFile.text = text
-		cloudFile.save()
+		cloudFile.setText(text);
+		cloudFile.save();
 	}
 
 	/**
@@ -170,8 +170,8 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-	def propertyMissing(String propName) {
-		getAt(propName)
+	Object propertyMissing(String propName) {
+		return getAt(propName);
 	}
 
 	/**
@@ -185,71 +185,98 @@ abstract class Directory implements DirectoryInterface {
 	* }
 	* </pre>
 	*/
-	def propertyMissing(String propName, value) {
-		putAt(propName,value)
+	void propertyMissing(String propName, String value) {
+		putAt(propName,value);
 	}
 
 	/**
 	* Creates or saves this directory to the cloud store if it does not already exist.
 	*/
-  def mkdir() {
-		save()
+  	public void mkdir() {
+		save();
 	}
 
 	/**
 	* Creates or saves this directory to the cloud store if it does not already exist.
 	*/
-	def mkdirs() {
-		save()
+	public void mkdirs() {
+		save();
 	}
 
 	/**
 	* Checks is this is a directory or not (Always true).
 	* @return true
 	*/
-	Boolean isDirectory() {
-		return true
+	public Boolean isDirectory() {
+		return true;
 	}
 
 	/**
 	 * Scaffold for checking content type... For a directory this is typically null
 	 * @return null
 	 */
-	String getContentType() {
-		return null
+	public String getContentType() {
+		return null;
 	}
 
 	/**
 	* Displays the name of the directory when cast to a String.
 	* @return name of the directory
 	*/
-	String toString() {
-		return name
+	public String toString() {
+		return getName();
   	}
 
-	static String normalizePath(String path) {
-		boolean addSuffixDelimiter = false
-		if(path.endsWith('/')) {
-			addSuffixDelimiter = true
-		}
-		String[] pathArgs = path.split("/")
-		List newPath = []
+	public static String normalizePath(String path) {
+		boolean addSuffixDelimiter = path.endsWith("/");
+        String[] pathArgs = path.split("/");
+		ArrayList<String> newPath = new ArrayList<String>();
 		for (int counter = 0; counter < pathArgs.length; counter++) {
-			String pathElement = pathArgs[counter]
-			if (pathElement == '..') {
-				if (newPath.size() > 0) {
-					newPath.pop()
+			String pathElement = pathArgs[counter];
+			if (pathElement.equals("..")) {
+				if (!newPath.isEmpty()) {
+					newPath.remove(newPath.size() - 1);
 				} else if (counter < pathArgs.length - 1) {
-					counter++
-					continue;
-				}
-			} else if (pathElement == '.') {
-				// do nothing
-			} else {
-				newPath << pathElement
+					counter++;
+                }
+			} else if(!pathElement.equals(".")) {
+				newPath.add(pathElement);
 			}
 		}
-		return newPath.join("/") + (addSuffixDelimiter ? '/' : '')
+		return String.join("/", newPath) + (addSuffixDelimiter ? "/" : "");
 	}
 
+	/**
+	* Reference to the provider which instantiated this class
+	*/
+	public StorageProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(StorageProvider provider) {
+		this.provider = provider;
+	}
+
+	/**
+	* Parent Directory (not commonly used)
+	*/
+	public Directory getParent() {
+		return parent;
+	}
+
+	public void setParent(Directory parent) {
+		this.parent = parent;
+	}
+
+	/**
+	* Directory / Bucket Name
+	*/
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

@@ -14,36 +14,39 @@
  * limitations under the License.
  */
 
-package com.bertramlabs.plugins.karman
+package com.bertramlabs.plugins.karman;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * An Interface for interacting with Cloud Containers (i.e. Buckets). If looking to add new cloud providers,
 * one must implement this interface via the {@link com.bertramlabs.plugins.karman.Directory} abstract class.
 * @author David Estes
 */
-interface DirectoryInterface {
+public interface DirectoryInterface<F extends CloudFileInterface> {
 
-	String getName()
+	String getName();
 
-	Boolean exists()
+	Boolean exists();
 
-	Boolean isFile()
+	Boolean isFile();
 
-	Boolean isDirectory()
+	Boolean isDirectory();
 
 	/**
 	 * Scaffold for checking content type... For a directory this is typically null
 	 */
-	String getContentType()
+	String getContentType();
 
-	List listFiles(options)
+	List<F> listFiles(Map<String,Object> options);
 
-	CloudFile getFile(String name)
+	F getFile(String name);
 
-	public CloudFile getAt(String key)
+	public F getAt(String key);
 
-	def save()
+	void save();
 
-	def delete()
+	void delete();
 
 }

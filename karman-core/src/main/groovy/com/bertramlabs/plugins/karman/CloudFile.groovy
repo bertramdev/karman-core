@@ -38,7 +38,7 @@ import groovy.transform.CompileStatic
 * </pre>
 * @author David Estes
 */
-abstract class CloudFile implements CloudFileInterface {
+abstract class CloudFile<T extends DirectoryInterface> implements CloudFileInterface<T> {
 	StorageProvider provider
 
 	/**
@@ -102,7 +102,7 @@ abstract class CloudFile implements CloudFileInterface {
 	/**
 	* Saves the file using the defaultFileACL as configured in the provider
 	*/
-	def save() {
+	void save() {
 		save(provider.defaultFileACL)
 	}
 

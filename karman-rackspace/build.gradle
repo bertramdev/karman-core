@@ -34,10 +34,10 @@ sourceSets {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.codehaus.groovy:groovy-all:$groovyVersion"
     api project(':karman-core')
     api project(':karman-openstack')
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation "org.spockframework:spock-core:$spockVersion"
 
 }
 

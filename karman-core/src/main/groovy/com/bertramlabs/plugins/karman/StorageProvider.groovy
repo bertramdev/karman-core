@@ -41,7 +41,7 @@ import com.bertramlabs.plugins.karman.exceptions.ProviderNotFoundException
 * </pre>
 * @author David Estes
 */
-abstract class StorageProvider implements StorageProviderInterface {
+abstract class StorageProvider<T extends DirectoryInterface> implements StorageProviderInterface<T> {
 
 	CloudFileACL defaultFileACL
 	String tempDir
@@ -51,7 +51,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 	* Convenience method for fetching a Directory/Container By Name.
 	* @see {@link com.bertramlabs.plugins.karman.StorageProvider#getDirectory()}
 	*/
-	public Directory getAt(String key) {
+	public T getAt(String key) {
 		getDirectory(key)
 	}
 
@@ -60,7 +60,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 	* Get a list of directories within the storage provider (i.e. Buckets/Containers)
 	* @return List of {@link com.bertramlabs.plugins.karman.Directory} Classes.
 	*/
-	abstract def getDirectories()
+	abstract List<T> getDirectories()
 
 
 	/**
@@ -82,7 +82,7 @@ abstract class StorageProvider implements StorageProviderInterface {
 	* being the provider name and the value being the fully qualified class name
 	* @param options - Takes an array of options and passes to the constructor of the provider. Passing [provider: 'local'] would fetch a local Provider.
 	*/
-	public static synchronized StorageProvider create(options = [:]) {
+	public static synchronized StorageProvider create(Map<String,Object> options = [:]) {
 		def provider = options.remove('provider')
 		if(!provider) {
 			throw new ProviderNotFoundException()
@@ -91,6 +91,17 @@ abstract class StorageProvider implements StorageProviderInterface {
 		if(!providerClass) {
 			throw new ProviderNotFoundException(provider)
 		}
+		return providerClass.newInstance(options)
+	}
+
+
+	/**
+	 * A Factory method for creating a new storage provider of a type. Typically the type is passed as a provider
+	 * key which correlates to the classes providerName. These can be registered by creating a Properties file in META-INF/karman/provider.properties with the key
+	 * being the provider name and the value being the fully qualified class name
+	 * @param options - Takes an array of options and passes to the constructor of the provider. Passing [provider: 'local'] would fetch a local Provider.
+	 */
+	public static synchronized <T extends StorageProvider> T create(Map<String,Object> options, Class<T> providerClass) {
 		return providerClass.newInstance(options)
 	}
 

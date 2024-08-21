@@ -16,13 +16,12 @@
  
 package com.bertramlabs.plugins.karman.google
 
-import groovy.util.logging.Commons
-
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
+import groovy.util.logging.Slf4j
 
-@Commons
-class GoogleCloudBucket extends Directory {
+@Slf4j
+class GoogleCloudBucket extends Directory<GoogleCloudFile> {
 
 	private String locationType
 	private String location
@@ -96,7 +95,7 @@ class GoogleCloudBucket extends Directory {
 		return results.success
 	}
 
-	List listFiles(options = [:]) {
+	List<GoogleCloudFile> listFiles(Map<String,Object> options = [:]) {
 		log.debug "listFiles: ${name} options:${options}"
 		lastError = null
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
@@ -164,7 +163,7 @@ class GoogleCloudBucket extends Directory {
 		new GoogleCloudDirectory(provider: provider, name: directoryName, parent: this)
 	}
 
-	def save() {
+	void save() {
 		log.debug "save: ${name}, ${location}, ${locationType}, ${storageClass}"
 		lastError = null
 		GoogleStorageProvider googleStorageProvider = (GoogleStorageProvider) provider
@@ -189,7 +188,7 @@ class GoogleCloudBucket extends Directory {
 		results.success
 	}
 
-	def delete() {
+	void delete() {
 		log.debug "delete: ${name}"
 		lastError = null
 		// To delete a bucket (directory) must delete ALL the objects in it first
@@ -224,17 +223,17 @@ class GoogleCloudBucket extends Directory {
 			log.debug "Deleting bucket ${name}"
 			def deleteResults = googleStorageProvider.callApi("https://storage.googleapis.com", "storage/v1/b/${name}", [:], 'DELETE')
 			if(deleteResults.success) {
-				return true
+//				return true
 			} else {
 				log.error "Error in deleting bucket ${deleteResults}"
-				return false
+//				return false
 			}
 		} else {
-			return false
+//			return false
 		}
 	}
 
-	CloudFile getFile(String name) {
+	GoogleCloudFile getFile(String name) {
 		new GoogleCloudFile(provider: provider, parent: this, name: name)
 	}
 

@@ -24,7 +24,7 @@ import groovy.transform.CompileStatic
 import jcifs.smb.SmbFile
 
 @Commons
-class CifsCloudFile extends CloudFile {
+class CifsCloudFile extends CloudFile<CifsDirectory> {
 
 	CifsDirectory parent
 	CifsStorageProvider provider
@@ -91,7 +91,7 @@ class CifsCloudFile extends CloudFile {
     setBytes(text.bytes)
 	}
 
-	void setBytes(bytes) {
+	void setBytes(byte[] bytes) {
 		ensurePathExists()
 		def rawSourceStream = new ByteArrayInputStream(bytes)
 		setInputStream(rawSourceStream)
@@ -113,7 +113,6 @@ class CifsCloudFile extends CloudFile {
 
 	void setContentType(String contentType) {
 		// Content Type is not implemented in most file system stores
-		return
 	}
 
 	Boolean exists() {
@@ -121,24 +120,24 @@ class CifsCloudFile extends CloudFile {
 		return cifsFile.exists()
 	}
 
-  void setMetaAttribute(key, value) {
+  void setMetaAttribute(String key, String value) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	def getMetaAttribute(key) {
+	String getMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	def getMetaAttributes() {
+	Map<String,String> getMetaAttributes() {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
-	void removeMetaAttribute(key) {
+	void removeMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
 	}
 
 	@CompileStatic
-  	def save(acl = '') {
+  	void save(CloudFileACL acl = null) {
 		if(sourceStream) {
 			SmbFile parentFile = new SmbFile(cifsFile.parent,provider.getCifsContext())
 			try {
@@ -173,7 +172,8 @@ class CifsCloudFile extends CloudFile {
 		}
 	}
 
-	def delete() {
+	@Override
+	void delete() {
 		def cifsFile = getCifsFile()
 		cifsFile.delete()
 		cleanUpTree()

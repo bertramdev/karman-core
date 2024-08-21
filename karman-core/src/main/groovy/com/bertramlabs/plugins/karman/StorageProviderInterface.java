@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package com.bertramlabs.plugins.karman
+package com.bertramlabs.plugins.karman;
 
-interface StorageProviderInterface {
-	String getProviderName()
+import java.util.List;
 
-	Directory getDirectory(String name)
+interface StorageProviderInterface<T extends DirectoryInterface> {
+	String getProviderName();
 
-	def getDirectories()
+	T getDirectory(String name);
 
-	public Directory getAt(String key)
+	List<T> getDirectories();
 
-	public void shutdown()
+	public T getAt(String key);
+
+	public void shutdown();
 
 }
