@@ -6,9 +6,9 @@ import com.aliyun.oss.model.OSSObjectSummary
 import com.aliyun.oss.model.ObjectListing
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
-@Commons
+@Slf4j
 class AlibabaDirectory extends Directory<AlibabaCloudFile> {
 
 	String region = ''

@@ -3,7 +3,7 @@ package com.bertramlabs.plugins.karman.openstack
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import groovy.util.logging.Slf4j
 import org.apache.http.Header
 import org.apache.http.HttpEntity

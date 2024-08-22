@@ -1,12 +1,12 @@
 package com.bertramlabs.plugins.karman.azure
 
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import java.util.UUID
 import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import com.bertramlabs.plugins.karman.azure.AzureBlobStorageProvider
 import spock.lang.Specification
 
-@Commons
+@Slf4j
 class AzureFileSpec extends Specification {
 
 	static AzureFileStorageProvider storageProvider

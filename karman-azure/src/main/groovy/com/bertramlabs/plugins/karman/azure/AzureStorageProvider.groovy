@@ -8,7 +8,7 @@ import java.security.InvalidKeyException;
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.util.XmlSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpHost
@@ -77,7 +77,7 @@ import java.security.cert.X509Certificate
 
 import java.text.*;
 
-@Commons
+@Slf4j
 abstract class AzureStorageProvider<T extends DirectoryInterface> extends StorageProvider<T> {
 
 	String storageAccount

@@ -1,11 +1,15 @@
 package com.bertramlabs.plugins.karman.util
 
-@Singleton
 public class Mimetypes {
 
     static String MIMETYPE_OCTET_STREAM = 'application/octet-stream'
 
     private Map mimeTypes = [:]
+
+
+    public static Mimetypes getInstance() {
+        return new Mimetypes()
+    }
 
     String getMimetype(String fileName) {
         String mimetype = MIMETYPE_OCTET_STREAM // Default

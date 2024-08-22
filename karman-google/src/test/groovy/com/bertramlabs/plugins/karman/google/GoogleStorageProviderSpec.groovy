@@ -1,12 +1,12 @@
 package com.bertramlabs.plugins.karman.google
 
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import com.bertramlabs.plugins.karman.*
 import com.bertramlabs.plugins.karman.google.GoogleStorageProvider
 import spock.lang.Specification
 
-@Commons
+@Slf4j
 class GoogleStorageProviderSpec extends Specification {
 
 	static GoogleStorageProvider storageProvider

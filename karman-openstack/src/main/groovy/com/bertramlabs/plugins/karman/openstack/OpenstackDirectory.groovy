@@ -106,7 +106,7 @@ class OpenstackDirectory extends Directory<OpenstackCloudFile> {
 		}
 	}
 
-	def delete() {
+	void delete() {
 		OpenstackStorageProvider openstackProvider = (OpenstackStorageProvider) provider
 		URIBuilder uriBuilder = new URIBuilder("${openstackProvider.getEndpointUrl()}/${name}".toString())
 		HttpDelete request = new HttpDelete(uriBuilder.build())

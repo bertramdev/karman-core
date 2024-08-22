@@ -40,10 +40,7 @@ class KarmanConfigHolder {
 	//static providerTypes = [local: LocalStorageProvider]
 	static providerTypes = KarmanProviders.loadProviders()
 
-	/**
-	 * Map of available network providers registered with the network provider factory
-	 */
-	static networkProviderTypes = KarmanProviders.loadNetworkProviders()
+
 
 	/**
 	* Merges a Map of config properties into the global Config Map

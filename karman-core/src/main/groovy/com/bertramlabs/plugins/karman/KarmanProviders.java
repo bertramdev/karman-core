@@ -35,30 +35,36 @@ class KarmanProviders {
         if(providers == null) {
             Enumeration<URL> resources = classLoader.getResources(FACTORIES_RESOURCE_LOCATION);
             providers = new LinkedHashMap<>();
-			while(URL res = resources.nextElement() != null) {
+			URL res = resources.nextElement();
+			while(res != null) {
+				Properties providerProperties = new Properties();
+				providerProperties.load(res.openStream());
 
+				for(Object providerNameObj : providerProperties.keySet()) {
+					String providerName = providerNameObj.toString();
+					try {
+						String className = providerProperties.getProperty(providerName);
+
+
+						Class cls = classLoader.loadClass(className);
+						if(providers.get(providerName) == null) {
+							providers.put(providerName, cls);
+						}
+//						if(cls instanceof StorageProviderInterface) {
+//
+//						} else {
+//							log.warn("Karman Storage Provider $className not registered because it does not implement the StorageProviderInterface")
+//						}
+					} catch(Throwable e) {
+						log.error("Error Loading Karman Storage Provider $className: $e.message",e);
+					}
+				}
+				if(resources.hasMoreElements()) {
+					res = resources.nextElement();
+				} else {
+					res = null;
+				}
 			}
-			for(URL res : resources.asIterator()) {
-
-	        	Properties providerProperties = new Properties();
-            	providerProperties.load(res.openStream());
-
-            	providerProperties.keySet().each { providerName ->
-            		try {
-	            		String className = providerProperties.getProperty(providerName);
-	            		def cls = classLoader.loadClass(className);
-	            		if(StorageProviderInterface.isAssignableFrom(cls)) {
-	            			if(!providers[providerName]) {
-	            				providers[providerName] = cls;
-	            			}
-	        			} else {
-	            			log.warn("Karman Storage Provider $className not registered because it does not implement the StorageProviderInterface")		
-	        			}
-	        		} catch(Throwable e) {
-	        			log.error("Error Loading Karman Storage Provider $className: $e.message",e);
-	        		} 
-            	}
-	        }
 	    }
     	return providers;
     }

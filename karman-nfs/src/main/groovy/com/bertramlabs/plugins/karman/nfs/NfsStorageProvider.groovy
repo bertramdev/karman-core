@@ -22,7 +22,7 @@ import com.emc.ecs.nfsclient.nfs.NfsReaddirRequest
 import com.emc.ecs.nfsclient.nfs.io.Nfs3File
 import com.emc.ecs.nfsclient.nfs.nfs3.Nfs3
 import com.emc.ecs.nfsclient.rpc.CredentialUnix
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import groovy.util.logging.Slf4j
 
 @Slf4j

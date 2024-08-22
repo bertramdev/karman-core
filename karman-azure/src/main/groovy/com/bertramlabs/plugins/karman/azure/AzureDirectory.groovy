@@ -4,7 +4,7 @@ import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileInterface
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils
 /**
  * Created by bwhiton on 12/02/2016.
  */
-@Commons
+@Slf4j
 class AzureDirectory<C extends CloudFileInterface> extends Directory<C> {
 	
 	protected String shareName

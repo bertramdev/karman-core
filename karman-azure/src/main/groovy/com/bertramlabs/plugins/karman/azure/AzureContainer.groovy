@@ -3,7 +3,7 @@ package com.bertramlabs.plugins.karman.azure
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -21,7 +21,7 @@ import org.apache.http.util.EntityUtils
 /**
  * Created by bwhiton on 11/22/2016.
  */
-@Commons
+@Slf4j
 class AzureContainer extends Directory<AzurePageBlobFile> {
 	/**
 	 * Check if container exists

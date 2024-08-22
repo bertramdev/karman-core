@@ -55,7 +55,7 @@ class GoogleCloudDirectory extends GoogleCloudFile {
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 
 	}
 
@@ -99,7 +99,7 @@ class GoogleCloudDirectory extends GoogleCloudFile {
 	}
 
 	@Override
-	def delete() {
+	void delete() {
 		def dirName = name
 		if(!name.endsWith('/')) {
 			dirName = name + '/'
@@ -130,7 +130,7 @@ class GoogleCloudDirectory extends GoogleCloudFile {
 				keepGoing = false
 			}
 		}
-		return true
+
 	}
 
 	@Override

@@ -2,9 +2,9 @@ package com.bertramlabs.plugins.karman.alibaba
 
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileACL
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
-@Commons
+@Slf4j
 class AlibabaCloudPrefix extends AlibabaCloudFile {
 
 	AlibabaDirectory parent

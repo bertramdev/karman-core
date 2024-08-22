@@ -3,7 +3,7 @@ package com.bertramlabs.plugins.karman.azure
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
 
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
 import org.apache.http.HttpEntity
 import org.apache.http.client.HttpClient
@@ -36,7 +36,7 @@ import java.text.*;
  *
  * @author Bob Whiton
  */
-@Commons
+@Slf4j
 public class AzureBlobStorageProvider extends AzureStorageProvider<AzureContainer> {
 	static String providerName = "azure-pageblob"
 

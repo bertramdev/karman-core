@@ -1,12 +1,12 @@
 package com.bertramlabs.plugins.karman.nfs
 
 import com.bertramlabs.plugins.karman.CloudFile
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import com.bertramlabs.plugins.karman.KarmanConfigHolder
 import com.bertramlabs.plugins.karman.nfs.NfsStorageProvider
 import spock.lang.Specification
 
-@Commons
+@Slf4j
 class NfsStorageProviderSpec extends Specification {
 
 	static NfsStorageProvider storageProvider

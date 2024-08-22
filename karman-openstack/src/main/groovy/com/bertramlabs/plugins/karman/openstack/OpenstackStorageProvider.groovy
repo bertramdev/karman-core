@@ -4,7 +4,7 @@ import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -44,7 +44,7 @@ import org.apache.http.client.utils.URIBuilder
  *
  * @author David Estes
  */
-@Commons
+@Slf4j
 public class OpenstackStorageProvider extends StorageProvider<OpenstackDirectory> {
 	static String providerName = "openstack"
 

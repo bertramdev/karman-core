@@ -5,7 +5,7 @@ import com.bertramlabs.plugins.karman.openstack.OpenstackStorageProvider
 import com.bertramlabs.plugins.karman.StorageProvider
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -43,7 +43,7 @@ import org.apache.http.util.EntityUtils
  *
  * @author David Estes
  */
-@Commons
+@Slf4j
 public class RackspaceStorageProvider extends OpenstackStorageProvider {
 	static String providerName = "rackspace"
 

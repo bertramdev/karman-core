@@ -45,7 +45,7 @@ import java.util.ArrayList;
 * </pre>
 * @author David Estes
 */
-abstract class Directory<F extends CloudFileInterface> implements DirectoryInterface<F> {
+public abstract class Directory<F extends CloudFileInterface> implements DirectoryInterface<F> {
 	protected StorageProvider provider;
 
 	protected Directory parent;
@@ -130,7 +130,7 @@ abstract class Directory<F extends CloudFileInterface> implements DirectoryInter
 	*/
   public void putAt(String key, byte[] bytes)  {
 	  F cloudFile = getFile(key);
-	  String mimeType = Mimetypes.instance.getMimetype(key);
+	  String mimeType = Mimetypes.getInstance().getMimetype(key);
 	  if(mimeType != null) {
 		  cloudFile.setContentType(mimeType);
 	  }
@@ -151,7 +151,7 @@ abstract class Directory<F extends CloudFileInterface> implements DirectoryInter
 	*/
 	public void putAt(String key, String text)  {
 		F cloudFile = getFile(key);
-		String mimeType = Mimetypes.instance.getMimetype(key);
+		String mimeType = Mimetypes.getInstance().getMimetype(key);
     	if(mimeType != null) {
 			cloudFile.setContentType(mimeType);
 		}

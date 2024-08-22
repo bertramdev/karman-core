@@ -17,13 +17,13 @@
 package com.bertramlabs.plugins.karman.local
 
 import com.bertramlabs.plugins.karman.*
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import java.io.ByteArrayInputStream;
 import java.io.BufferedOutputStream;
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
 
-@Commons
+@Slf4j
 class LocalCloudFile extends CloudFile<LocalDirectory> {
 	LocalDirectory parent
 
@@ -40,6 +40,7 @@ class LocalCloudFile extends CloudFile<LocalDirectory> {
 		new URL("${provider.baseUrl}/${parent.name}/${name}")
 	}
 
+	@CompileStatic
 	InputStream getInputStream() {
 		fsFile.newInputStream()
 	}
@@ -120,10 +121,12 @@ class LocalCloudFile extends CloudFile<LocalDirectory> {
 
 	String getMetaAttribute(String key) {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
+		return null
 	}
 
 	Map<String,String> getMetaAttributes() {
 		log.warn("Karman CloudFile Meta Attributes Not Available for LocalCloudFile")
+		return null
 	}
 
 	void removeMetaAttribute(String key) {

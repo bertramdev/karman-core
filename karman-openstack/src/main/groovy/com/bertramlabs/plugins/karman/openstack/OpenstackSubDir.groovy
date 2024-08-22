@@ -38,7 +38,7 @@ class OpenstackSubDir extends OpenstackCloudFile {
 	}
 
 	@Override
-	void setBytes(Object bytes) {
+	void setBytes(byte[] bytes) {
 
 	}
 
@@ -102,7 +102,7 @@ class OpenstackSubDir extends OpenstackCloudFile {
 	}
 
 	@Override
-	void removeMetaAttribute(Object key) {
+	void removeMetaAttribute(String key) {
 
 	}
 

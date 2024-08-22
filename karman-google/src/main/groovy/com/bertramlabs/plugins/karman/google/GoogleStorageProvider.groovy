@@ -16,7 +16,7 @@
 
 package com.bertramlabs.plugins.karman.google
 
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 
 import org.apache.http.client.config.RequestConfig
 import com.bertramlabs.plugins.karman.Directory
@@ -75,7 +75,7 @@ import java.security.KeyStore
 import java.security.cert.X509Certificate
 import java.util.zip.GZIPInputStream
 
-@Commons
+@Slf4j
 class GoogleStorageProvider extends StorageProvider<GoogleCloudBucket> {
 
 	static String providerName = "google"

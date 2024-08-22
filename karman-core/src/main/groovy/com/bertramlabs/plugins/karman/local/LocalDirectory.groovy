@@ -17,6 +17,7 @@
 package com.bertramlabs.plugins.karman.local
 
 import com.bertramlabs.plugins.karman.*
+import groovy.transform.CompileStatic
 
 import java.nio.file.FileSystems
 import java.nio.file.Path
@@ -150,6 +151,7 @@ class LocalDirectory extends Directory<LocalCloudFile> {
 		}
 	}
 
+	@CompileStatic
 	LocalCloudFile getFile(String name) {
 		new LocalCloudFile(provider: provider, parent: this, name: name)
 	}

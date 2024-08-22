@@ -1,10 +1,10 @@
 package com.bertramlabs.plugins.karman.cifs
 
 import com.bertramlabs.plugins.karman.CloudFile
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import spock.lang.Specification
 
-@Commons
+@Slf4j
 class CifsStorageProviderSpec extends Specification {
 
 	static CifsStorageProvider storageProvider

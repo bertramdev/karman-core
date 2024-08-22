@@ -7,7 +7,7 @@ import com.bertramlabs.plugins.karman.util.Mimetypes
 import com.emc.ecs.nfsclient.nfs.io.Nfs3File
 import com.emc.ecs.nfsclient.nfs.io.NfsFileOutputStream
 import groovy.transform.CompileStatic
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import groovy.util.logging.Slf4j
 
 /**

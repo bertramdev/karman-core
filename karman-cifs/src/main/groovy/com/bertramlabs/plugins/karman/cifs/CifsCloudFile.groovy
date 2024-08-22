@@ -17,13 +17,13 @@
 package com.bertramlabs.plugins.karman.cifs
 
 import com.bertramlabs.plugins.karman.*
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import java.io.ByteArrayInputStream;
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
 import jcifs.smb.SmbFile
 
-@Commons
+@Slf4j
 class CifsCloudFile extends CloudFile<CifsDirectory> {
 
 	CifsDirectory parent

@@ -4,7 +4,7 @@ import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileACL
 import com.bertramlabs.plugins.karman.Directory
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter
  * Azure Cloud File implementation for Azure File
  * @author Bob Whiton
  */
-@Commons
+@Slf4j
 class AzureFile extends CloudFile<AzureShare> {
 
 	AzureShare parent // Not used

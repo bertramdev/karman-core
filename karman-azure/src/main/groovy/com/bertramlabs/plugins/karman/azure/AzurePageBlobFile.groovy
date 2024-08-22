@@ -3,7 +3,7 @@ package com.bertramlabs.plugins.karman.azure
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileACL
 import groovy.json.JsonSlurper
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -36,7 +36,7 @@ import java.time.ZoneId
  * Azure Cloud File implementation for Azure Page Blob
  * @author Bob Whiton
  */
-@Commons
+@Slf4j
 class AzurePageBlobFile extends CloudFile<AzureContainer> {
 	
 	AzureContainer parent

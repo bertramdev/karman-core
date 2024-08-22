@@ -2,7 +2,7 @@ package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.CloudFileACL
-import groovy.util.logging.Commons
+import groovy.util.logging.Slf4j
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
@@ -11,7 +11,7 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.util.EntityUtils
 
-@Commons
+@Slf4j
 class AzurePrefix extends AzureFile {
 
 	AzureShare parent
