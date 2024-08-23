@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DifferentialInputStream extends InputStream {
-
+    //get commons logger
+    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(DifferentialInputStream.class);
     public ManifestData manifestData;
     private CloudFileInterface baseFile;
     private InputStream sourceManifest;
@@ -145,6 +146,7 @@ public class DifferentialInputStream extends InputStream {
             return null;
         } else if(bytesRead < 44) {
             //we have a problem and need to hold until the data is available
+            log.warn("Block Data Incomplete: " + bytesRead);
             while(sourceManifest.available() <= 44-bytesRead) {
                 try {
                     Thread.sleep(100);

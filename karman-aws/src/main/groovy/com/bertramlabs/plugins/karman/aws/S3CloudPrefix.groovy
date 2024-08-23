@@ -110,25 +110,26 @@ class S3CloudPrefix extends CloudFile {
 		}
 
 		def maxKeys = 100
-		def marker = 0
-		ListObjectsRequest request = new ListObjectsRequest(parent.name, dirName, marker, null, maxKeys)
+		def marker = null
+		ListObjectsRequest request = new ListObjectsRequest(parent.name, dirName, null, null, maxKeys)
 
 		ObjectListing objectListing = s3Client.listObjects(request)
 		def keys = objectListing.objectSummaries?.collect { summary -> summary.key}
 		if(keys) {
 			DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(parent.name)
-			deleteRequest.setKeys(keys)
+			deleteRequest.setKeys(keys.collect {new DeleteObjectsRequest.KeyVersion(it)})
 			s3Client.deleteObjects(deleteRequest)
 		}
 		while(keys?.size() == maxKeys) {
-			marker+=maxKeys
+			marker = keys.last()
 			request = new ListObjectsRequest(parent.name, dirName, marker, null, maxKeys)
 
 			objectListing = s3Client.listObjects(request)
 			keys = objectListing.objectSummaries?.collect { summary -> summary.key}
+
 			if(keys) {
 				DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(parent.name)
-				deleteRequest.setKeys(keys)
+				deleteRequest.setKeys(keys.collect {new DeleteObjectsRequest.KeyVersion(it)})
 				s3Client.deleteObjects(deleteRequest)
 			}
 		}

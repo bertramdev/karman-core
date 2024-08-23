@@ -32,11 +32,11 @@ dependencies {
 publishing {
 	publications {
 		maven(MavenPublication) {
-			artifactId 'karman-cifs'
+			artifactId 'karman-differential'
 			pom.withXml {
 				asNode().children().last() + {
 					resolveStrategy = Closure.DELEGATE_FIRST
-					name 'karman-cifs'
+					name 'karman-differential'
 					description 'Karman Storage Provider interface for differential file storage'
 					url 'https://github.com/bertramdev/karman-core'
 					scm {

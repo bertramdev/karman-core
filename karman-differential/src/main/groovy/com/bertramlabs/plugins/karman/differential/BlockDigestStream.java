@@ -1,5 +1,7 @@
 package com.bertramlabs.plugins.karman.differential;
 
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,7 +10,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+
 public class BlockDigestStream extends InputStream {
+    //get commons logger
+    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(BlockDigestStream.class);
     InputStream sourceStream;
     MessageDigest shaDigest;
     InputStream digestStream;
@@ -48,11 +53,7 @@ public class BlockDigestStream extends InputStream {
      *
      * <p> A subclass must provide an implementation of this method.
      *
-     * @return the next byte of data, or {@code -1} if the end of the
-     * stream is reached.
-     * @throws IOException if an I/O error occurs.
      */
-
     public boolean lastBlockDifferent = true;
     private boolean zeroFilled = true;
     @Override
@@ -84,7 +85,7 @@ public class BlockDigestStream extends InputStream {
 
                         if(Arrays.equals(linkedBlockData.hash, blockData.hash)) {
                             blockData.fileIndex = linkedBlockData.fileIndex+1;
-//                            System.out.println("Unchanged Block Detected: " + currentBlock);
+//                            log.info("Unchanged Block Detected: " + currentBlock);
                             lastBlockDifferent = false;
                         } else {
                             StringBuilder hexString = new StringBuilder();
@@ -104,8 +105,12 @@ public class BlockDigestStream extends InputStream {
                                     hexString2.append('0');
                                 hexString2.append(hex);
                             }
+//                            log.warn("Hash Comparison: " + hexString + " - " + hexString2);
+
                         }
                         linkedBlockData = linkedFileStream.getNextBlockData();
+                    } else{
+//                        log.warn("Somehow block numbers do not match: " + currentBlock + " - " + linkedBlockData.block);
                     }
                 }
                 manifestOutput.write(blockData.generateBytes());

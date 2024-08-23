@@ -31,14 +31,9 @@ public class DifferentialCloudFile extends CloudFile {
 	@Override
 	@CompileStatic
 	InputStream getInputStream() {
-		if(sourceFile.isDirectory()) {
-			CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
-			if(manifestFile.exists()) {
-				return new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
-			} else {
-				return sourceFile.getInputStream()
-			}
-
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+		if(manifestFile.exists()) {
+			return new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
 		} else {
 			return sourceFile.getInputStream()
 		}
@@ -46,12 +41,11 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	Boolean isDirectory() {
-		if(sourceFile.isDirectory()) {
-			CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
-			return !manifestFile.exists()
-		} else {
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+		if(manifestFile.exists()) {
 			return false
 		}
+		return sourceFile.isDirectory()
 	}
 
 	@Override
@@ -113,6 +107,26 @@ public class DifferentialCloudFile extends CloudFile {
 		}
 	}
 
+	Long getOnDeviceContentLength() {
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+		if(manifestFile.exists()) {
+			long contentLength = manifestFile.contentLength
+			DifferentialInputStream is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
+
+
+				ManifestData.BlockData currentBlock = is.getNextBlockData()
+				while(currentBlock != null && currentBlock.fileIndex == 0 && !currentBlock.zeroFilled) {
+					contentLength += currentBlock.blockSize
+					currentBlock = is.getNextBlockData()
+				}
+				return contentLength
+
+
+		} else {
+			return sourceFile.getContentLength()
+		}
+	}
+
 	@Override
 	String getContentType() {
 		return Mimetypes.instance.getMimetype(name)
@@ -146,6 +160,15 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	Boolean exists() {
+		try {
+			CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+			if(manifestFile.exists()) {
+				return true
+			}
+		} catch(Exception e) {
+			//ignore
+		}
+
 		return sourceFile.exists()
 	}
 
@@ -169,13 +192,19 @@ public class DifferentialCloudFile extends CloudFile {
 			manifestData.blockSize = ((DifferentialStorageProvider) provider).blockSize
 			DifferentialInputStream diffInput = null
 			if(linkedFile != null) {
-				System.out.println("Linked File Detected!")
-				diffInput = (DifferentialInputStream) linkedFile.getInputStream()
-				manifestData.sourceFiles = diffInput.manifestData.sourceFiles
-				if(manifestData.sourceFiles == null) {
-					manifestData.sourceFiles = []
+//				log.info("Linked File Detected: looking for manifest:" + linkedFile.name + "/karman.diff")
+				CloudFileInterface linkedManifest = parent.sourceDirectory[linkedFile.name + "/karman.diff"]
+				if(linkedManifest.exists()) {
+//					log.info("Linked Manifest Found")
+					diffInput = new DifferentialInputStream(linkedFile, linkedManifest.getInputStream())
+
+					manifestData.sourceFiles = diffInput.manifestData.sourceFiles
+					if(manifestData.sourceFiles == null) {
+						manifestData.sourceFiles = []
+					}
+					manifestData.sourceFiles = [linkedFile.name] + manifestData.sourceFiles	
 				}
-				manifestData.sourceFiles = [linkedFile.name] + manifestData.sourceFiles
+				
 			}
 			String headerString = manifestData.getHeader()
 			pos.write(headerString.getBytes())
@@ -188,6 +217,8 @@ public class DifferentialCloudFile extends CloudFile {
 
 			while((bytesRead = dataStream.read(buffer)) != -1) {
 				//confirm the buffer is not full of zero byte arrays
+//				log.info("Bytes Read: ${bytesRead}")
+
 				boolean allZero = true
 				for(byte b : buffer) {
 					if(b != 0) {
@@ -195,6 +226,7 @@ public class DifferentialCloudFile extends CloudFile {
 						break
 					}
 				}
+
 				if(!allZero && dataStream.lastBlockDifferent) {
 					ByteArrayOutputStream compressedBuffer = new ByteArrayOutputStream()
 					XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
@@ -204,7 +236,9 @@ public class DifferentialCloudFile extends CloudFile {
 
 					String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, blockNumber, 0, manifestData);
 					CloudFileInterface blockFile = parent.sourceDirectory[blockFilePath]
-					blockFile.setInputStream(new ByteArrayInputStream(compressedBuffer.toByteArray()));
+					byte[] compressedBufferArray = compressedBuffer.toByteArray()
+					blockFile.setContentLength(compressedBufferArray.size())
+					blockFile.setInputStream(new ByteArrayInputStream(compressedBufferArray));
 					blockFile.save()
 
 				}
@@ -220,12 +254,21 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	def delete() {
-		sourceFile.delete()
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+		if(manifestFile.exists()) {
+			parent.sourceDirectory.listFiles(prefix: sourceFile.name + "/", delimiter: "/")?.each { CloudFileInterface file ->
+				file.delete()
+			}
+			sourceFile.delete()
+		} else {
+			sourceFile.delete()
+		}
+
 	}
 
 	@Override
 	void setMetaAttribute(key, value) {
-		CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
 			manifestFile.setMetaAttribute(key, value)
 		} else {
@@ -235,7 +278,7 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	String getMetaAttribute(key) {
-		CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
 			return manifestFile.getMetaAttribute(key)
 		} else {
@@ -245,7 +288,7 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	Map getMetaAttributes() {
-		CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
 			return manifestFile.getMetaAttributes()
 		} else {
@@ -255,7 +298,7 @@ public class DifferentialCloudFile extends CloudFile {
 
 	@Override
 	void removeMetaAttribute(key) {
-		CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
+		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
 			manifestFile.removeMetaAttribute(key)
 		} else {
