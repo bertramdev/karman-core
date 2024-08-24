@@ -415,7 +415,7 @@ class S3CloudFile extends CloudFile {
 			setMetaAttribute(Headers.S3_CANNED_ACL, acl)
 
 			Long contentLength = (internalContentLengthSet || !exists()) ? internalContentLength : object.objectMetadata.contentLength
-			if(contentLength != null && contentLength <= 4 * 1024l * 1024l * 1024l && parent.provider.forceMultipart == false) {
+			if(contentLength != null && contentLength <= provider.chunkSize && parent.provider.forceMultipart == false) {
 				s3Client.putObject(parent.name, name, writeableStream, object.objectMetadata)
 			} else if(contentLength != null) {
 				saveChunked()
@@ -442,8 +442,7 @@ class S3CloudFile extends CloudFile {
 	def saveChunked() {
 		Long contentLength = object.objectMetadata.contentLength
 		List<PartETag> partETags = new ArrayList<PartETag>();
-		InitiateMultipartUploadRequest initRequest = new
-			InitiateMultipartUploadRequest(parent.name, name);
+		InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(parent.name, name);
 		initRequest.setObjectMetadata(object.objectMetadata)
 		InitiateMultipartUploadResult initResponse =
 			s3Client.initiateMultipartUpload(initRequest);

@@ -112,11 +112,12 @@ public class DifferentialCloudFile extends CloudFile {
 		if(manifestFile.exists()) {
 			long contentLength = manifestFile.contentLength
 			DifferentialInputStream is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
-
-
 				ManifestData.BlockData currentBlock = is.getNextBlockData()
 				while(currentBlock != null && currentBlock.fileIndex == 0 && !currentBlock.zeroFilled) {
-					contentLength += currentBlock.blockSize
+//					contentLength += currentBlock.blockSize //this is the uncompressed size and is not accurate
+					String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, is.manifestData);
+					CloudFile blockFile = parent.sourceDirectory[blockFilePath]
+					contentLength += blockFile.contentLength
 					currentBlock = is.getNextBlockData()
 				}
 				return contentLength
@@ -180,12 +181,7 @@ public class DifferentialCloudFile extends CloudFile {
 
 			manifestFile.delete()
 			//todo: cleanup all sub files since we are overwriting the file
-			PipedOutputStream pos = new PipedOutputStream()
-			PipedInputStream pis = new PipedInputStream(pos)
-			Thread.start {
-				manifestFile.setInputStream(pis)
-				manifestFile.save()
-			}
+
 			ManifestData manifestData = new ManifestData()
 			manifestData.fileSize = internalContentLength
 			manifestData.fileName = sourceFile.name
@@ -207,6 +203,23 @@ public class DifferentialCloudFile extends CloudFile {
 				
 			}
 			String headerString = manifestData.getHeader()
+			Long calculateDiffSize = 0
+			calculateDiffSize += headerString.getBytes().size()
+			if(internalContentLength) {
+				calculateDiffSize += ((long)((long)internalContentLength/(long)manifestData.blockSize)*44l)
+				if(((long)internalContentLength%(long)manifestData.blockSize) > 0) {
+					calculateDiffSize += 44l
+				}
+			}
+			PipedOutputStream pos = new PipedOutputStream()
+			PipedInputStream pis = new PipedInputStream(pos)
+			def saveThread = Thread.start {
+//				if(internalContentLength) {
+//					manifestFile.setContentLength(calculateDiffSize)
+//				}
+				manifestFile.setInputStream(pis)
+				manifestFile.save()
+			}
 			pos.write(headerString.getBytes())
 
 			InputStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
@@ -228,6 +241,7 @@ public class DifferentialCloudFile extends CloudFile {
 				}
 
 				if(!allZero && dataStream.lastBlockDifferent) {
+
 					ByteArrayOutputStream compressedBuffer = new ByteArrayOutputStream()
 					XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
 					xz.write(buffer, 0, bytesRead)
@@ -235,18 +249,35 @@ public class DifferentialCloudFile extends CloudFile {
 
 
 					String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, blockNumber, 0, manifestData);
-					CloudFileInterface blockFile = parent.sourceDirectory[blockFilePath]
-					byte[] compressedBufferArray = compressedBuffer.toByteArray()
-					blockFile.setContentLength(compressedBufferArray.size())
-					blockFile.setInputStream(new ByteArrayInputStream(compressedBufferArray));
-					blockFile.save()
+					int attempts=0
+					while(attempts < 5) {
+						try {
+							CloudFileInterface blockFile = parent.sourceDirectory[blockFilePath]
+							byte[] compressedBufferArray = compressedBuffer.toByteArray()
+							blockFile.setContentLength(compressedBufferArray.size())
+							blockFile.setInputStream(new ByteArrayInputStream(compressedBufferArray));
+							blockFile.save()
+							break
+						} catch(Exception e) {
+							attempts++
+							sleep(5000l*attempts + 5000l)
+
+							if(attempts == 5) {
+								log.error("Error saving block file...Max Attempts Reached...",e)
+								throw new Exception("Error saving block file...Max Attempts Reached...",e)
+							} else {
+								log.error("Error saving block file...sleeping and trying again shortly...",e)
+							}
+						}
+					}
+
 
 				}
 				blockNumber++
 			}
 			pos.flush()
 			pos.close()
-
+			saveThread.join()
 		} else {
 			sourceFile.save(acl)
 		}
