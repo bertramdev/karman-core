@@ -11,6 +11,8 @@ import org.tukaani.xz.LZMA2Options
 import org.tukaani.xz.XZ
 import org.tukaani.xz.XZOutputStream
 
+import java.util.zip.GZIPOutputStream
+
 
 @Commons
 public class DifferentialCloudFile extends CloudFile {
@@ -243,7 +245,8 @@ public class DifferentialCloudFile extends CloudFile {
 				if(!allZero && dataStream.lastBlockDifferent) {
 
 					ByteArrayOutputStream compressedBuffer = new ByteArrayOutputStream()
-					XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
+					GZIPOutputStream xz = new GZIPOutputStream(compressedBuffer)
+					//XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
 					xz.write(buffer, 0, bytesRead)
 					xz.finish()
 

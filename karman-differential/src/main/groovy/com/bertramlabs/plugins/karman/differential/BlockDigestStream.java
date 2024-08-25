@@ -2,6 +2,7 @@ package com.bertramlabs.plugins.karman.differential;
 
 
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +25,7 @@ public class BlockDigestStream extends InputStream {
     DifferentialInputStream linkedFileStream;
     ManifestData.BlockData linkedBlockData = null;
     public BlockDigestStream(InputStream sourceStream, OutputStream manifestOutput, int blockSize, DifferentialInputStream linkedFileStream) throws NoSuchAlgorithmException {
-        this.sourceStream = sourceStream;
+        this.sourceStream = sourceStream;// new BufferedInputStream(sourceStream,8192);
         this.blockSize = blockSize;
         this.manifestOutput = manifestOutput;
         this.linkedFileStream = linkedFileStream;
@@ -130,30 +131,48 @@ public class BlockDigestStream extends InputStream {
         return c;
     }
 
-//    @Override
-//    public int read(byte[] buffer, int offset, int length) throws IOException {
-//        int c = sourceStream.read(buffer, offset, length);
-//        if(c >= 0) {
-//            bytesRead += c;
-//            if(bytesRead > blockSize) {
-//                shaDigest.update(buffer, offset, c - (int) (bytesRead - blockSize));
-//            } else {
-//                shaDigest.update(buffer, offset,c);
-//            }
-//            if(bytesRead >= blockSize) {
-//
-//                blockData.hash = shaDigest.digest();
-//                blockData.blockSize = blockSize;
-//                if(linkedBlockData != null) {
-//                    System.out.println("Linked Block Data Found for Block: " + currentBlock);
-//                    if(linkedBlockData.block == currentBlock) {
-//                        blockData.fileIndex = linkedBlockData.fileIndex+1;
+    @Override
+    public int read(byte[] buffer, int offset, int length) throws IOException {
+        int c = sourceStream.read(buffer, offset, length);
+        lastBlockDifferent = true;
+        if(c >= 0) {
+            bytesRead += c;
+            if(bytesRead > blockSize) {
+                shaDigest.update(buffer, offset, c - (int) (bytesRead - blockSize));
+            } else {
+                shaDigest.update(buffer, offset,c);
+            }
+            if(zeroFilled) {
+                for(int i = offset; i < offset+c; i++) {
+                    if(buffer[i] != 0) {
+                        zeroFilled = false;
+                        break;
+                    }
+                }
+            }
 
-//                        //check if hash byte array matches
-//
-//                        if(Arrays.equals(linkedBlockData.hash, blockData.hash)) {
-//                            lastBlockDifferent = false;
-//                        } else {
+            if(bytesRead > blockSize) {
+                System.out.println("Greater than block size read");
+            }
+            if(bytesRead >= blockSize) {
+
+
+                if(zeroFilled) {
+                    blockData.zeroFilled = true;
+                    blockData.hash = new byte[28];
+                } else {
+                    blockData.hash = shaDigest.digest();
+                }
+
+                blockData.blockSize = blockSize;
+                if(linkedBlockData != null) {
+                    if(linkedBlockData.block == currentBlock) {
+
+                        //check if hash byte array matches
+                        if(Arrays.equals(linkedBlockData.hash, blockData.hash)) {
+                            lastBlockDifferent = false;
+                            blockData.fileIndex = linkedBlockData.fileIndex+1;
+                        } else {
 //                            StringBuilder hexString = new StringBuilder();
 //
 //                            for (int i = 0; i < linkedBlockData.hash.length; i++) {
@@ -172,28 +191,36 @@ public class BlockDigestStream extends InputStream {
 //                                hexString2.append(hex);
 //                            }
 //                            System.out.println("Comparing Hashes: " + hexString + " - " + hexString2);
-//                        }
-    //                        linkedBlockData = linkedFileStream.getNextBlockData();
-//                    }
-//                }
-//                manifestOutput.write(blockData.generateBytes());
-//                currentBlock++;
-//                bytesRead = bytesRead-blockSize;
-//                shaDigest.reset();
-//                if(bytesRead > 0) {
-//                    shaDigest.update(buffer, offset + c - (int) bytesRead, (int) bytesRead);
-//                }
-//                blockData = new ManifestData.BlockData();
-//                blockData.block = currentBlock;
-//            }
-//        } else if( bytesRead > 0) {
-//            blockData.hash = shaDigest.digest();
-//            blockData.blockSize = (int) bytesRead;
-//            manifestOutput.write(blockData.generateBytes());
-//            bytesRead=0;
-//        }
-//        return c;
-//    }
+                        }
+                            linkedBlockData = linkedFileStream.getNextBlockData();
+                    }
+                }
+                manifestOutput.write(blockData.generateBytes());
+                currentBlock++;
+                bytesRead = bytesRead-blockSize;
+                shaDigest.reset();
+                zeroFilled=true;
+                if(bytesRead > 0) {
+                    shaDigest.update(buffer, offset + c - (int) bytesRead, (int) bytesRead);
+                }
+                blockData = new ManifestData.BlockData();
+                blockData.block = currentBlock;
+            }
+        } else if( bytesRead > 0) {
+            System.out.println("Final Block: " + currentBlock);
+            if(zeroFilled) {
+                blockData.zeroFilled = true;
+                blockData.hash = new byte[28];
+            } else {
+                blockData.hash = shaDigest.digest();
+            }
+
+            blockData.blockSize = (int) bytesRead;
+            manifestOutput.write(blockData.generateBytes());
+            bytesRead=0;
+        }
+        return c;
+    }
 
 
 

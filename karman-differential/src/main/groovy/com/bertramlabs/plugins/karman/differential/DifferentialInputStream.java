@@ -4,11 +4,13 @@ import com.bertramlabs.plugins.karman.CloudFile;
 import com.bertramlabs.plugins.karman.CloudFileInterface;
 import org.tukaani.xz.XZInputStream;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
 
 public class DifferentialInputStream extends InputStream {
     //get commons logger
@@ -19,7 +21,7 @@ public class DifferentialInputStream extends InputStream {
     private long totalBlocks;
     DifferentialInputStream(CloudFileInterface baseFile, InputStream sourceManifest) throws IOException {
         //lets load the header info
-        this.sourceManifest = sourceManifest;
+        this.sourceManifest = new BufferedInputStream(sourceManifest,440);
         StringBuilder headerStringB = new StringBuilder();
         int b = sourceManifest.read();
         boolean lastNewLine = false;
@@ -103,6 +105,43 @@ public class DifferentialInputStream extends InputStream {
 
     }
 
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        int bytesRead=0;
+        int currentOffset=off;
+        while(bytesRead < len) { //we have to do some fun stuff here
+            if(currentBlockData == null) {
+                loadCurrentBlock();
+            }
+            if(currentBlockData == null) {
+                //we must have hit the last block,
+                return bytesRead == 0 ? -1 : bytesRead;
+            }
+            int currentBytesRead = currentBlockInputStream.read(b,currentOffset,len - bytesRead);
+            if(currentBytesRead == -1) {
+                try {
+                    currentBlockInputStream.close();
+                } catch(Exception e) {
+                    //ignore
+                }
+                currentBlockData = null;
+                currentBlockInputStream = null;
+                continue; //skip the rest and start the next block loop
+
+            } else {
+                bytesRead += currentBytesRead;
+                currentOffset += currentBytesRead;
+            }
+
+            if(bytesRead == 0) {
+                //empty, not available data  yet, we should send back 0
+                return 0;
+            }
+        }
+
+        return bytesRead;
+    }
+
     private ManifestData.BlockData currentBlockData = null;
     private InputStream currentBlockInputStream = null;
 
@@ -112,7 +151,8 @@ public class DifferentialInputStream extends InputStream {
             if(currentBlockData.zeroFilled) {
                 currentBlockInputStream = new ByteArrayInputStream(new byte[currentBlockData.blockSize]);
             } else {
-                XZInputStream xzInputStream = new XZInputStream(baseFile.getParent().getFile(getBlockPath(currentBlockData)).getInputStream());
+                GZIPInputStream xzInputStream = new GZIPInputStream(baseFile.getParent().getFile(getBlockPath(currentBlockData)).getInputStream(),8192);
+                //XZInputStream xzInputStream = new XZInputStream(baseFile.getParent().getFile(getBlockPath(currentBlockData)).getInputStream());
                 currentBlockInputStream = xzInputStream;
             }
         } else {
