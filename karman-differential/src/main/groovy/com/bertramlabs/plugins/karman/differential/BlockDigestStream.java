@@ -207,7 +207,6 @@ public class BlockDigestStream extends InputStream {
                 blockData.block = currentBlock;
             }
         } else if( bytesRead > 0) {
-            System.out.println("Final Block: " + currentBlock);
             if(zeroFilled) {
                 blockData.zeroFilled = true;
                 blockData.hash = new byte[28];
