@@ -115,11 +115,13 @@ public class DifferentialCloudFile extends CloudFile {
 			long contentLength = manifestFile.contentLength
 			DifferentialInputStream is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
 				ManifestData.BlockData currentBlock = is.getNextBlockData()
-				while(currentBlock != null && currentBlock.fileIndex == 0 && !currentBlock.zeroFilled) {
+				while(currentBlock != null) {
 //					contentLength += currentBlock.blockSize //this is the uncompressed size and is not accurate
-					String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, is.manifestData);
-					CloudFile blockFile = parent.sourceDirectory[blockFilePath]
-					contentLength += blockFile.contentLength
+					if(currentBlock.fileIndex == 0 && !currentBlock.zeroFilled) {
+						String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, is.manifestData);
+						CloudFile blockFile = parent.sourceDirectory[blockFilePath]
+						contentLength += blockFile.contentLength
+					}
 					currentBlock = is.getNextBlockData()
 				}
 				return contentLength
