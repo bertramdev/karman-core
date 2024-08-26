@@ -175,7 +175,10 @@ class CifsCloudFile extends CloudFile {
 
 	def delete() {
 		def cifsFile = getCifsFile()
-		cifsFile.delete()
+		if(cifsFile.exists()) {
+			cifsFile.delete()
+		}
+
 		cleanUpTree()
 	}
 

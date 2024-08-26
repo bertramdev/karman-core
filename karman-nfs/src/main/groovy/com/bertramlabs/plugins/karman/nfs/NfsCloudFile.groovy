@@ -143,7 +143,9 @@ class NfsCloudFile extends CloudFile{
 
 	@Override
 	def delete() {
-		baseFile.delete()
+		if(baseFile.exists()) {
+			baseFile.delete()
+		}
 		cleanUpTree()
 	}
 

@@ -181,7 +181,8 @@ public class DifferentialCloudFile extends CloudFile {
 		CloudFileInterface manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(!sourceFile.exists() || manifestFile.exists()) {
 
-			manifestFile.delete()
+			if(manifestFile.exists())
+				manifestFile.delete()
 			//todo: cleanup all sub files since we are overwriting the file
 
 			ManifestData manifestData = new ManifestData()
@@ -232,7 +233,6 @@ public class DifferentialCloudFile extends CloudFile {
 
 			while((bytesRead = dataStream.read(buffer)) != -1) {
 				//confirm the buffer is not full of zero byte arrays
-//				log.info("Bytes Read: ${bytesRead}")
 
 				boolean allZero = true
 				for(byte b : buffer) {
@@ -293,9 +293,14 @@ public class DifferentialCloudFile extends CloudFile {
 			parent.sourceDirectory.listFiles(prefix: sourceFile.name + "/", delimiter: "/")?.each { CloudFileInterface file ->
 				file.delete()
 			}
-			sourceFile.delete()
+			if(sourceFile.exists()) {
+				sourceFile.delete()
+			}
+
 		} else {
-			sourceFile.delete()
+			if(sourceFile.exists()) {
+				sourceFile.delete()
+			}
 		}
 
 	}

@@ -135,7 +135,15 @@ public class BlockDigestStream extends InputStream {
     public int read(byte[] buffer, int offset, int length) throws IOException {
         int c = sourceStream.read(buffer, offset, length);
         lastBlockDifferent = true;
-        if(c >= 0) {
+        while(c < length && c > 0) { //we want to read the complete block here and not send partials, partials can cause problems
+            int c2 = sourceStream.read(buffer, offset+c, length-c);
+            if(c2 > 0) {
+                c+=c2;
+            } else {
+                break;
+            }
+        }
+        if(c > 0) {
             bytesRead += c;
             if(bytesRead > blockSize) {
                 shaDigest.update(buffer, offset, c - (int) (bytesRead - blockSize));
