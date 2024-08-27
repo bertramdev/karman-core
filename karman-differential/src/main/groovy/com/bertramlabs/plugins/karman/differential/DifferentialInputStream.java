@@ -226,4 +226,13 @@ public class DifferentialInputStream extends InputStream {
 
         return blockData;
     }
+
+    @Override
+    public void close() {
+        try {
+            sourceManifest.close();
+        } catch(Exception e) {
+            //ignore
+        }
+    }
 }

@@ -181,108 +181,120 @@ public class DifferentialCloudFile extends CloudFile {
 	@CompileStatic
 	def save(acl) {
 		CloudFileInterface manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+		DifferentialInputStream diffInput = null
 		if(!sourceFile.exists() || manifestFile.exists()) {
+			try {
+				if(manifestFile.exists())
+					manifestFile.delete()
+				//todo: cleanup all sub files since we are overwriting the file
 
-			if(manifestFile.exists())
-				manifestFile.delete()
-			//todo: cleanup all sub files since we are overwriting the file
-
-			ManifestData manifestData = new ManifestData()
-			manifestData.fileSize = internalContentLength
-			manifestData.fileName = sourceFile.name
-			manifestData.blockSize = ((DifferentialStorageProvider) provider).blockSize
-			DifferentialInputStream diffInput = null
-			if(linkedFile != null) {
+				ManifestData manifestData = new ManifestData()
+				manifestData.fileSize = internalContentLength
+				manifestData.fileName = sourceFile.name
+				manifestData.blockSize = ((DifferentialStorageProvider) provider).blockSize
+				if(linkedFile != null) {
 //				log.info("Linked File Detected: looking for manifest:" + linkedFile.name + "/karman.diff")
-				CloudFileInterface linkedManifest = parent.sourceDirectory[linkedFile.name + "/karman.diff"]
-				if(linkedManifest.exists()) {
+					CloudFileInterface linkedManifest = parent.sourceDirectory[linkedFile.name + "/karman.diff"]
+					if(linkedManifest.exists()) {
 //					log.info("Linked Manifest Found")
-					diffInput = new DifferentialInputStream(linkedFile, linkedManifest.getInputStream())
+						diffInput = new DifferentialInputStream(linkedFile, linkedManifest.getInputStream())
 
-					manifestData.sourceFiles = diffInput.manifestData.sourceFiles
-					if(manifestData.sourceFiles == null) {
-						manifestData.sourceFiles = []
+						manifestData.sourceFiles = diffInput.manifestData.sourceFiles
+						if(manifestData.sourceFiles == null) {
+							manifestData.sourceFiles = []
+						}
+						manifestData.sourceFiles = [linkedFile.name] + manifestData.sourceFiles
 					}
-					manifestData.sourceFiles = [linkedFile.name] + manifestData.sourceFiles	
+
 				}
-				
-			}
-			String headerString = manifestData.getHeader()
-			Long calculateDiffSize = 0
-			calculateDiffSize += headerString.getBytes().size()
-			if(internalContentLength) {
-				calculateDiffSize += ((long)((long)internalContentLength/(long)manifestData.blockSize)*44l)
-				if(((long)internalContentLength%(long)manifestData.blockSize) > 0) {
-					calculateDiffSize += 44l
+				String headerString = manifestData.getHeader()
+				Long calculateDiffSize = 0
+				calculateDiffSize += headerString.getBytes().size()
+				if(internalContentLength) {
+					calculateDiffSize += ((long)((long)internalContentLength/(long)manifestData.blockSize)*44l)
+					if(((long)internalContentLength%(long)manifestData.blockSize) > 0) {
+						calculateDiffSize += 44l
+					}
 				}
-			}
-			PipedOutputStream pos = new PipedOutputStream()
-			PipedInputStream pis = new PipedInputStream(pos)
-			def saveThread = Thread.start {
+				PipedOutputStream pos = new PipedOutputStream()
+				PipedInputStream pis = new PipedInputStream(pos)
+				def saveThread = Thread.start {
 //				if(internalContentLength) {
 //					manifestFile.setContentLength(calculateDiffSize)
 //				}
-				manifestFile.setInputStream(pis)
-				manifestFile.save()
-			}
-			pos.write(headerString.getBytes())
-
-			InputStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
-			byte[] buffer = new byte[manifestData.blockSize]
-			int bytesRead = 0
-			long blockNumber = 0
-
-
-			while((bytesRead = dataStream.read(buffer)) != -1) {
-				//confirm the buffer is not full of zero byte arrays
-
-				boolean allZero = true
-				for(byte b : buffer) {
-					if(b != 0) {
-						allZero = false
-						break
-					}
+					manifestFile.setInputStream(pis)
+					manifestFile.save()
 				}
+				pos.write(headerString.getBytes())
 
-				if(!allZero && dataStream.lastBlockDifferent) {
-
-					ByteArrayOutputStream compressedBuffer = new ByteArrayOutputStream()
-					GZIPOutputStream xz = new GZIPOutputStream(compressedBuffer)
-					//XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
-					xz.write(buffer, 0, bytesRead)
-					xz.finish()
+				InputStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
+				byte[] buffer = new byte[manifestData.blockSize]
+				int bytesRead = 0
+				long blockNumber = 0
 
 
-					String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, blockNumber, 0, manifestData);
-					int attempts=0
-					while(attempts < 5) {
-						try {
-							CloudFileInterface blockFile = parent.sourceDirectory[blockFilePath]
-							byte[] compressedBufferArray = compressedBuffer.toByteArray()
-							blockFile.setContentLength(compressedBufferArray.size())
-							blockFile.setInputStream(new ByteArrayInputStream(compressedBufferArray));
-							blockFile.save()
+				while((bytesRead = dataStream.read(buffer)) != -1) {
+					//confirm the buffer is not full of zero byte arrays
+
+					boolean allZero = true
+					for(byte b : buffer) {
+						if(b != 0) {
+							allZero = false
 							break
-						} catch(Exception e) {
-							attempts++
-							sleep(5000l*attempts + 5000l)
-
-							if(attempts == 5) {
-								log.error("Error saving block file...Max Attempts Reached...",e)
-								throw new Exception("Error saving block file...Max Attempts Reached...",e)
-							} else {
-								log.error("Error saving block file...sleeping and trying again shortly...",e)
-							}
 						}
 					}
 
+					if(!allZero && dataStream.lastBlockDifferent) {
+
+						ByteArrayOutputStream compressedBuffer = new ByteArrayOutputStream()
+						GZIPOutputStream xz = new GZIPOutputStream(compressedBuffer)
+						//XZOutputStream xz = new XZOutputStream(compressedBuffer, new LZMA2Options(0), XZ.CHECK_NONE)
+						xz.write(buffer, 0, bytesRead)
+						xz.finish()
+
+
+						String blockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, blockNumber, 0, manifestData);
+						int attempts=0
+						while(attempts < 5) {
+							try {
+								CloudFileInterface blockFile = parent.sourceDirectory[blockFilePath]
+								byte[] compressedBufferArray = compressedBuffer.toByteArray()
+								blockFile.setContentLength(compressedBufferArray.size())
+								blockFile.setInputStream(new ByteArrayInputStream(compressedBufferArray));
+								blockFile.save()
+								break
+							} catch(Exception e) {
+								attempts++
+								sleep(5000l*attempts + 5000l)
+
+								if(attempts == 5) {
+									log.error("Error saving block file...Max Attempts Reached...",e)
+									throw new Exception("Error saving block file...Max Attempts Reached...",e)
+								} else {
+									log.error("Error saving block file...sleeping and trying again shortly...",e)
+								}
+							}
+						}
+
+
+					}
+					blockNumber++
+				}
+				pos.flush()
+				pos.close()
+				saveThread.join()
+			} finally {
+				if(diffInput != null) {
+					try {
+						diffInput.close()
+					} catch(Exception ignore) {
+
+					}
 
 				}
-				blockNumber++
 			}
-			pos.flush()
-			pos.close()
-			saveThread.join()
+
+
 		} else {
 			sourceFile.save(acl)
 		}
