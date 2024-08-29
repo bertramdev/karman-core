@@ -243,11 +243,16 @@ public class DifferentialCloudFile extends CloudFile {
 				PipedOutputStream pos = new PipedOutputStream()
 				PipedInputStream pis = new PipedInputStream(pos)
 				def saveThread = Thread.start {
+					try {
+						manifestFile.setInputStream(pis)
+						manifestFile.save()
+					} catch(Exception ex) {
+
+					}
 //				if(internalContentLength) {
 //					manifestFile.setContentLength(calculateDiffSize)
 //				}
-					manifestFile.setInputStream(pis)
-					manifestFile.save()
+
 				}
 				pos.write(headerString.getBytes())
 
