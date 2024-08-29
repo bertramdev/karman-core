@@ -91,19 +91,29 @@ public class DifferentialCloudFile extends CloudFile {
 	Long getContentLength() {
 		CloudFile manifestFile = parent[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
-			DifferentialInputStream is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
-			if(is.manifestData.fileSize != null) {
-				return is.manifestData.fileSize
-			} else {
-				long contentLength = 0
-				ManifestData.BlockData currentBlock = is.getNextBlockData()
-				while(currentBlock != null) {
-					contentLength += currentBlock.blockSize
-					currentBlock = is.getNextBlockData()
+			DifferentialInputStream is = null
+			try {
+				is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
+				if(is.manifestData.fileSize != null) {
+					return is.manifestData.fileSize
+				} else {
+					long contentLength = 0
+					ManifestData.BlockData currentBlock = is.getNextBlockData()
+					while(currentBlock != null) {
+						contentLength += currentBlock.blockSize
+						currentBlock = is.getNextBlockData()
+					}
+					return contentLength
 				}
-				return contentLength
+			} finally {
+				try {
+					if(is != null) {
+						is.close()
+					}
+				} catch(ignore) {
+					//ignore
+				}
 			}
-
 		} else {
 			return sourceFile.getContentLength()
 		}
@@ -111,9 +121,12 @@ public class DifferentialCloudFile extends CloudFile {
 
 	Long getOnDeviceContentLength() {
 		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
+
 		if(manifestFile.exists()) {
-			long contentLength = manifestFile.contentLength
-			DifferentialInputStream is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
+			DifferentialInputStream is = null
+			try {
+				long contentLength = manifestFile.contentLength
+				is = new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
 				ManifestData.BlockData currentBlock = is.getNextBlockData()
 				while(currentBlock != null) {
 //					contentLength += currentBlock.blockSize //this is the uncompressed size and is not accurate
@@ -125,6 +138,17 @@ public class DifferentialCloudFile extends CloudFile {
 					currentBlock = is.getNextBlockData()
 				}
 				return contentLength
+			} finally {
+				try {
+					if(is != null) {
+						is.close()
+					}
+
+				} catch(ignore) {
+					//ignore
+				}
+			}
+
 
 
 		} else {
@@ -227,7 +251,7 @@ public class DifferentialCloudFile extends CloudFile {
 				}
 				pos.write(headerString.getBytes())
 
-				InputStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
+				BlockDigestStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
 				byte[] buffer = new byte[manifestData.blockSize]
 				int bytesRead = 0
 				long blockNumber = 0
@@ -308,7 +332,13 @@ public class DifferentialCloudFile extends CloudFile {
 				file.delete()
 			}
 			if(sourceFile.exists()) {
-				sourceFile.delete()
+				try {
+					sourceFile.delete()
+				} catch(Exception ex) {
+					//trying to delete but could have recursively cleaned from the previous loop
+					log.debug("Unable to delete root directory of differential file...this may have already been cleaned up from recursion...ignoring",ex)
+				}
+
 			}
 
 		} else {
@@ -368,102 +398,143 @@ public class DifferentialCloudFile extends CloudFile {
 		List<String> sourceFilesToUnlink = []
 		//only do this if it is indeed a differential file
 		if(manifestFile.exists()) {
-			CloudFile originalManifest = parent.sourceDirectory[sourceFile.name + "/karman.diff2"]
-			originalManifest.setInputStream(manifestFile.getInputStream())
-			originalManifest.save()
-			DifferentialInputStream unflattenedStream = new DifferentialInputStream(sourceFile, originalManifest.getInputStream())
-			PipedOutputStream pos = new PipedOutputStream()
-			PipedInputStream pis = new PipedInputStream(pos)
-			Thread.start {
-				manifestFile.setInputStream(pis)
-				manifestFile.save()
-			}
-
-			ManifestData manifestData = new ManifestData()
-			manifestData.fileSize = unflattenedStream.manifestData.fileSize
-			manifestData.fileName = unflattenedStream.manifestData.fileName
-			manifestData.blockSize = unflattenedStream.manifestData.blockSize
-			sourceFilesToUnlink = unflattenedStream.manifestData.sourceFiles
-			manifestData.sourceFiles = null //clear source files
-
-			String headerString = manifestData.getHeader()
-			pos.write(headerString.getBytes())
-
-			ManifestData.BlockData currentBlock = unflattenedStream.getNextBlockData()
-			while(currentBlock != null) {
-				if(currentBlock.fileIndex != 0) {
-					if(!currentBlock.zeroFilled) {
-						//block file index is not 0 so we need to grab it and pull it in
-						String originalBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, currentBlock.fileIndex, unflattenedStream.manifestData)
-						String newBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, manifestData)
-
-						CloudFileInterface blockFile = parent.sourceDirectory[originalBlockFilePath]
-						CloudFileInterface destBlockFile = parent.sourceDirectory[newBlockFilePath]
-						destBlockFile.setInputStream(blockFile.getInputStream())
-						destBlockFile.save()
+			DifferentialInputStream unflattenedStream = null
+			PipedOutputStream pos
+			PipedInputStream pis
+			try {
+					CloudFile originalManifest = parent.sourceDirectory[sourceFile.name + "/karman.diff2"]
+					originalManifest.setInputStream(manifestFile.getInputStream())
+					originalManifest.save()
+					unflattenedStream = new DifferentialInputStream(sourceFile, originalManifest.getInputStream())
+					pos = new PipedOutputStream()
+					pis = new PipedInputStream(pos)
+					Thread.start {
+						manifestFile.setInputStream(pis)
+						manifestFile.save()
 					}
-					currentBlock.fileIndex = 0
-				}
-				pos.write(currentBlock.generateBytes())
-				currentBlock = unflattenedStream.getNextBlockData()
-			}
-			pos.flush()
-			pos.close()
-			unflattenedStream.close()
-			originalManifest.delete()
 
-			//we gotta correct any children from this file based on the child list passed in
-			if(children) {
-				for(DifferentialCloudFile childrenFile in children) {
-					CloudFile childManifestFile = parent.sourceDirectory[childrenFile.name + "/karman.diff"]
-					if(childManifestFile.exists()) {
-						CloudFile originalChildManifest = parent.sourceDirectory[childrenFile.name + "/karman.diff2"]
-						originalChildManifest.setInputStream(childManifestFile.getInputStream())
-						originalChildManifest.save()
-						DifferentialInputStream unflattenedChildStream = new DifferentialInputStream(childrenFile.sourceFile, originalChildManifest.getInputStream())
-						PipedOutputStream childPos = new PipedOutputStream()
-						PipedInputStream childPis = new PipedInputStream(childPos)
-						Thread.start {
-							childManifestFile.setInputStream(childPis)
-							childManifestFile.save()
+					ManifestData manifestData = new ManifestData()
+					manifestData.fileSize = unflattenedStream.manifestData.fileSize
+					manifestData.fileName = unflattenedStream.manifestData.fileName
+					manifestData.blockSize = unflattenedStream.manifestData.blockSize
+					sourceFilesToUnlink = unflattenedStream.manifestData.sourceFiles
+					manifestData.sourceFiles = null //clear source files
+
+					String headerString = manifestData.getHeader()
+					pos.write(headerString.getBytes())
+
+					ManifestData.BlockData currentBlock = unflattenedStream.getNextBlockData()
+					while(currentBlock != null) {
+						if(currentBlock.fileIndex != 0) {
+							if(!currentBlock.zeroFilled) {
+								//block file index is not 0 so we need to grab it and pull it in
+								String originalBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, currentBlock.fileIndex, unflattenedStream.manifestData)
+								String newBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, manifestData)
+
+								CloudFileInterface blockFile = parent.sourceDirectory[originalBlockFilePath]
+								CloudFileInterface destBlockFile = parent.sourceDirectory[newBlockFilePath]
+								destBlockFile.setInputStream(blockFile.getInputStream())
+								destBlockFile.save()
+							}
+							currentBlock.fileIndex = 0
 						}
+						pos.write(currentBlock.generateBytes())
+						currentBlock = unflattenedStream.getNextBlockData()
+					}
+					pos.flush()
+					pos.close()
+					pos = null //clear it for finally block unless exception occurs
+					originalManifest.delete()
 
-						ManifestData childManifestData = new ManifestData()
-						childManifestData.fileSize = unflattenedChildStream.manifestData.fileSize
-						childManifestData.fileName = unflattenedChildStream.manifestData.fileName
-						childManifestData.blockSize = unflattenedChildStream.manifestData.blockSize
-						childManifestData.sourceFiles = unflattenedChildStream.manifestData.sourceFiles
-						def fileIndicesToUnlink = []
+					//we gotta correct any children from this file based on the child list passed in
+					if(children) {
+						for(DifferentialCloudFile childrenFile in children) {
+							DifferentialInputStream unflattenedChildStream = null
+							PipedOutputStream childPos = null
+							PipedInputStream childPis = null
+							try {
+								CloudFile childManifestFile = parent.sourceDirectory[childrenFile.name + "/karman.diff"]
+								if(childManifestFile.exists()) {
+									CloudFile originalChildManifest = parent.sourceDirectory[childrenFile.name + "/karman.diff2"]
+									originalChildManifest.setInputStream(childManifestFile.getInputStream())
+									originalChildManifest.save()
+									unflattenedChildStream = new DifferentialInputStream(childrenFile.sourceFile, originalChildManifest.getInputStream())
+									childPos = new PipedOutputStream()
+									childPis = new PipedInputStream(childPos)
+									Thread.start {
+										childManifestFile.setInputStream(childPis)
+										childManifestFile.save()
+									}
 
-						if(sourceFilesToUnlink) {
-							sourceFilesToUnlink.each { sourceFileToUnlink ->
-								Integer idx = childManifestData.sourceFiles?.indexOf(sourceFileToUnlink)
-								if(idx != null && idx >= 0) {
-									fileIndicesToUnlink << idx + 1
+									ManifestData childManifestData = new ManifestData()
+									childManifestData.fileSize = unflattenedChildStream.manifestData.fileSize
+									childManifestData.fileName = unflattenedChildStream.manifestData.fileName
+									childManifestData.blockSize = unflattenedChildStream.manifestData.blockSize
+									childManifestData.sourceFiles = unflattenedChildStream.manifestData.sourceFiles
+									def fileIndicesToUnlink = []
+
+									if(sourceFilesToUnlink) {
+										sourceFilesToUnlink.each { sourceFileToUnlink ->
+											Integer idx = childManifestData.sourceFiles?.indexOf(sourceFileToUnlink)
+											if(idx != null && idx >= 0) {
+												fileIndicesToUnlink << idx + 1
+											}
+										}
+										childManifestData.sourceFiles?.removeAll(sourceFilesToUnlink)
+
+									}
+									int targetIndex = childManifestData.sourceFiles.indexOf(sourceFile.name) + 1
+									String childHeaderString = childManifestData.getHeader()
+									childPos.write(childHeaderString.getBytes())
+									ManifestData.BlockData childCurrentBlock = unflattenedChildStream.getNextBlockData()
+									while(childCurrentBlock != null) {
+										if(fileIndicesToUnlink.contains(childCurrentBlock.fileIndex)) {
+											childCurrentBlock.fileIndex = targetIndex
+										}
+										childPos.write(childCurrentBlock.generateBytes())
+										childCurrentBlock = unflattenedChildStream.getNextBlockData()
+									}
+
+
+									originalChildManifest.delete()
+
+								}
+							} finally {
+								if(childPos != null) {
+									try {
+										childPos.flush()
+										childPos.close()
+									} catch(ignore) {
+
+									}
+								}
+								if(unflattenedStream != null) {
+									try {
+										unflattenedChildStream.close()
+									} catch(ignore) {
+
+									}
 								}
 							}
-							childManifestData.sourceFiles?.removeAll(sourceFilesToUnlink)
 
 						}
-						int targetIndex = childManifestData.sourceFiles.indexOf(sourceFile.name) + 1
-						String childHeaderString = childManifestData.getHeader()
-						childPos.write(childHeaderString.getBytes())
-						ManifestData.BlockData childCurrentBlock = unflattenedChildStream.getNextBlockData()
-						while(childCurrentBlock != null) {
-							if(fileIndicesToUnlink.contains(childCurrentBlock.fileIndex)) {
-								childCurrentBlock.fileIndex = targetIndex
-							}
-							childPos.write(childCurrentBlock.generateBytes())
-							childCurrentBlock = unflattenedChildStream.getNextBlockData()
+					}
+
+			} finally {
+					try {
+						unflattenedStream.close()
+					} catch(ignore) {
+
+					}
+					try {
+						if(pos != null) {
+							pos.flush()
+							pos.close()
 						}
-						childPos.flush()
-						childPos.close()
-						unflattenedChildStream.close()
-						originalChildManifest.delete()
+					} catch(ignore) {
 
 					}
 				}
-			}
 		}
 	}
 }

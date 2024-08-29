@@ -136,7 +136,15 @@ class LocalCloudFile extends CloudFile {
 	}
 
 	def delete() {
-		fsFile.delete()
+		if(fsFile.exists()) {
+			if(fsFile.isDirectory()) {
+				fsFile.deleteDir()
+			} else {
+				fsFile.delete()
+			}
+		}
+
+
 		cleanUpTree()
 	}
 

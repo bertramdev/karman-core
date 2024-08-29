@@ -187,14 +187,15 @@ public class DifferentialInputStream extends InputStream {
         } else if(bytesRead < 44) {
             //we have a problem and need to hold until the data is available
             log.warn("Block Data Incomplete: " + bytesRead);
-            while(sourceManifest.available() <= 44-bytesRead) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            while(bytesRead < 44) {
+                int newBytesRead = sourceManifest.read(blockDataBytes, bytesRead, 44-bytesRead);
+                if(newBytesRead == -1) {
+                    throw new IOException("Unexpected EOF");
+                } else {
+                    bytesRead += newBytesRead;
                 }
             }
-            sourceManifest.read(blockDataBytes, bytesRead, 44-bytesRead);
+
         }
         long value = 0;
         for (int i = 0; i < 8; i++) {
