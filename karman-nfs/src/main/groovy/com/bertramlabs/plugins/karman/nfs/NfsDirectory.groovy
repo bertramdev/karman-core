@@ -90,15 +90,18 @@ class NfsDirectory extends Directory {
 
 	private void convertFilesToCloudFiles(Nfs3File parentFile, includes, excludes, fileList, position=0) {
 		Collection<NfsCloudFile> files = [];
-		parentFile.listFiles()?.each { listFile ->
-			def path = listFile.path.substring(baseFile.path.length() - 1)
-			if(path.startsWith('/')) {
-				path = path.substring(1)
-			}
-			if(isMatchedFile(path,includes,excludes)) {
-				files << new NfsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
+		if(parentFile.exists()) {
+			parentFile.listFiles()?.each { listFile ->
+				def path = listFile.path.substring(baseFile.path.length() - 1)
+				if(path.startsWith('/')) {
+					path = path.substring(1)
+				}
+				if(isMatchedFile(path,includes,excludes)) {
+					files << new NfsCloudFile(provider:provider, parent:this, name:path, baseFile: listFile)
+				}
 			}
 		}
+
 		if(files) {
 			fileList.addAll(position, files)
 		}
