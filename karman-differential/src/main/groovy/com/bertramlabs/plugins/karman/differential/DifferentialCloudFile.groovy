@@ -11,6 +11,8 @@ import org.tukaani.xz.LZMA2Options
 import org.tukaani.xz.XZ
 import org.tukaani.xz.XZOutputStream
 
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.zip.GZIPOutputStream
 
 
@@ -35,7 +37,15 @@ public class DifferentialCloudFile extends CloudFile {
 	InputStream getInputStream() {
 		CloudFile manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		if(manifestFile.exists()) {
-			return new DifferentialInputStream(sourceFile, manifestFile.getInputStream())
+			//we need to copy the index table to local storage for read in case of slow connections
+			Path localManifestCache = Files.createTempFile("karman",".diff")
+			File manifestLocalFile = localManifestCache.toFile()
+			manifestFile.getInputStream().withStream { InputStream is ->
+				manifestLocalFile.withOutputStream { OutputStream os ->
+					os << is
+				}
+			}
+			return new DifferentialInputStream(sourceFile, manifestLocalFile)
 		} else {
 			return sourceFile.getInputStream()
 		}
@@ -206,10 +216,16 @@ public class DifferentialCloudFile extends CloudFile {
 	def save(acl) {
 		CloudFileInterface manifestFile = parent.sourceDirectory[sourceFile.name + "/karman.diff"]
 		DifferentialInputStream diffInput = null
+		File manifestLocalFile=null
+
 		if(!sourceFile.exists() || manifestFile.exists()) {
 			try {
 				if(manifestFile.exists())
 					manifestFile.delete()
+
+				//we should write the manifest file to temp storage first in case of connection issues
+				Path localManifestCache = Files.createTempFile("karman",".diff")
+				manifestLocalFile = localManifestCache.toFile()
 				//todo: cleanup all sub files since we are overwriting the file
 
 				ManifestData manifestData = new ManifestData()
@@ -217,11 +233,16 @@ public class DifferentialCloudFile extends CloudFile {
 				manifestData.fileName = sourceFile.name
 				manifestData.blockSize = ((DifferentialStorageProvider) provider).blockSize
 				if(linkedFile != null) {
-//				log.info("Linked File Detected: looking for manifest:" + linkedFile.name + "/karman.diff")
 					CloudFileInterface linkedManifest = parent.sourceDirectory[linkedFile.name + "/karman.diff"]
 					if(linkedManifest.exists()) {
-//					log.info("Linked Manifest Found")
-						diffInput = new DifferentialInputStream(linkedFile, linkedManifest.getInputStream())
+						Path localDifferentialCache = Files.createTempFile("karman-linked",".diff")
+						File localDifferentialFile = localDifferentialCache.toFile()
+						linkedManifest.getInputStream().withStream { InputStream is ->
+							localDifferentialFile.withOutputStream { OutputStream os ->
+								os << is
+							}
+						}
+						diffInput = new DifferentialInputStream(linkedFile, localDifferentialFile)
 
 						manifestData.sourceFiles = diffInput.manifestData.sourceFiles
 						if(manifestData.sourceFiles == null) {
@@ -240,20 +261,7 @@ public class DifferentialCloudFile extends CloudFile {
 						calculateDiffSize += 44l
 					}
 				}
-				PipedOutputStream pos = new PipedOutputStream()
-				PipedInputStream pis = new PipedInputStream(pos)
-				def saveThread = Thread.start {
-					try {
-						manifestFile.setInputStream(pis)
-						manifestFile.save()
-					} catch(Exception ex) {
-
-					}
-//				if(internalContentLength) {
-//					manifestFile.setContentLength(calculateDiffSize)
-//				}
-
-				}
+				OutputStream pos = localManifestCache.newOutputStream()
 				pos.write(headerString.getBytes())
 
 				BlockDigestStream dataStream = new BlockDigestStream(rawSourceStream, pos, manifestData.blockSize, diffInput)
@@ -311,7 +319,10 @@ public class DifferentialCloudFile extends CloudFile {
 				}
 				pos.flush()
 				pos.close()
-				saveThread.join()
+				InputStream localFileStream = manifestLocalFile.newInputStream()
+				manifestFile.setInputStream(localFileStream)
+				manifestFile.save()
+				localFileStream.close()
 			} finally {
 				if(diffInput != null) {
 					try {
@@ -319,7 +330,9 @@ public class DifferentialCloudFile extends CloudFile {
 					} catch(Exception ignore) {
 
 					}
-
+				}
+				if(manifestLocalFile?.exists()) {
+					manifestLocalFile.delete() //clean up temp file
 				}
 			}
 
@@ -404,19 +417,27 @@ public class DifferentialCloudFile extends CloudFile {
 		//only do this if it is indeed a differential file
 		if(manifestFile.exists()) {
 			DifferentialInputStream unflattenedStream = null
-			PipedOutputStream pos
-			PipedInputStream pis
+			OutputStream pos
+//			PipedInputStream pis
+			File manifestLocalFile=null
 			try {
+					Path localManifestCache = Files.createTempFile("karman",".diff")
+					manifestLocalFile = localManifestCache.toFile()
 					CloudFile originalManifest = parent.sourceDirectory[sourceFile.name + "/karman.diff2"]
 					originalManifest.setInputStream(manifestFile.getInputStream())
 					originalManifest.save()
-					unflattenedStream = new DifferentialInputStream(sourceFile, originalManifest.getInputStream())
-					pos = new PipedOutputStream()
-					pis = new PipedInputStream(pos)
-					Thread.start {
-						manifestFile.setInputStream(pis)
-						manifestFile.save()
+					Path localOriginalManifestCache = Files.createTempFile("karman2",".diff")
+					File manifestOriginalLocalFile = localOriginalManifestCache.toFile()
+					originalManifest.getInputStream().withStream { InputStream is ->
+					manifestOriginalLocalFile.withOutputStream { OutputStream os ->
+							os << is
+						}
 					}
+					unflattenedStream = new DifferentialInputStream(sourceFile, manifestOriginalLocalFile)
+					pos = manifestLocalFile.newOutputStream()
+
+
+
 
 					ManifestData manifestData = new ManifestData()
 					manifestData.fileSize = unflattenedStream.manifestData.fileSize
@@ -449,6 +470,11 @@ public class DifferentialCloudFile extends CloudFile {
 					pos.flush()
 					pos.close()
 					pos = null //clear it for finally block unless exception occurs
+					InputStream sourceManifestIs = manifestLocalFile.newInputStream()
+
+					manifestFile.setInputStream(sourceManifestIs)
+					manifestFile.save()
+					sourceManifestIs.close()
 					originalManifest.delete()
 
 					//we gotta correct any children from this file based on the child list passed in
@@ -538,6 +564,9 @@ public class DifferentialCloudFile extends CloudFile {
 						}
 					} catch(ignore) {
 
+					}
+					if(manifestLocalFile?.exists()) {
+						manifestLocalFile.delete()
 					}
 				}
 		}

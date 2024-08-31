@@ -4,10 +4,7 @@ import com.bertramlabs.plugins.karman.CloudFile;
 import com.bertramlabs.plugins.karman.CloudFileInterface;
 import org.tukaani.xz.XZInputStream;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
@@ -16,9 +13,15 @@ public class DifferentialInputStream extends InputStream {
     //get commons logger
     private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(DifferentialInputStream.class);
     public ManifestData manifestData;
-    private CloudFileInterface baseFile;
-    private InputStream sourceManifest;
+    private CloudFileInterface baseFile = null;
+    private InputStream sourceManifest = null;
+    private File sourceManifestFile = null;
     private long totalBlocks;
+
+    DifferentialInputStream(CloudFileInterface baseFile, File sourceManifest) throws IOException {
+        this(baseFile, new FileInputStream(sourceManifest));
+        this. sourceManifestFile = sourceManifest;
+    }
     DifferentialInputStream(CloudFileInterface baseFile, InputStream sourceManifest) throws IOException {
         //lets load the header info
         this.sourceManifest = new BufferedInputStream(sourceManifest,440);
@@ -234,6 +237,9 @@ public class DifferentialInputStream extends InputStream {
             sourceManifest.close();
         } catch(Exception e) {
             //ignore
+        }
+        if(sourceManifestFile != null && sourceManifestFile.exists()) {
+            sourceManifestFile.delete(); //cleanup temp file
         }
     }
 }
