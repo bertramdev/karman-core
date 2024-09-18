@@ -492,7 +492,7 @@ public class DifferentialCloudFile extends CloudFile {
 									unflattenedChildStream = new DifferentialInputStream(childrenFile.sourceFile, originalChildManifest.getInputStream())
 									childPos = new PipedOutputStream()
 									childPis = new PipedInputStream(childPos)
-									Thread.start {
+									Thread flattenThread = Thread.start {
 										childManifestFile.setInputStream(childPis)
 										childManifestFile.save()
 									}
@@ -528,7 +528,15 @@ public class DifferentialCloudFile extends CloudFile {
 
 
 									originalChildManifest.delete()
+									if(childPos != null) {
+										try {
+											childPos.flush()
+											childPos.close()
+										} catch(ignore) {
 
+										}
+									}
+									flattenThread.join()
 								}
 							} finally {
 								if(childPos != null) {
