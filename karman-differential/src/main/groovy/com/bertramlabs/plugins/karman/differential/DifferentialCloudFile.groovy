@@ -471,10 +471,13 @@ public class DifferentialCloudFile extends CloudFile {
 					pos.close()
 					pos = null //clear it for finally block unless exception occurs
 					InputStream sourceManifestIs = manifestLocalFile.newInputStream()
-
+					if(manifestFile.exists()) {
+						//lets delete the old manifest file first
+						manifestFile.delete()
+					}
 					manifestFile.setInputStream(sourceManifestIs)
 					manifestFile.save()
-					sourceManifestIs.close()
+
 					originalManifest.delete()
 
 					//we gotta correct any children from this file based on the child list passed in
