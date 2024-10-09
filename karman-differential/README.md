@@ -50,7 +50,7 @@ Each block contains 4 fields:
 
 ## Future Work
 
-The model was designed to allow for some additional functionality by supporting a dynamic list of header keys. The `version` property could therefore be used to let the `DiferentialCloudFile` know how to decode the file.
+The model was designed to allow for some additional functionality by supporting a dynamic list of header keys. The `version` property could therefore be used to let the `DifferentialCloudFile` know how to decode the file.
 Some additional features that could be added are:
 
 * Encryption: The block data could be encrypted with a key salt stored in the header.
