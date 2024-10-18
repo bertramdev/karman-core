@@ -462,6 +462,9 @@ public class DifferentialCloudFile extends CloudFile {
 									try {
 										CloudFileInterface blockFile = parent.sourceDirectory[originalBlockFilePath]
 										CloudFileInterface destBlockFile = parent.sourceDirectory[newBlockFilePath]
+										if(destBlockFile.exists()) {
+											destBlockFile.delete()
+										}
 										destBlockFile.setInputStream(blockFile.getInputStream())
 										destBlockFile.save()
 										break
