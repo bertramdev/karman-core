@@ -457,10 +457,28 @@ public class DifferentialCloudFile extends CloudFile {
 								String originalBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, currentBlock.fileIndex, unflattenedStream.manifestData)
 								String newBlockFilePath = ManifestData.BlockData.getBlockPath(sourceFile, currentBlock.block, 0, manifestData)
 
-								CloudFileInterface blockFile = parent.sourceDirectory[originalBlockFilePath]
-								CloudFileInterface destBlockFile = parent.sourceDirectory[newBlockFilePath]
-								destBlockFile.setInputStream(blockFile.getInputStream())
-								destBlockFile.save()
+								int attempts=0
+								while(attempts < 5) {
+									try {
+										CloudFileInterface blockFile = parent.sourceDirectory[originalBlockFilePath]
+										CloudFileInterface destBlockFile = parent.sourceDirectory[newBlockFilePath]
+										destBlockFile.setInputStream(blockFile.getInputStream())
+										destBlockFile.save()
+										break
+									} catch(Exception e) {
+										attempts++
+										sleep(5000l*attempts + 5000l)
+
+										if(attempts == 5) {
+											log.error("Error saving block file...Max Attempts Reached...",e)
+											throw new Exception("Error saving block file...Max Attempts Reached...",e)
+										} else {
+											log.error("Error saving block file...sleeping and trying again shortly...",e)
+										}
+									}
+								}
+
+
 							}
 							currentBlock.fileIndex = 0
 						}
