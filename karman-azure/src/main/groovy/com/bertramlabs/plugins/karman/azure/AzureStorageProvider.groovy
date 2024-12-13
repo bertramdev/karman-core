@@ -5,7 +5,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
-import groovy.util.XmlSlurper
+import groovy.xml.XmlSlurper
 import groovy.util.logging.Commons
 import org.apache.http.Header
 import org.apache.http.HttpEntity

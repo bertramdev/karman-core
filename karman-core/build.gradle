@@ -23,9 +23,9 @@ repositories {
 
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.apache.groovy:groovy-all:$groovyVersion"
     api("commons-logging:commons-logging:1.1.1")
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
 
 }
 

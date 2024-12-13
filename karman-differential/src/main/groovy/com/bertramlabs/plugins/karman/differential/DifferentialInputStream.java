@@ -2,8 +2,6 @@ package com.bertramlabs.plugins.karman.differential;
 
 import com.bertramlabs.plugins.karman.CloudFile;
 import com.bertramlabs.plugins.karman.CloudFileInterface;
-import org.tukaani.xz.XZInputStream;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;

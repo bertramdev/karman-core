@@ -23,10 +23,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.apache.groovy:groovy-all:$groovyVersion"
 	api project(':karman-core')
-	api group: 'org.tukaani', name: 'xz', version: '1.10'
-	testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+	testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+
 }
 
 publishing {

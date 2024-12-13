@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.util.EntityUtils
+import groovy.xml.XmlSlurper
 
 @Commons
 class AzurePrefix extends CloudFile {

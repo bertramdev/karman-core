@@ -17,6 +17,7 @@ import org.apache.http.message.BasicHeader
 import org.apache.http.params.HttpConnectionParams
 import org.apache.http.params.HttpParams
 import org.apache.http.util.EntityUtils
+import groovy.xml.XmlSlurper
 
 /**
  * Created by bwhiton on 11/22/2016.

@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
+        
     }
     dependencies {
     }
@@ -23,22 +23,23 @@ ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 
 repositories {
-    jcenter()
+    
     mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+    implementation "org.apache.groovy:groovy-all:$groovyVersion"
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.24.0'
     implementation 'com.google.apis:google-api-services-storage:v1-rev148-1.25.0'
     api project(':karman-core')
-    api 'org.apache.httpcomponents:httpcore:4.4.5'
+    api 'org.apache.httpcomponents:httpcore:4.4.16'
     api 'org.apache.httpcomponents:httpclient:4.5.2'
     api 'org.apache.httpcomponents:httpmime:4.5.2'
     api group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+
 
 }
 

@@ -2,7 +2,7 @@ package com.bertramlabs.plugins.karman.azure
 
 import com.bertramlabs.plugins.karman.CloudFile
 import com.bertramlabs.plugins.karman.Directory
-import groovy.json.JsonSlurper
+import groovy.xml.XmlSlurper
 import groovy.util.logging.Commons
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse

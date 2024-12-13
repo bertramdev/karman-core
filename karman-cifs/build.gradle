@@ -23,9 +23,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+	implementation "org.apache.groovy:groovy-all:$groovyVersion"
 	api project(':karman-core')
-	testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+	testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+
 
 	api "eu.agno3.jcifs:jcifs-ng:2.1.7"
 	// compile 'jcifs:jcifs:1.3.17'

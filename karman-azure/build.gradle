@@ -27,14 +27,15 @@ repositories {
 
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy-all:2.5.15'
+    implementation "org.apache.groovy:groovy-all:$groovyVersion"
 
     api project(':karman-core')
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
 
-    api 'org.apache.httpcomponents:httpcore:4.4.5'
-    api 'org.apache.httpcomponents:httpclient:4.5.2'
-    api 'commons-beanutils:commons-beanutils:1.9.3'
+
+    api 'org.apache.httpcomponents:httpcore:4.4.16'
+    api 'org.apache.httpcomponents:httpclient:4.5.14'
+    api 'commons-beanutils:commons-beanutils:1.9.4'
 }
 
 publishing {

@@ -8,6 +8,7 @@ import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpGet
+import groovy.xml.XmlSlurper
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpHead

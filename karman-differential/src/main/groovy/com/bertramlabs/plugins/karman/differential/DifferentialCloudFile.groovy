@@ -7,10 +7,6 @@ import com.bertramlabs.plugins.karman.StorageProvider
 import com.bertramlabs.plugins.karman.util.Mimetypes
 import groovy.transform.CompileStatic
 import groovy.util.logging.Commons
-import org.tukaani.xz.LZMA2Options
-import org.tukaani.xz.XZ
-import org.tukaani.xz.XZOutputStream
-
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.GZIPOutputStream

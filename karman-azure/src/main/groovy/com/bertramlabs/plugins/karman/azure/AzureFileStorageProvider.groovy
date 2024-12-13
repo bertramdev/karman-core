@@ -4,7 +4,7 @@ import com.bertramlabs.plugins.karman.Directory
 import com.bertramlabs.plugins.karman.StorageProvider
 
 import groovy.util.logging.Commons
-
+import groovy.xml.XmlSlurper
 import org.apache.http.HttpEntity
 import org.apache.http.client.HttpClient
 import org.apache.http.HttpResponse

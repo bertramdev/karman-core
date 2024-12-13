@@ -44,7 +44,7 @@ dependencies {
   implementation "org.grails:grails-dependencies"
   runtimeOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
-  testCompile "org.grails:grails-plugin-testing"
+  testImplementation "org.grails:grails-plugin-testing"
 
   console "org.grails:grails-console"
   api project(':karman-core')
