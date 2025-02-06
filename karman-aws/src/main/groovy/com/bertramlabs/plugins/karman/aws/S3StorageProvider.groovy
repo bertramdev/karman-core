@@ -211,27 +211,33 @@ class S3StorageProvider extends StorageProvider {
         configuration.setUseTcpKeepAlive(keepAlive)
         configuration.setMaxConnections(maxConnections)
         configuration.setProtocol(protocol == 'https' ? com.amazonaws.Protocol.HTTPS : com.amazonaws.Protocol.HTTP)
+
+
         if(proxyHost) {
-            configuration.setProxyHost(proxyHost)
+					URL endpointUrl = new URL(endpoint)
+					if(!isNoproxy(endpointUrl.getHost(), noProxy)) {
+						configuration.setProxyHost(proxyHost)
+					}
+					if(proxyPort) {
+						configuration.setProxyPort(proxyPort)
+					}
+					if(proxyUser) {
+						configuration.setProxyUsername(proxyUser)
+					}
+					if(proxyPassword) {
+						configuration.setProxyPassword(proxyPassword)
+					}
+					if(proxyDomain) {
+						configuration.setProxyDomain(proxyDomain)
+					}
+					if(proxyWorkstation) {
+						configuration.setProxyWorkstation(proxyWorkstation)
+					}
+					if(noProxy) {
+						configuration.setNonProxyHosts(noProxy)
+					}
         }
-        if(proxyPort) {
-            configuration.setProxyPort(proxyPort)
-        }
-        if(proxyUser) {
-            configuration.setProxyUsername(proxyUser)
-        }
-        if(proxyPassword) {
-            configuration.setProxyPassword(proxyPassword)
-        }
-        if(proxyDomain) {
-            configuration.setProxyDomain(proxyDomain)
-        }
-        if(proxyWorkstation) {
-            configuration.setProxyWorkstation(proxyWorkstation)
-        }
-        if(noProxy) {
-            configuration.setNonProxyHosts(noProxy)
-        }
+
 
         configuration.setUseGzip(useGzip)
 		if (endpoint) {
@@ -325,4 +331,7 @@ class S3StorageProvider extends StorageProvider {
       return hostname
     }
 
+	Boolean isNoproxy(String host, String noProxy) {
+		return noProxy && noProxy.tokenize(', |')?.any { host.equalsIgnoreCase(it) }
+	}
 }
