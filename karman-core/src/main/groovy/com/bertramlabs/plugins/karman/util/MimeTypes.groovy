@@ -13,7 +13,7 @@ public class Mimetypes {
             loadMimetype()
         }
 
-        String extension = fileName.tokenize('.').last()
+        String extension = fileName.tokenize('.').last()?.toLowerCase()
         if (extension && mimeTypes[extension]) {
             mimetype = mimeTypes[extension]
         }
