@@ -214,8 +214,16 @@ class S3StorageProvider extends StorageProvider {
 
 
         if(proxyHost) {
-					URL endpointUrl = new URL(endpoint)
-					if(!isNoproxy(endpointUrl.getHost(), noProxy)) {
+					URL endpointUrl = null
+					if(endpoint) {
+						if(!endpoint.startsWith("http")) {
+							endpointUrl = new URL("https://" + endpoint)
+						} else {
+							endpointUrl = new URL(endpoint)
+						}
+					}
+
+					if(!isNoproxy(endpointUrl?.getHost(), noProxy)) {
 						configuration.setProxyHost(proxyHost)
 					}
 					if(proxyPort) {
@@ -332,6 +340,9 @@ class S3StorageProvider extends StorageProvider {
     }
 
 	Boolean isNoproxy(String host, String noProxy) {
+		if(!host || !noProxy) {
+			return false
+		}
 		return noProxy && noProxy.tokenize(', |')?.any { host.equalsIgnoreCase(it) }
 	}
 }
